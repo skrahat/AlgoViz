@@ -6,6 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
+import { Snackbar, SnackbarContent } from '@mui/material';
 
 const pages = ['Merge Sort', 'Quick Sort', 'Heap Sort', 'Bubble Sort'];
 //const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -14,6 +15,7 @@ export default function Header() {
     const [result, setResult] = React.useState<Array<Number>>([]);
     const [displayComplete, setDisplayComplete] = React.useState<Boolean>(true);
     //const [displayNewNumber, setDisplayNewNumber] = React.useState(Boolean);
+    //const errorMessage = Snackbar('error');
 
     const RandomNumberGeneratorFunction = () => {
         setResult((prevState) => []);
@@ -24,13 +26,11 @@ export default function Header() {
         }
         return result;
     };
+    //clear generated numbers
     const RemoveNumberFunction = () => {
         setResult((prevState) => []);
     };
-    const RearrageNumbers = (array: Number[]) => {
-        const newArray = bubbleSort(array);
-        //setResult((prevState) => newArray);
-    };
+
     //delay timer function async
     function timer(ms: number) {
         return new Promise((resolve) => setTimeout(resolve, ms));
@@ -49,13 +49,70 @@ export default function Header() {
                     let swap = array[j];
                     array[j] = array[j + 1];
                     array[j + 1] = swap;
-                    setResult((prevState) => array);
+                    setResult(array);
                 }
             }
         }
         setDisplayComplete(true);
         console.log(`loopend ${displayComplete}`);
     }
+    const mergeSortCall = (array: Number[]) => {
+        quickSort(array, 0, array.length - 1)
+            .then((numberArray) => {
+                if (numberArray) {
+                    setResult(numberArray);
+                }
+            })
+            .catch((e) => console.log('Error: ', e));
+
+        console.log(result);
+    };
+    //mergesort function below//////////////////
+    async function swap(
+        items: Number[],
+        leftIndex: number,
+        rightIndex: number
+    ) {
+        var temp = items[leftIndex];
+        items[leftIndex] = items[rightIndex];
+        items[rightIndex] = temp;
+    }
+    async function partition(items: Number[], left: number, right: number) {
+        var pivot = items[Math.floor((right + left) / 2)], //middle element
+            i = left, //left pointer
+            j = right; //right pointer
+        while (i <= j) {
+            while (items[i] < pivot) {
+                i++;
+            }
+            while (items[j] > pivot) {
+                j--;
+            }
+            if (i <= j) {
+                swap(items, i, j); //sawpping two elements
+                i++;
+                j--;
+            }
+        }
+        return i;
+    }
+
+    async function quickSort(items: Number[], left: number, right: number) {
+        var index;
+        if (items.length > 1) {
+            index = partition(items, left, right); //index returned from partition
+            if (left < (await index) - 1) {
+                //more elements on the left side of the pivot
+                quickSort(items, left, (await index) - 1);
+            }
+            if ((await index) < right) {
+                //more elements on the right side of the pivot
+                quickSort(items, await index, right);
+            }
+        }
+        return items;
+    }
+
     useEffect(() => {
         setResult(result);
         //setDisplayComplete(false);
@@ -113,9 +170,16 @@ export default function Header() {
                             <Button
                                 id="bubble-sort-button"
                                 sx={{ my: 2, color: 'white', display: 'block' }}
-                                onClick={() => RearrageNumbers(result)}
+                                onClick={() => bubbleSort(result)}
                             >
                                 Bubble sort
+                            </Button>
+                            <Button
+                                id="merge-sort-button"
+                                sx={{ my: 2, color: 'white', display: 'block' }}
+                                onClick={() => mergeSortCall(result)}
+                            >
+                                Merge sort
                             </Button>
                         </Box>
                     </Toolbar>
