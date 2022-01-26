@@ -14,6 +14,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ThemeContext } from '@emotion/react';
 import { color } from '@mui/system';
 import red from '@mui/material/colors/red';
+import {
+    Chart as ChartJS,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Tooltip,
+    Legend
+} from 'chart.js';
+import { Scatter } from 'react-chartjs-2';
 
 const pages = ['Merge Sort', 'Quick Sort', 'Heap Sort', 'Bubble Sort'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -36,9 +45,33 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     sortButton: {
         sx: { my: 2, color: 'white', display: 'block' }
-    }
+    },
+    toastMessage: {}
 }));
+ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
 
+export const options = {
+    scales: {
+        y: {
+            beginAtZero: true
+        }
+    }
+};
+// export const data = {
+//     datasets: [
+//         {
+//             label: 'A dataset',
+//             data: GenerateDataGraph(
+//                 result,
+//                 [
+//                     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+//                     19, 20
+//                 ]
+//             ),
+//             backgroundColor: 'rgba(255, 99, 132, 1)'
+//         }
+//     ]
+// };
 export default function Header() {
     const classes = useStyles();
     const [result, setResult] = React.useState<Array<Number>>([]);
@@ -46,6 +79,10 @@ export default function Header() {
     const [loading, setLoading] = React.useState(Boolean);
     //const [displayNewNumber, setDisplayNewNumber] = React.useState(Boolean);
     //const errorMessage = Snackbar('error');
+    const n = 20;
+    const [dataGraph, setDataGraph] = React.useState(
+        Array.from({ length: n }, () => Array.from({ length: n }, () => 0))
+    );
 
     const RandomNumberGeneratorFunction = () => {
         setResult([]);
@@ -56,6 +93,30 @@ export default function Header() {
         }
         return result;
     };
+    const GenerateDataGraph = (arrayX: Number[], arrayY: Number[]) => {
+        var result: any = [];
+        for (var i = 0; i < arrayY.length; i++) {
+            result.push({ x: arrayX[i], y: arrayY[i] });
+        }
+
+        return result;
+    };
+    const data = {
+        datasets: [
+            {
+                label: 'A dataset',
+                data: GenerateDataGraph(
+                    result,
+                    [
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+                        17, 18, 19, 20
+                    ]
+                ),
+                backgroundColor: 'rgba(255, 99, 132, 1)'
+            }
+        ]
+    };
+
     //clear generated numbers
     const RemoveNumberFunction = () => {
         setResult((prevState) => []);
@@ -105,6 +166,7 @@ export default function Header() {
             toast('Already sorted! Please Generate new array :)');
         }
     }
+    //callign merge sort funnction////
     function mergeSortCall(array: Number[]) {
         const sortedArray = quickSort(array, 0, array.length - 1);
         setResult(sortedArray);
@@ -158,7 +220,14 @@ export default function Header() {
 
     useEffect(() => {
         setResult(result);
-        console.log(result);
+
+        GenerateDataGraph(
+            result,
+            [
+                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+                19, 20
+            ]
+        );
         //setDisplayComplete(false);
     }, [result, displayComplete]);
 
@@ -250,14 +319,20 @@ export default function Header() {
                 </Container>
             </AppBar>
 
-            <div text-align="center">
+            {/* <div text-align="center">
                 {result.map((item, i) => (
                     <p id="generated-numbers" key={i}>
                         {item}
                     </p>
                 ))}
-            </div>
-            <h1>{displayComplete ? '' : 'Working on it'}</h1>
+            </div> */}
+
+            <Scatter options={options} data={data} />
+            <h1>
+                {displayComplete
+                    ? ''
+                    : 'Performing 2+2 =4 minus 1 = 3, quick maths'}
+            </h1>
         </div>
     );
 }
