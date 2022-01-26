@@ -9,6 +9,11 @@ import Button from '@mui/material/Button';
 import { Snackbar, SnackbarContent, Theme, withStyles } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useTranslation } from 'react-i18next';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ThemeContext } from '@emotion/react';
+import { color } from '@mui/system';
+import red from '@mui/material/colors/red';
 
 const pages = ['Merge Sort', 'Quick Sort', 'Heap Sort', 'Bubble Sort'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -55,6 +60,14 @@ export default function Header() {
     const RemoveNumberFunction = () => {
         setResult((prevState) => []);
     };
+    //check if array is already sorted
+    async function CheckArraySorted(array: Number[]) {
+        const checker = array.reduce((memo, item) =>
+            memo >= item ? 101 : item
+        );
+        console.log(`checking array`);
+        return checker < 101 ? true : false;
+    }
 
     //delay timer function async
     function timer(ms: number) {
@@ -62,26 +75,35 @@ export default function Header() {
     }
     //bubble sort function
     async function bubbleSort(array: Number[]) {
-        setLoading(true);
-        setDisplayComplete(false);
-        console.log(`loopstart ${displayComplete}`);
-        array = array.slice(); // creates a copy of the array
+        if (array === undefined || array.length == 0) {
+            return toast('Please generate Numbers first');
+        }
+        console.log(`started`);
+        const checker = await CheckArraySorted(array);
 
-        for (let i = 0; i < array.length; i++) {
-            for (let j = 0; j < array.length - 1; j++) {
-                //setTimeout(function () {
-                await timer(100);
-                if (array[j] > array[j + 1]) {
-                    let swap = array[j];
-                    array[j] = array[j + 1];
-                    array[j + 1] = swap;
-                    setResult(array);
+        if (!checker) {
+            setDisplayComplete(false);
+            console.log(`loopstart ${displayComplete}`);
+            array = array.slice(); // creates a copy of the array
+
+            for (let i = 0; i < array.length; i++) {
+                for (let j = 0; j < array.length - 1; j++) {
+                    //setTimeout(function () {
+                    await timer(50);
+                    if (array[j] > array[j + 1]) {
+                        let swap = array[j];
+                        array[j] = array[j + 1];
+                        array[j + 1] = swap;
+                        setResult(array);
+                    }
                 }
             }
+            setDisplayComplete(true);
+            setLoading(true);
+            console.log(`loopend ${displayComplete}`);
+        } else {
+            toast('Already sorted! Please Generate new array :)');
         }
-        setDisplayComplete(true);
-        setLoading(false);
-        console.log(`loopend ${displayComplete}`);
     }
     function mergeSortCall(array: Number[]) {
         const sortedArray = quickSort(array, 0, array.length - 1);
@@ -146,14 +168,20 @@ export default function Header() {
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
                         <Snackbar
-                            open={false}
+                            open={loading}
                             message="Sorting completed"
                             autoHideDuration={6000}
+                            onClose={() => {
+                                setLoading(false);
+                            }}
                         />
                         <Typography
-                            sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+                            sx={{
+                                mr: 2,
+                                display: { xs: 'none', md: 'flex' }
+                            }}
                         >
-                            DashBoard
+                            learnolej
                         </Typography>
 
                         <Box
@@ -199,12 +227,24 @@ export default function Header() {
                                 Bubble sort
                             </Button>
                             <Button
+                                disabled={true}
                                 id="merge-sort-button"
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                                 onClick={() => mergeSortCall(result)}
                             >
                                 Merge sort
                             </Button>
+                            <ToastContainer
+                                position="top-center"
+                                autoClose={2000}
+                                hideProgressBar
+                                newestOnTop={false}
+                                closeOnClick
+                                rtl={false}
+                                pauseOnFocusLoss
+                                draggable
+                                pauseOnHover
+                            />
                         </Box>
                     </Toolbar>
                 </Container>
