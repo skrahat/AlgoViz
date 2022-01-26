@@ -57,22 +57,7 @@ export const options = {
         }
     }
 };
-// export const data = {
-//     datasets: [
-//         {
-//             label: 'A dataset',
-//             data: GenerateDataGraph(
-//                 result,
-//                 [
-//                     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-//                     19, 20
-//                 ]
-//             ),
-//             backgroundColor: 'rgba(255, 99, 132, 1)'
-//         }
-//     ]
-// };
-export default function Header() {
+export default function Dashboard() {
     const classes = useStyles();
     const [result, setResult] = React.useState<Array<Number>>([]);
     const [displayComplete, setDisplayComplete] = React.useState<Boolean>(true);
@@ -104,7 +89,7 @@ export default function Header() {
     const data = {
         datasets: [
             {
-                label: 'A dataset',
+                label: 'Numbers',
                 data: GenerateDataGraph(
                     result,
                     [
@@ -275,6 +260,7 @@ export default function Header() {
                             }}
                         >
                             <Button
+                                disabled={!displayComplete}
                                 id="generateNumberID"
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                                 onClick={() => RandomNumberGeneratorFunction()}
@@ -282,6 +268,7 @@ export default function Header() {
                                 Generate Numbers
                             </Button>
                             <Button
+                                disabled={!displayComplete}
                                 id="clearNumberID"
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                                 onClick={() => RemoveNumberFunction()}
