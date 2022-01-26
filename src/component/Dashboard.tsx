@@ -63,9 +63,9 @@ export default function Header() {
     //check if array is already sorted
     async function CheckArraySorted(array: Number[]) {
         const checker = array.reduce((memo, item) =>
-            memo >= item ? 101 : item
+            memo > item ? 101 : item
         );
-        console.log(`checking array`);
+        console.log(`checking array ${checker}`);
         return checker < 101 ? true : false;
     }
 
@@ -80,7 +80,7 @@ export default function Header() {
         }
         console.log(`started`);
         const checker = await CheckArraySorted(array);
-
+        console.log(`check array completed ${checker}`);
         if (!checker) {
             setDisplayComplete(false);
             console.log(`loopstart ${displayComplete}`);
