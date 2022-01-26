@@ -6,19 +6,44 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import { Snackbar, SnackbarContent } from '@mui/material';
+import { Snackbar, SnackbarContent, Theme, withStyles } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { useTranslation } from 'react-i18next';
 
 const pages = ['Merge Sort', 'Quick Sort', 'Heap Sort', 'Bubble Sort'];
-//const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const useStyles = makeStyles((theme: Theme) => ({
+    appBar: {
+        position: 'static'
+    },
+    container: { maxWidth: 'xl' },
+    buttonBoxContainer: {
+        sx: {
+            flexGrow: 1,
+            display: { xs: 'none', md: 'flex' }
+        }
+    },
+    dashBoardText: {
+        variant: 'h6',
+        noWrap: true,
+        component: 'div',
+        sx: { mr: 2, display: { xs: 'none', md: 'flex' } }
+    },
+    sortButton: {
+        sx: { my: 2, color: 'white', display: 'block' }
+    }
+}));
 
 export default function Header() {
+    const classes = useStyles();
     const [result, setResult] = React.useState<Array<Number>>([]);
     const [displayComplete, setDisplayComplete] = React.useState<Boolean>(true);
+    const [loading, setLoading] = React.useState(Boolean);
     //const [displayNewNumber, setDisplayNewNumber] = React.useState(Boolean);
     //const errorMessage = Snackbar('error');
 
     const RandomNumberGeneratorFunction = () => {
-        setResult((prevState) => []);
+        setResult([]);
         setDisplayComplete(true);
         for (let counter = 0; counter < 20; counter++) {
             const randomNumber = parseFloat((Math.random() * 100).toFixed(0));
@@ -37,6 +62,7 @@ export default function Header() {
     }
     //bubble sort function
     async function bubbleSort(array: Number[]) {
+        setLoading(true);
         setDisplayComplete(false);
         console.log(`loopstart ${displayComplete}`);
         array = array.slice(); // creates a copy of the array
@@ -54,30 +80,21 @@ export default function Header() {
             }
         }
         setDisplayComplete(true);
+        setLoading(false);
         console.log(`loopend ${displayComplete}`);
     }
-    const mergeSortCall = (array: Number[]) => {
-        quickSort(array, 0, array.length - 1)
-            .then((numberArray) => {
-                if (numberArray) {
-                    setResult(numberArray);
-                }
-            })
-            .catch((e) => console.log('Error: ', e));
-
+    function mergeSortCall(array: Number[]) {
+        const sortedArray = quickSort(array, 0, array.length - 1);
+        setResult(sortedArray);
         console.log(result);
-    };
+    }
     //mergesort function below//////////////////
-    async function swap(
-        items: Number[],
-        leftIndex: number,
-        rightIndex: number
-    ) {
+    function swap(items: Number[], leftIndex: number, rightIndex: number) {
         var temp = items[leftIndex];
         items[leftIndex] = items[rightIndex];
         items[rightIndex] = temp;
     }
-    async function partition(items: Number[], left: number, right: number) {
+    function partition(items: Number[], left: number, right: number) {
         var pivot = items[Math.floor((right + left) / 2)], //middle element
             i = left, //left pointer
             j = right; //right pointer
@@ -97,24 +114,29 @@ export default function Header() {
         return i;
     }
 
-    async function quickSort(items: Number[], left: number, right: number) {
+    function quickSort(items: Number[], left: number, right: number) {
         var index;
         if (items.length > 1) {
             index = partition(items, left, right); //index returned from partition
-            if (left < (await index) - 1) {
+            if (left < index - 1) {
                 //more elements on the left side of the pivot
-                quickSort(items, left, (await index) - 1);
+                quickSort(items, left, index - 1);
             }
-            if ((await index) < right) {
+            if (index < right) {
                 //more elements on the right side of the pivot
-                quickSort(items, await index, right);
+                quickSort(items, index, right);
             }
         }
         return items;
     }
+    const temp = (array: Number[]) => {
+        mergeSortCall(array);
+        setResult(result);
+    };
 
     useEffect(() => {
         setResult(result);
+        console.log(result);
         //setDisplayComplete(false);
     }, [result, displayComplete]);
 
@@ -123,10 +145,12 @@ export default function Header() {
             <AppBar position="static">
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
+                        <Snackbar
+                            open={false}
+                            message="Sorting completed"
+                            autoHideDuration={6000}
+                        />
                         <Typography
-                            variant="h6"
-                            noWrap
-                            component="div"
                             sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
                         >
                             DashBoard
