@@ -91,11 +91,11 @@ export default function Dashboard() {
             {
                 label: 'Numbers',
                 data: GenerateDataGraph(
+                    result,
                     [
                         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
                         17, 18, 19, 20
-                    ],
-                    result
+                    ]
                 ),
                 backgroundColor: 'rgba(255, 99, 132, 1)'
             }
@@ -260,6 +260,7 @@ export default function Dashboard() {
                             }}
                         >
                             <Button
+                                disabled={!displayComplete}
                                 id="generateNumberID"
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                                 onClick={() => RandomNumberGeneratorFunction()}
@@ -267,6 +268,7 @@ export default function Dashboard() {
                                 Generate Numbers
                             </Button>
                             <Button
+                                disabled={!displayComplete}
                                 id="clearNumberID"
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                                 onClick={() => RemoveNumberFunction()}
