@@ -29,9 +29,20 @@ import {
     Legend
 } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const pages = ['Merge Sort', 'Quick Sort', 'Heap Sort', 'Bubble Sort'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#bbdefb'
+        },
+        secondary: {
+            main: '#f44336'
+        }
+    }
+});
 const useStyles = makeStyles((theme: Theme) => ({
     appBar: {
         position: 'static'
@@ -54,6 +65,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     toastMessage: {}
 }));
+
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
 
 export const options = {
@@ -64,7 +76,7 @@ export const options = {
     }
 };
 export default function Dashboard() {
-    const classes = useStyles();
+    const classes = useStyles(theme);
     const [result, setResult] = React.useState<Array<Number>>([]);
     const [displayComplete, setDisplayComplete] = React.useState<Boolean>(true);
     const [loading, setLoading] = React.useState(Boolean);
@@ -233,22 +245,23 @@ export default function Dashboard() {
                             learnolej
                         </Typography>
                         <Box sx={{ width: 100, padding: '0.4rem' }}>
-                            <Slider
-                                value={arraySize}
-                                min={20}
-                                step={1}
-                                max={100}
-                                size="medium"
-                                color="primary"
-                                //scale={calculateValue}
-                                // getAriaValueText={valueLabelFormat}
-                                // valueLabelFormat={valueLabelFormat}
-                                onChange={handleChange}
-                                valueLabelDisplay="auto"
-                                aria-labelledby="non-linear-slider"
-                            />
+                            <ThemeProvider theme={theme}>
+                                <Slider
+                                    value={arraySize}
+                                    min={20}
+                                    step={1}
+                                    max={100}
+                                    size="medium"
+                                    color="primary"
+                                    //scale={calculateValue}
+                                    // getAriaValueText={valueLabelFormat}
+                                    // valueLabelFormat={valueLabelFormat}
+                                    onChange={handleChange}
+                                    valueLabelDisplay="auto"
+                                    aria-labelledby="non-linear-slider"
+                                />
+                            </ThemeProvider>
                         </Box>
-                        <Box>{arraySize}</Box>
                         <Box
                             sx={{
                                 flexGrow: 1,
