@@ -6,7 +6,13 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import { Snackbar, SnackbarContent, Theme, withStyles } from '@mui/material';
+import {
+    Slider,
+    Snackbar,
+    SnackbarContent,
+    Theme,
+    withStyles
+} from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useTranslation } from 'react-i18next';
 import { ToastContainer, toast } from 'react-toastify';
@@ -65,38 +71,32 @@ export default function Dashboard() {
     //const [displayNewNumber, setDisplayNewNumber] = React.useState(Boolean);
     //const errorMessage = Snackbar('error');
     const n = 20;
-    const [dataGraph, setDataGraph] = React.useState(
-        Array.from({ length: n }, () => Array.from({ length: n }, () => 0))
-    );
+    const [arraySize, setArraySize] = React.useState(20);
 
     const RandomNumberGeneratorFunction = () => {
         setResult([]);
         setDisplayComplete(true);
-        for (let counter = 0; counter < 20; counter++) {
+        for (let counter = 0; counter < arraySize; counter++) {
             const randomNumber = parseFloat((Math.random() * 100).toFixed(0));
             setResult((prevState) => [...prevState, randomNumber]);
         }
         return result;
     };
-    const GenerateDataGraph = (arrayX: Number[], arrayY: Number[]) => {
+
+    const GenerateDataGraph = (arrayX: Number[], arrayY: Number) => {
         var result: any = [];
-        for (var i = 0; i < arrayY.length; i++) {
-            result.push({ x: arrayX[i], y: arrayY[i] });
+        for (var i = 0; i < arrayY; i++) {
+            result.push({ x: arrayX[i], y: i });
         }
 
         return result;
     };
+    //data for graph
     const data = {
         datasets: [
             {
                 label: 'Numbers',
-                data: GenerateDataGraph(
-                    result,
-                    [
-                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-                        17, 18, 19, 20
-                    ]
-                ),
+                data: GenerateDataGraph(result, arraySize),
                 backgroundColor: 'rgba(255, 99, 132, 1)'
             }
         ]
@@ -135,7 +135,7 @@ export default function Dashboard() {
             for (let i = 0; i < array.length; i++) {
                 for (let j = 0; j < array.length - 1; j++) {
                     //setTimeout(function () {
-                    await timer(50);
+                    await timer(10);
                     if (array[j] > array[j + 1]) {
                         let swap = array[j];
                         array[j] = array[j + 1];
@@ -145,6 +145,7 @@ export default function Dashboard() {
                 }
             }
             setDisplayComplete(true);
+            toast('Sorting completed!');
             setLoading(true);
             console.log(`loopend ${displayComplete}`);
         } else {
@@ -203,32 +204,26 @@ export default function Dashboard() {
         setResult(result);
     };
 
+    const handleChange = (
+        event: Event,
+        value: number | number[],
+        activeThumb: number
+    ) => {
+        if (typeof value === 'number') setArraySize(value);
+    };
+
     useEffect(() => {
         setResult(result);
 
-        GenerateDataGraph(
-            result,
-            [
-                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-                19, 20
-            ]
-        );
+        GenerateDataGraph(result, arraySize);
         //setDisplayComplete(false);
-    }, [result, displayComplete]);
+    }, [result, displayComplete, arraySize]);
 
     return (
         <div>
             <AppBar position="static">
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
-                        <Snackbar
-                            open={loading}
-                            message="Sorting completed"
-                            autoHideDuration={6000}
-                            onClose={() => {
-                                setLoading(false);
-                            }}
-                        />
                         <Typography
                             sx={{
                                 mr: 2,
@@ -237,22 +232,23 @@ export default function Dashboard() {
                         >
                             learnolej
                         </Typography>
-
-                        <Box
-                            sx={{
-                                flexGrow: 1,
-                                display: { xs: 'flex', md: 'none' }
-                            }}
-                        >
-                            <IconButton
-                                size="large"
-                                aria-label="account of current user"
-                                aria-controls="menu-appbar"
-                                aria-haspopup="true"
-                                color="inherit"
-                            ></IconButton>
+                        <Box sx={{ width: 100, padding: '0.4rem' }}>
+                            <Slider
+                                value={arraySize}
+                                min={20}
+                                step={1}
+                                max={100}
+                                size="medium"
+                                color="primary"
+                                //scale={calculateValue}
+                                // getAriaValueText={valueLabelFormat}
+                                // valueLabelFormat={valueLabelFormat}
+                                onChange={handleChange}
+                                valueLabelDisplay="auto"
+                                aria-labelledby="non-linear-slider"
+                            />
                         </Box>
-
+                        <Box>{arraySize}</Box>
                         <Box
                             sx={{
                                 flexGrow: 1,
