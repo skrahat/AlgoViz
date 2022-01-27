@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ThemeContext } from '@emotion/react';
-import { color } from '@mui/system';
+import { borderColor, color } from '@mui/system';
 import red from '@mui/material/colors/red';
 import {
     Chart as ChartJS,
@@ -32,14 +32,17 @@ import { Scatter } from 'react-chartjs-2';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const pages = ['Merge Sort', 'Quick Sort', 'Heap Sort', 'Bubble Sort'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#bbdefb'
+            main: '#42a5f5'
         },
         secondary: {
-            main: '#f44336'
+            main: '#bbdefb'
+        },
+        text: {
+            primary: '#e3f2fd',
+            secondary: '#0d47a1'
         }
     }
 });
@@ -109,7 +112,7 @@ export default function Dashboard() {
             {
                 label: 'Numbers',
                 data: GenerateDataGraph(result, arraySize),
-                backgroundColor: 'rgba(255, 99, 132, 1)'
+                backgroundColor: 'rgba(55, 99, 132, 1)'
             }
         ]
     };
@@ -233,88 +236,103 @@ export default function Dashboard() {
 
     return (
         <div>
-            <AppBar position="static">
-                <Container maxWidth="xl">
-                    <Toolbar disableGutters>
-                        <Typography
-                            sx={{
-                                mr: 2,
-                                display: { xs: 'none', md: 'flex' }
-                            }}
-                        >
-                            learnolej
-                        </Typography>
-                        <Box sx={{ width: 100, padding: '0.4rem' }}>
-                            <ThemeProvider theme={theme}>
+            <ThemeProvider theme={theme}>
+                <AppBar position="static">
+                    <Container maxWidth="xl">
+                        <Toolbar disableGutters>
+                            <Typography
+                                sx={{
+                                    mr: 3,
+                                    display: { xs: 'none', md: 'flex' },
+                                    color: theme.palette.text.primary,
+                                    fontSize: '1.5rem'
+                                }}
+                            >
+                                learnolej
+                            </Typography>
+                            <Box sx={{ width: 100, padding: '0.4rem' }}>
                                 <Slider
                                     value={arraySize}
                                     min={20}
                                     step={1}
                                     max={100}
-                                    size="medium"
-                                    color="primary"
-                                    //scale={calculateValue}
-                                    // getAriaValueText={valueLabelFormat}
-                                    // valueLabelFormat={valueLabelFormat}
+                                    color="secondary"
                                     onChange={handleChange}
                                     valueLabelDisplay="auto"
                                     aria-labelledby="non-linear-slider"
                                 />
-                            </ThemeProvider>
-                        </Box>
-                        <Box
-                            sx={{
-                                flexGrow: 1,
-                                display: { xs: 'none', md: 'flex' }
-                            }}
-                        >
-                            <Button
-                                disabled={!displayComplete}
-                                id="generateNumberID"
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                                onClick={() => RandomNumberGeneratorFunction()}
+                            </Box>
+                            <Box
+                                sx={{
+                                    flexGrow: 1,
+                                    display: { xs: 'none', md: 'flex' }
+                                }}
                             >
-                                Generate Numbers
-                            </Button>
-                            <Button
-                                disabled={!displayComplete}
-                                id="clearNumberID"
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                                onClick={() => RemoveNumberFunction()}
-                            >
-                                Remove Numbers
-                            </Button>
-                            <Button
-                                id="bubble-sort-button"
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                                onClick={() => bubbleSort(result)}
-                            >
-                                Bubble sort
-                            </Button>
-                            <Button
-                                disabled={true}
-                                id="merge-sort-button"
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                                onClick={() => mergeSortCall(result)}
-                            >
-                                Merge sort
-                            </Button>
-                            <ToastContainer
-                                position="top-center"
-                                autoClose={2000}
-                                hideProgressBar
-                                newestOnTop={false}
-                                closeOnClick
-                                rtl={false}
-                                pauseOnFocusLoss
-                                draggable
-                                pauseOnHover
-                            />
-                        </Box>
-                    </Toolbar>
-                </Container>
-            </AppBar>
-
+                                <Button
+                                    disabled={!displayComplete}
+                                    id="generateNumberID"
+                                    sx={{
+                                        my: 2,
+                                        color: 'white',
+                                        display: 'block'
+                                    }}
+                                    onClick={() =>
+                                        RandomNumberGeneratorFunction()
+                                    }
+                                >
+                                    Generate Numbers
+                                </Button>
+                                <Button
+                                    disabled={!displayComplete}
+                                    id="clearNumberID"
+                                    sx={{
+                                        my: 2,
+                                        color: 'white',
+                                        display: 'block'
+                                    }}
+                                    onClick={() => RemoveNumberFunction()}
+                                >
+                                    Remove Numbers
+                                </Button>
+                                <Button
+                                    id="bubble-sort-button"
+                                    sx={{
+                                        my: 2,
+                                        color: 'white',
+                                        display: 'block'
+                                    }}
+                                    onClick={() => bubbleSort(result)}
+                                >
+                                    Bubble sort
+                                </Button>
+                                <Button
+                                    disabled={true}
+                                    id="merge-sort-button"
+                                    sx={{
+                                        my: 2,
+                                        color: 'white',
+                                        display: 'block'
+                                    }}
+                                    onClick={() => mergeSortCall(result)}
+                                >
+                                    Merge sort
+                                </Button>
+                                <ToastContainer
+                                    position="top-center"
+                                    autoClose={2000}
+                                    hideProgressBar
+                                    newestOnTop={false}
+                                    closeOnClick
+                                    rtl={false}
+                                    pauseOnFocusLoss
+                                    draggable
+                                    pauseOnHover
+                                />
+                            </Box>
+                        </Toolbar>
+                    </Container>
+                </AppBar>
+            </ThemeProvider>
             {/* <div text-align="center">
                 {result.map((item, i) => (
                     <p id="generated-numbers" key={i}>
