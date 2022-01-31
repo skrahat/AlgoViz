@@ -79,6 +79,7 @@ export const options = {
     }
 };
 export default function Dashboard() {
+    const { t, i18n } = useTranslation();
     const classes = useStyles(theme);
     const [result, setResult] = React.useState<Array<Number>>([]);
     const [displayComplete, setDisplayComplete] = React.useState<Boolean>(true);
@@ -226,6 +227,9 @@ export default function Dashboard() {
     ) => {
         if (typeof value === 'number') setArraySize(value);
     };
+    const changeLanguage = (lng: string) => {
+        i18n.changeLanguage(lng);
+    };
 
     useEffect(() => {
         setResult(result);
@@ -248,7 +252,7 @@ export default function Dashboard() {
                                     fontSize: '1.5rem'
                                 }}
                             >
-                                learnolej
+                                {t(`learnolej`)}
                             </Typography>
                             <Box sx={{ width: 100, padding: '0.4rem' }}>
                                 <Slider
@@ -280,7 +284,7 @@ export default function Dashboard() {
                                         RandomNumberGeneratorFunction()
                                     }
                                 >
-                                    Generate Numbers
+                                    {t(`Generate Numbers`)}
                                 </Button>
                                 <Button
                                     disabled={!displayComplete}
@@ -292,7 +296,7 @@ export default function Dashboard() {
                                     }}
                                     onClick={() => RemoveNumberFunction()}
                                 >
-                                    Remove Numbers
+                                    {t(`Remove Numbers`)}
                                 </Button>
                                 <Button
                                     id="bubble-sort-button"
@@ -303,7 +307,7 @@ export default function Dashboard() {
                                     }}
                                     onClick={() => bubbleSort(result)}
                                 >
-                                    Bubble sort
+                                    {t(`Bubble sort`)}
                                 </Button>
                                 <Button
                                     disabled={true}
@@ -315,7 +319,29 @@ export default function Dashboard() {
                                     }}
                                     onClick={() => mergeSortCall(result)}
                                 >
-                                    Merge sort
+                                    {t(`Merge sort`)}
+                                </Button>
+                                <Button
+                                    id="FR-language-button"
+                                    sx={{
+                                        my: 2,
+                                        color: 'white',
+                                        display: 'block'
+                                    }}
+                                    onClick={() => changeLanguage('fr')}
+                                >
+                                    Fr
+                                </Button>
+                                <Button
+                                    id="EN-language-button"
+                                    sx={{
+                                        my: 2,
+                                        color: 'white',
+                                        display: 'block'
+                                    }}
+                                    onClick={() => changeLanguage('en')}
+                                >
+                                    EN
                                 </Button>
                                 <ToastContainer
                                     position="top-center"
