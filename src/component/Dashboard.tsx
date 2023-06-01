@@ -30,7 +30,7 @@ import {
 } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import Algorithm from './Algorithms';
 const pages = ['Merge Sort', 'Quick Sort', 'Heap Sort', 'Bubble Sort'];
 const theme = createTheme({
     palette: {
@@ -371,8 +371,9 @@ export default function Dashboard() {
             <h1>
                 {displayComplete
                     ? ''
-                    : 'Performing 2+2 =4 minus 1 = 3, quick maths'}
+                    : 'Calculating, (press sorting twice if issue with visualization)'}
             </h1>
+            <Algorithm array={result}></Algorithm>
         </div>
     );
 }
