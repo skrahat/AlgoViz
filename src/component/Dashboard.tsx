@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
 import { Slider } from '@mui/material';
 //import { makeStyles } from '@mui/styles';
 import { useTranslation } from 'react-i18next';
@@ -36,28 +35,6 @@ const theme = createTheme({
         }
     }
 });
-// const useStyles = makeStyles(() => ({
-//     appBar: {
-//         position: 'static'
-//     },
-//     container: { maxWidth: 'xl' },
-//     buttonBoxContainer: {
-//         sx: {
-//             flexGrow: 1,
-//             display: { xs: 'none', md: 'flex' }
-//         }
-//     },
-//     dashBoardText: {
-//         variant: 'h6',
-//         noWrap: true,
-//         component: 'div',
-//         sx: { mr: 2, display: { xs: 'none', md: 'flex' } }
-//     },
-//     sortButton: {
-//         sx: { my: 2, color: 'white', display: 'block' }
-//     },
-//     toastMessage: {}
-// }));
 
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
 
@@ -144,7 +121,7 @@ export default function Dashboard() {
                         let swap = array[j];
                         array[j] = array[j + 1];
                         array[j + 1] = swap;
-                        setResult(array);
+                        setResult([...array]);
                     }
                 }
             }
@@ -221,7 +198,6 @@ export default function Dashboard() {
         setResult(result);
 
         GenerateDataGraph(result, arraySize);
-        //setDisplayComplete(false);
     }, [result, displayComplete, arraySize]);
 
     return (
@@ -321,13 +297,6 @@ export default function Dashboard() {
                     </Container>
                 </AppBar>
             </ThemeProvider>
-            {/* <div text-align="center">
-                {result.map((item, i) => (
-                    <p id="generated-numbers" key={i}>
-                        {item}
-                    </p>
-                ))}
-            </div> */}
 
             <Scatter options={options} data={data} />
             <h1>
