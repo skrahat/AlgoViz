@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -49,6 +49,7 @@ export default function Dashboard() {
     const { t, i18n } = useTranslation();
     const [result, setResult] = React.useState<Array<number>>([]);
     const [displayComplete, setDisplayComplete] = React.useState<Boolean>(true);
+    const [sortingInProgress, setSortingInProgress] = useState(false);
     //const [loading, setLoading] = React.useState(Boolean);
     //const [displayNewNumber, setDisplayNewNumber] = React.useState(Boolean);
     //const errorMessage = Snackbar('error');
@@ -102,35 +103,39 @@ export default function Dashboard() {
     }
     //bubble sort function
     async function bubbleSort(array: number[]) {
-        if (array === undefined || array.length === 0) {
-            return toast('Please generate Numbers first');
-        }
-        console.log(`started`);
-        const checker = await CheckArraySorted(array);
-        console.log(`check array completed ${checker}`);
-        if (!checker) {
-            setDisplayComplete(false);
-            console.log(`loopstart ${displayComplete}`);
-            array = array.slice(); // creates a copy of the array
+        if (!sortingInProgress) {
+            setSortingInProgress(true);
+            if (array === undefined || array.length === 0) {
+                return toast('Please generate Numbers first');
+            }
+            console.log(`started`);
+            const checker = await CheckArraySorted(array);
+            console.log(`check array completed ${checker}`);
+            if (!checker) {
+                setDisplayComplete(false);
+                console.log(`loopstart ${displayComplete}`);
+                array = array.slice(); // creates a copy of the array
 
-            for (let i = 0; i < array.length; i++) {
-                for (let j = 0; j < array.length - 1; j++) {
-                    //setTimeout(function () {
-                    await timer(10);
-                    if (array[j] > array[j + 1]) {
-                        let swap = array[j];
-                        array[j] = array[j + 1];
-                        array[j + 1] = swap;
-                        setResult([...array]);
+                for (let i = 0; i < array.length; i++) {
+                    for (let j = 0; j < array.length - 1; j++) {
+                        //setTimeout(function () {
+                        await timer(10);
+                        if (array[j] > array[j + 1]) {
+                            let swap = array[j];
+                            array[j] = array[j + 1];
+                            array[j + 1] = swap;
+                            setResult([...array]);
+                        }
                     }
                 }
+                setDisplayComplete(true);
+                toast('Sorting completed!');
+                // setLoading(true);
+                console.log(`loopend ${displayComplete}`);
+            } else {
+                toast('Already sorted! Please Generate new array :)');
             }
-            setDisplayComplete(true);
-            toast('Sorting completed!');
-            // setLoading(true);
-            console.log(`loopend ${displayComplete}`);
-        } else {
-            toast('Already sorted! Please Generate new array :)');
+            setSortingInProgress(false);
         }
     }
     //calling merge sort funnction////
