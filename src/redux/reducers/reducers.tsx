@@ -1,13 +1,17 @@
-import { bubbleSort } from '../../component/Algorithms';
+//import { bubbleSort } from '../../component/Algorithms';
 
 interface State {
     result: number[];
     displayComplete: boolean;
+    sortInProgess: boolean;
+    iterationsCompleted: number;
 }
 
 const initialState: State = {
     result: [],
-    displayComplete: true
+    displayComplete: true,
+    sortInProgess: false,
+    iterationsCompleted: 0
 };
 
 const rootReducer = (state = initialState, action: any) => {
@@ -26,12 +30,27 @@ const rootReducer = (state = initialState, action: any) => {
                 result,
                 displayComplete: true
             };
-        case 'SORT_NUMBERS':
-            const array = state.result;
-            const sortedArray = bubbleSort(array); // Use the sorting algorithm here
+        case 'ITERATIONS_COMPLETED':
+            if (action.payload.clean === true)
+                return { ...state, iterationsCompleted: 0 };
             return {
                 ...state,
-                result: sortedArray,
+                iterationsCompleted: state.iterationsCompleted + 1
+            };
+        case 'SORT_IN_PROGRESS':
+            return { ...state, sortInProgess: !state.sortInProgess };
+        case 'SORT_NUMBERS_BUBBLE':
+            const arrayBubble = action.payload;
+            return {
+                ...state,
+                result: arrayBubble,
+                displayComplete: true
+            };
+        case 'SORT_NUMBERS_INSERTION':
+            const arrayInsertion = action.payload;
+            return {
+                ...state,
+                result: arrayInsertion,
                 displayComplete: true
             };
         default:

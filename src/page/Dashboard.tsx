@@ -20,7 +20,12 @@ import {
 import { Scatter } from 'react-chartjs-2';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CustomButton from '../component/Button';
-import { generateNumbers, sortNumbers } from '../redux/reducers/actions';
+import {
+    generateNumbers,
+    sortInProgess,
+    iterationsCompleted
+} from '../redux/reducers/actions';
+import { BubbleSort, InsertionSort } from '../component/Algorithms';
 
 const theme = createTheme({
     palette: {
@@ -51,8 +56,14 @@ export default function Dashboard() {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
     const result = useSelector((state: any) => state.result);
-    const displayComplete = useSelector((state: any) => state.displayComplete);
+    //const displayComplete = useSelector((state: any) => state.displayComplete);
     const [arraySize, setArraySize] = React.useState(20);
+    const sortingInProgressState = useSelector(
+        (state: any) => state.sortInProgess
+    );
+    const iterationsCompletedState = useSelector(
+        (state: any) => state.iterationsCompleted
+    );
 
     const RandomNumberGeneratorFunction = () => {
         dispatch(generateNumbers(arraySize));
@@ -81,10 +92,18 @@ export default function Dashboard() {
         dispatch(generateNumbers(0));
     };
 
-    const bubbleSort = () => {
-        dispatch(sortNumbers());
+    const bubbleSort = async () => {
+        console.log('started bubble sort');
+        dispatch(iterationsCompleted(true));
+        dispatch(sortInProgess());
+        BubbleSort(result, dispatch);
     };
-
+    const insertionSort = async () => {
+        console.log('started Insertion sort');
+        dispatch(iterationsCompleted(true));
+        dispatch(sortInProgess());
+        InsertionSort(result, dispatch);
+    };
     const handleChange = (event: Event, value: number | number[]) => {
         if (typeof value === 'number') setArraySize(value);
     };
@@ -133,7 +152,7 @@ export default function Dashboard() {
                             >
                                 <CustomButton
                                     id="generateNumberID"
-                                    disabled={!displayComplete}
+                                    disabled={sortingInProgressState}
                                     onClick={() =>
                                         RandomNumberGeneratorFunction()
                                     }
@@ -143,7 +162,7 @@ export default function Dashboard() {
 
                                 <CustomButton
                                     id="clearNumberID"
-                                    disabled={!displayComplete}
+                                    disabled={sortingInProgressState}
                                     onClick={() => RemoveNumberFunction()}
                                 >
                                     {t('Remove Numbers')}
@@ -151,18 +170,19 @@ export default function Dashboard() {
 
                                 <CustomButton
                                     id="bubble-sort-button"
-                                    onClick={() => bubbleSort}
+                                    disabled={sortingInProgressState}
+                                    onClick={() => bubbleSort()}
                                 >
                                     {t('Bubble sort')}
                                 </CustomButton>
 
-                                {/* <CustomButton
-                                    id="merge-sort-button"
-                                    disabled={true}
-                                    onClick={() => mergeSortCall(result)}
+                                <CustomButton
+                                    id="Insertion-sort-button"
+                                    disabled={sortingInProgressState}
+                                    onClick={() => insertionSort()}
                                 >
-                                    {t('Merge sort')}
-                                </CustomButton> */}
+                                    {t('Insertion sort')}
+                                </CustomButton>
 
                                 <CustomButton
                                     id="FR-language-button"
@@ -177,6 +197,18 @@ export default function Dashboard() {
                                 >
                                     En
                                 </CustomButton>
+                                <Typography
+                                    sx={{
+                                        mr: 3,
+                                        display: { xs: 'none', md: 'flex' },
+                                        color: theme.palette.text.primary,
+                                        fontSize: '1.5rem'
+                                    }}
+                                >
+                                    {t(`Iterations`) +
+                                        ': ' +
+                                        iterationsCompletedState}
+                                </Typography>
 
                                 <ToastContainer
                                     position="top-center"
@@ -203,11 +235,7 @@ export default function Dashboard() {
             </div> */}
 
             <Scatter options={options} data={data} />
-            <h1>
-                {displayComplete
-                    ? ''
-                    : 'Calculating, (press sorting twice if issue with visualization)'}
-            </h1>
+            <h1>{sortingInProgressState ? 'Sorting in progress' : ''}</h1>
         </div>
     );
 }

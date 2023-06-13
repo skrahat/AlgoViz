@@ -1,7 +1,7 @@
-import { Button, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { typography } from '@mui/system';
 import React, { useState } from 'react';
-import Dashboard from './component/Dashboard';
+import Dashboard from './page/Dashboard';
 
 function App() {
     return (
