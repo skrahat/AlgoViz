@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
 import { Slider } from '@mui/material';
-//import { makeStyles } from '@mui/styles';
 import { useTranslation } from 'react-i18next';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -20,8 +19,9 @@ import {
 } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-//import Algorithm from '../component/Algorithms';
 import CustomButton from '../component/Button';
+import { generateNumbers, sortNumbers } from '../redux/reducers/actions';
+
 const theme = createTheme({
     palette: {
         primary: {
@@ -36,28 +36,6 @@ const theme = createTheme({
         }
     }
 });
-// const useStyles = makeStyles(() => ({
-//     appBar: {
-//         position: 'static'
-//     },
-//     container: { maxWidth: 'xl' },
-//     buttonBoxContainer: {
-//         sx: {
-//             flexGrow: 1,
-//             display: { xs: 'none', md: 'flex' }
-//         }
-//     },
-//     dashBoardText: {
-//         variant: 'h6',
-//         noWrap: true,
-//         component: 'div',
-//         sx: { mr: 2, display: { xs: 'none', md: 'flex' } }
-//     },
-//     sortButton: {
-//         sx: { my: 2, color: 'white', display: 'block' }
-//     },
-//     toastMessage: {}
-// }));
 
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
 
@@ -68,23 +46,16 @@ export const options = {
         }
     }
 };
+
 export default function Dashboard() {
     const { t, i18n } = useTranslation();
-    const [result, setResult] = React.useState<Array<number>>([]);
-    const [displayComplete, setDisplayComplete] = React.useState<Boolean>(true);
-    //const [loading, setLoading] = React.useState(Boolean);
-    //const [displayNewNumber, setDisplayNewNumber] = React.useState(Boolean);
-    //const errorMessage = Snackbar('error');
+    const dispatch = useDispatch();
+    const result = useSelector((state: any) => state.result);
+    const displayComplete = useSelector((state: any) => state.displayComplete);
     const [arraySize, setArraySize] = React.useState(20);
 
     const RandomNumberGeneratorFunction = () => {
-        setResult([]);
-        setDisplayComplete(true);
-        for (let counter = 0; counter < arraySize; counter++) {
-            const randomNumber = parseFloat((Math.random() * 100).toFixed(0));
-            setResult((prevState) => [...prevState, randomNumber]);
-        }
-        return result;
+        dispatch(generateNumbers(arraySize));
     };
 
     const GenerateDataGraph = (arrayX: number[], arrayY: number) => {
@@ -95,7 +66,7 @@ export default function Dashboard() {
 
         return result;
     };
-    //data for graph
+
     const data = {
         datasets: [
             {
@@ -106,123 +77,25 @@ export default function Dashboard() {
         ]
     };
 
-    //clear generated numbers
     const RemoveNumberFunction = () => {
-        setResult(() => []);
+        dispatch(generateNumbers(0));
     };
-    //check if array is already sorted
-    async function CheckArraySorted(array: number[]) {
-        const checker = array.reduce((memo, item) =>
-            memo > item ? 101 : item
-        );
-        console.log(`checking array ${checker}`);
-        return checker < 101 ? true : false;
-    }
 
-    //delay timer function async
-    function timer(ms: number) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-    }
-    //bubble sort function
-    async function bubbleSort(array: number[]) {
-        if (array === undefined || array.length === 0) {
-            return toast('Please generate Numbers first');
-        }
-        console.log(`started`);
-        const checker = await CheckArraySorted(array);
-        console.log(`check array completed ${checker}`);
-        if (!checker) {
-            setDisplayComplete(false);
-            console.log(`loopstart ${displayComplete}`);
-            array = array.slice(); // creates a copy of the array
-
-            for (let i = 0; i < array.length; i++) {
-                for (let j = 0; j < array.length - 1; j++) {
-                    //setTimeout(function () {
-                    await timer(10);
-                    if (array[j] > array[j + 1]) {
-                        let swap = array[j];
-                        array[j] = array[j + 1];
-                        array[j + 1] = swap;
-                        setResult(array);
-                    }
-                }
-            }
-            setDisplayComplete(true);
-            toast('Sorting completed!');
-            // setLoading(true);
-            console.log(`loopend ${displayComplete}`);
-        } else {
-            toast('Already sorted! Please Generate new array :)');
-        }
-    }
-    //calling merge sort funnction////
-    function mergeSortCall(array: number[]) {
-        const sortedArray = quickSort(array, 0, array.length - 1);
-        setResult(sortedArray);
-        console.log(result);
-    }
-    //mergesort function below//////////////////
-    function swap(items: Number[], leftIndex: number, rightIndex: number) {
-        var temp = items[leftIndex];
-        items[leftIndex] = items[rightIndex];
-        items[rightIndex] = temp;
-    }
-    function partition(items: Number[], left: number, right: number) {
-        var pivot = items[Math.floor((right + left) / 2)], //middle element
-            i = left, //left pointer
-            j = right; //right pointer
-        while (i <= j) {
-            while (items[i] < pivot) {
-                i++;
-            }
-            while (items[j] > pivot) {
-                j--;
-            }
-            if (i <= j) {
-                swap(items, i, j); //sawpping two elements
-                i++;
-                j--;
-            }
-        }
-        return i;
-    }
-
-    function quickSort(items: number[], left: number, right: number) {
-        var index;
-        if (items.length > 1) {
-            index = partition(items, left, right); //index returned from partition
-            if (left < index - 1) {
-                //more elements on the left side of the pivot
-                quickSort(items, left, index - 1);
-            }
-            if (index < right) {
-                //more elements on the right side of the pivot
-                quickSort(items, index, right);
-            }
-        }
-        return items;
-    }
+    const bubbleSort = () => {
+        dispatch(sortNumbers());
+    };
 
     const handleChange = (event: Event, value: number | number[]) => {
         if (typeof value === 'number') setArraySize(value);
     };
 
-    // change language handler
     const changeLanguageHandler = (lng: string) => {
         i18n.changeLanguage(lng);
     };
 
-    /** 
-     use effect to update dynamic values
-     includes display for result and graph
-     */
     useEffect(() => {
-        setResult(result);
-
         GenerateDataGraph(result, arraySize);
-        //setDisplayComplete(false);
-    }, [result, displayComplete, arraySize]);
+    }, [result, arraySize]);
 
     return (
         <div>
@@ -278,18 +151,18 @@ export default function Dashboard() {
 
                                 <CustomButton
                                     id="bubble-sort-button"
-                                    onClick={() => bubbleSort(result)}
+                                    onClick={() => bubbleSort}
                                 >
                                     {t('Bubble sort')}
                                 </CustomButton>
 
-                                <CustomButton
+                                {/* <CustomButton
                                     id="merge-sort-button"
                                     disabled={true}
                                     onClick={() => mergeSortCall(result)}
                                 >
                                     {t('Merge sort')}
-                                </CustomButton>
+                                </CustomButton> */}
 
                                 <CustomButton
                                     id="FR-language-button"
