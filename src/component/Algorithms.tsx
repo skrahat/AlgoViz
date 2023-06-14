@@ -1,8 +1,9 @@
 import {
-    iterationsCompleted,
-    sortInProgess,
-    sortNumbersBubble,
-    sortNumbersInsertion
+    iterationsCompletedAction,
+    sortInProgressAction,
+    sortNumbersBubbleAction,
+    sortNumbersInsertionAction,
+    sortedActionAction
 } from '../redux/reducers/actions';
 
 export const BubbleSort = async (result: any, dispatch: any) => {
@@ -16,12 +17,13 @@ export const BubbleSort = async (result: any, dispatch: any) => {
                 newArray[j] = newArray[j + 1];
                 newArray[j + 1] = swap;
                 const sortedArray = [...newArray]; // Create a copy of newArray
-                dispatch(sortNumbersBubble(sortedArray));
-                dispatch(iterationsCompleted(false));
+                dispatch(sortNumbersBubbleAction(sortedArray));
+                dispatch(iterationsCompletedAction(false));
             }
         }
     }
-    dispatch(sortInProgess());
+    dispatch(sortInProgressAction());
+    dispatch(sortedActionAction());
     console.log('ended bubble sort');
 };
 // Insertion Sort
@@ -36,15 +38,17 @@ export const InsertionSort = async (array: number[], dispatch: any) => {
         while (j >= 0 && newArray[j] > current) {
             newArray[j + 1] = newArray[j];
             const sortedArray = [...newArray]; // Create a copy of newArray
-            dispatch(sortNumbersInsertion(sortedArray));
-            dispatch(iterationsCompleted(false));
+            dispatch(sortNumbersInsertionAction(sortedArray));
+            dispatch(iterationsCompletedAction(false));
             await timer(100);
             j--;
         }
 
         newArray[j + 1] = current;
     }
-    dispatch(sortInProgess());
+    dispatch(sortInProgressAction());
+    dispatch(sortedActionAction());
+    console.log('ended bubble sort');
 };
 
 // delay timer function
