@@ -4,14 +4,18 @@ interface State {
     result: number[];
     displayComplete: boolean;
     sortInProgess: boolean;
+    sorted: boolean;
     iterationsCompleted: number;
+    generatedNumbers: number[];
 }
 
 const initialState: State = {
     result: [],
     displayComplete: true,
     sortInProgess: false,
-    iterationsCompleted: 0
+    sorted: false,
+    iterationsCompleted: 0,
+    generatedNumbers: []
 };
 
 const rootReducer = (state = initialState, action: any) => {
@@ -28,17 +32,22 @@ const rootReducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 result,
-                displayComplete: true
+                displayComplete: true,
+                generatedNumbers: result
             };
         case 'ITERATIONS_COMPLETED':
-            if (action.payload.clean === true)
+            if (action.payload.clean === true) {
+                console.log('ITERATIONS_COMPLETED payload: clean');
                 return { ...state, iterationsCompleted: 0 };
+            }
             return {
                 ...state,
                 iterationsCompleted: state.iterationsCompleted + 1
             };
         case 'SORT_IN_PROGRESS':
             return { ...state, sortInProgess: !state.sortInProgess };
+        case 'SORTED':
+            return { ...state, sorted: !state.sorted };
         case 'SORT_NUMBERS_BUBBLE':
             const arrayBubble = action.payload;
             return {

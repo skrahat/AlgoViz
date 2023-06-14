@@ -1,14 +1,26 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { Slider } from '@mui/material';
+import {
+    AppBar,
+    Box,
+    Toolbar,
+    Typography,
+    Container,
+    Slider,
+    Paper
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Scatter } from 'react-chartjs-2';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CustomButton from '../component/Button';
+import {
+    generateNumbersAction,
+    sortInProgressAction,
+    iterationsCompletedAction
+} from '../redux/reducers/actions';
+import { BubbleSort, InsertionSort } from '../component/Algorithms';
 import {
     Chart as ChartJS,
     LinearScale,
@@ -17,16 +29,6 @@ import {
     Tooltip,
     Legend
 } from 'chart.js';
-import { Scatter } from 'react-chartjs-2';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import CustomButton from '../component/Button';
-import {
-    generateNumbers,
-    sortInProgess,
-    iterationsCompleted
-} from '../redux/reducers/actions';
-import { BubbleSort, InsertionSort } from '../component/Algorithms';
-
 const theme = createTheme({
     palette: {
         primary: {
@@ -52,12 +54,14 @@ export const options = {
     }
 };
 
-export default function Dashboard() {
+export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
-    const result = useSelector((state: any) => state.result);
-    //const displayComplete = useSelector((state: any) => state.displayComplete);
-    const [arraySize, setArraySize] = React.useState(20);
+    const { result, sorted, generateNumbers, sortInProgess } = useSelector(
+        (state: any) => state
+    );
+
+    const [arraySize, setArraySize] = React.useState<number>(10);
     const sortingInProgressState = useSelector(
         (state: any) => state.sortInProgess
     );
@@ -66,15 +70,17 @@ export default function Dashboard() {
     );
 
     const RandomNumberGeneratorFunction = () => {
-        dispatch(generateNumbers(arraySize));
+        dispatch(generateNumbersAction(arraySize));
     };
 
-    const GenerateDataGraph = (arrayX: number[], arrayY: number) => {
-        var result: any = [];
+    const GenerateDataGraph = (
+        arrayX: number[],
+        arrayY: number
+    ): { x: number; y: number }[] => {
+        var result: { x: number; y: number }[] = [];
         for (var i = 0; i < arrayY; i++) {
             result.push({ x: arrayX[i], y: i });
         }
-
         return result;
     };
 
@@ -89,21 +95,30 @@ export default function Dashboard() {
     };
 
     const RemoveNumberFunction = () => {
+        dispatch(iterationsCompletedAction(true));
         dispatch(generateNumbers(0));
     };
 
     const bubbleSort = async () => {
         console.log('started bubble sort');
-        dispatch(iterationsCompleted(true));
-        dispatch(sortInProgess());
+        dispatch(iterationsCompletedAction(true));
+        dispatch(sortInProgressAction());
+        // if (sorted) {
+        //     BubbleSort(generatedNumbers, dispatch);
+        // } else
         BubbleSort(result, dispatch);
     };
+
     const insertionSort = async () => {
         console.log('started Insertion sort');
-        dispatch(iterationsCompleted(true));
-        dispatch(sortInProgess());
+        dispatch(iterationsCompletedAction(true));
+        dispatch(sortInProgressAction());
+        // if (sorted) {
+        //     InsertionSort(generatedNumbers, dispatch);
+        // } else
         InsertionSort(result, dispatch);
     };
+
     const handleChange = (event: Event, value: number | number[]) => {
         if (typeof value === 'number') setArraySize(value);
     };
@@ -130,7 +145,7 @@ export default function Dashboard() {
                                     fontSize: '1.5rem'
                                 }}
                             >
-                                {t(`learnolej`)}
+                                {t(`AlgoViz`)}
                             </Typography>
                             <Box sx={{ width: 100, padding: '0.4rem' }}>
                                 <Slider
@@ -140,6 +155,7 @@ export default function Dashboard() {
                                     max={100}
                                     color="secondary"
                                     onChange={handleChange}
+                                    disabled={sortingInProgressState}
                                     valueLabelDisplay="auto"
                                     aria-labelledby="non-linear-slider"
                                 />
@@ -153,62 +169,66 @@ export default function Dashboard() {
                                 <CustomButton
                                     id="generateNumberID"
                                     disabled={sortingInProgressState}
-                                    onClick={() =>
-                                        RandomNumberGeneratorFunction()
-                                    }
+                                    onClick={RandomNumberGeneratorFunction}
                                 >
                                     {t('Generate Numbers')}
                                 </CustomButton>
-
                                 <CustomButton
                                     id="clearNumberID"
                                     disabled={sortingInProgressState}
-                                    onClick={() => RemoveNumberFunction()}
+                                    onClick={RemoveNumberFunction}
                                 >
                                     {t('Remove Numbers')}
                                 </CustomButton>
-
                                 <CustomButton
                                     id="bubble-sort-button"
                                     disabled={sortingInProgressState}
-                                    onClick={() => bubbleSort()}
+                                    onClick={bubbleSort}
                                 >
                                     {t('Bubble sort')}
                                 </CustomButton>
-
                                 <CustomButton
                                     id="Insertion-sort-button"
                                     disabled={sortingInProgressState}
-                                    onClick={() => insertionSort()}
+                                    onClick={insertionSort}
                                 >
                                     {t('Insertion sort')}
                                 </CustomButton>
-
                                 <CustomButton
                                     id="FR-language-button"
                                     onClick={() => changeLanguageHandler('fr')}
                                 >
                                     Fr
                                 </CustomButton>
-
                                 <CustomButton
                                     id="EN-language-button"
                                     onClick={() => changeLanguageHandler('en')}
                                 >
                                     En
                                 </CustomButton>
-                                <Typography
-                                    sx={{
-                                        mr: 3,
-                                        display: { xs: 'none', md: 'flex' },
-                                        color: theme.palette.text.primary,
-                                        fontSize: '1.5rem'
+                                <div
+                                    style={{
+                                        marginRight: 3,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        padding: '0.5rem',
+                                        borderRadius: '4px',
+                                        color: 'white'
                                     }}
                                 >
-                                    {t(`Iterations`) +
-                                        ': ' +
-                                        iterationsCompletedState}
-                                </Typography>
+                                    {t(`Iterations`)}:
+                                    <Paper
+                                        elevation={3}
+                                        sx={{
+                                            padding: '0.5rem',
+                                            borderRadius: '4px',
+                                            marginLeft: '0.5rem',
+                                            color: 'black'
+                                        }}
+                                    >
+                                        {iterationsCompletedState}
+                                    </Paper>
+                                </div>
 
                                 <ToastContainer
                                     position="top-center"
@@ -226,14 +246,6 @@ export default function Dashboard() {
                     </Container>
                 </AppBar>
             </ThemeProvider>
-            {/* <div text-align="center">
-                {result.map((item, i) => (
-                    <p id="generated-numbers" key={i}>
-                        {item}
-                    </p>
-                ))}
-            </div> */}
-
             <Scatter options={options} data={data} />
             <h1>{sortingInProgressState ? 'Sorting in progress' : ''}</h1>
         </div>

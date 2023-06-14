@@ -1,25 +1,30 @@
-export const generateNumbers = (arraySize: number) => {
+export const generateNumbersAction = (arraySize: number) => {
     console.log('generateNumbers action reached');
     return {
         type: 'GENERATE_NUMBERS',
         payload: arraySize
     };
 };
-export const sortInProgess = () => {
+export const sortInProgressAction = () => {
     console.log('sortInProgess action reached');
     return {
         type: 'SORT_IN_PROGRESS'
     };
 };
-export const iterationsCompleted = (clean?: boolean) => {
-    //console.log('iterationsCompleted action reached');
+export const sortedActionAction = () => {
+    console.log('sorted action reached');
+    return {
+        type: 'SORTED'
+    };
+};
+export const iterationsCompletedAction = (clean: boolean) => {
     return {
         type: 'ITERATIONS_COMPLETED',
-        payload: clean
+        payload: { clean: clean }
     };
 };
 
-export const sortNumbersBubble = (newArray: number[]) => {
+export const sortNumbersBubbleAction = (newArray: number[]) => {
     console.log('SORT_NUMBERS_BUBBLE action reached');
 
     return {
@@ -27,7 +32,7 @@ export const sortNumbersBubble = (newArray: number[]) => {
         payload: newArray
     };
 };
-export const sortNumbersInsertion = (newArray: number[]) => {
+export const sortNumbersInsertionAction = (newArray: number[]) => {
     console.log('SORT_NUMBERS_INSERTION action reached');
 
     return {
