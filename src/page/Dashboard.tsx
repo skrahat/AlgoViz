@@ -96,7 +96,7 @@ export default function Dashboard(): JSX.Element {
 
     const RemoveNumberFunction = () => {
         dispatch(iterationsCompletedAction(true));
-        dispatch(generateNumbers(0));
+        dispatch(generateNumbersAction(0));
     };
 
     const bubbleSort = async () => {
@@ -213,7 +213,7 @@ export default function Dashboard(): JSX.Element {
                                         alignItems: 'center',
                                         padding: '0.5rem',
                                         borderRadius: '4px',
-                                        color: 'white'
+                                        color: theme.palette.text.primary
                                     }}
                                 >
                                     {t(`Iterations`)}:
@@ -223,7 +223,7 @@ export default function Dashboard(): JSX.Element {
                                             padding: '0.5rem',
                                             borderRadius: '4px',
                                             marginLeft: '0.5rem',
-                                            color: 'black'
+                                            color: theme.palette.text.secondary
                                         }}
                                     >
                                         {iterationsCompletedState}
