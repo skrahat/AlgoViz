@@ -3,52 +3,29 @@ import {
     sortInProgressAction,
     sortNumbersBubbleAction,
     sortNumbersInsertionAction,
-    sortedAction
+    sortedActionAction
 } from '../redux/reducers/actions';
 
-export const BubbleSort = async (
-    result: number[],
-    sortedResultArray: number[],
-    dispatch: any
-) => {
+export const BubbleSort = async (result: any, dispatch: any) => {
     console.log('started bubble sort');
     const newArray = [...result];
-    const len = newArray.length;
-
-    for (let i = 0; i < len; i++) {
-        for (let j = 0; j < len - 1; j++) {
+    for (let i = 0; i < newArray.length; i++) {
+        for (let j = 0; j < newArray.length - 1; j++) {
             await timer(100);
             if (newArray[j] > newArray[j + 1]) {
                 let swap = newArray[j];
                 newArray[j] = newArray[j + 1];
                 newArray[j + 1] = swap;
-                const unsortedArray = [...newArray]; // Create a copy of newArray
-                dispatch(
-                    sortNumbersBubbleAction(
-                        [...unsortedArray],
-                        [...sortedResultArray]
-                    )
-                );
+                const sortedArray = [...newArray]; // Create a copy of newArray
+                dispatch(sortNumbersBubbleAction(sortedArray));
                 dispatch(iterationsCompletedAction(false));
             }
         }
-
-        // Move the last sorted element to the completedArray
-        const updatedSortedResultArray = [
-            newArray[len - 1 - i],
-            ...sortedResultArray
-        ];
-        newArray.splice(len - 1 - i, 1);
-        dispatch(
-            sortNumbersBubbleAction([...newArray], updatedSortedResultArray)
-        );
     }
-
     dispatch(sortInProgressAction());
-    dispatch(sortedAction());
+    dispatch(sortedActionAction());
     console.log('ended bubble sort');
 };
-
 // Insertion Sort
 export const InsertionSort = async (array: number[], dispatch: any) => {
     const newArray = [...array];
@@ -70,7 +47,7 @@ export const InsertionSort = async (array: number[], dispatch: any) => {
         newArray[j + 1] = current;
     }
     dispatch(sortInProgressAction());
-    dispatch(sortedAction());
+    dispatch(sortedActionAction());
     console.log('ended bubble sort');
 };
 

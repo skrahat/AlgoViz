@@ -12,7 +12,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Scatter } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2'; // Import Bar from react-chartjs-2
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CustomButton from '../component/Button';
 import {
@@ -27,8 +27,11 @@ import {
     PointElement,
     LineElement,
     Tooltip,
-    Legend
+    Legend,
+    CategoryScale, // Import CategoryScale from chart.js
+    BarElement // Import BarElement from chart.js
 } from 'chart.js';
+
 const theme = createTheme({
     palette: {
         primary: {
@@ -44,7 +47,15 @@ const theme = createTheme({
     }
 });
 
-ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
+ChartJS.register(
+    LinearScale,
+    PointElement,
+    LineElement,
+    Tooltip,
+    Legend,
+    CategoryScale, // Register CategoryScale
+    BarElement // Register BarElement
+);
 
 export const options = {
     scales: {
@@ -57,13 +68,9 @@ export const options = {
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
-    const {
-        result,
-        sorted,
-        generateNumbers,
-        sortInProgess,
-        sortedResultArray
-    } = useSelector((state: any) => state);
+    const { result, sorted, generateNumbers, sortInProgess } = useSelector(
+        (state: any) => state
+    );
 
     const [arraySize, setArraySize] = React.useState<number>(10);
     const sortingInProgressState = useSelector(
@@ -89,11 +96,28 @@ export default function Dashboard(): JSX.Element {
     };
 
     const data = {
+        labels: GenerateDataGraph(result, result.length).map((item) => item.x), // Extract x values as labels
         datasets: [
             {
-                label: 'Numbers',
-                data: GenerateDataGraph(result, result.length),
-                backgroundColor: 'rgba(55, 99, 132, 1)'
+                data: [2],
+                // GenerateDataGraph(result, result.length).map(
+                //     (item) => item.y
+                // ), // Extract y values as data
+                backgroundColor: ['rgba(55, 99, 132, 1)']
+            },
+            {
+                data: [3],
+                // GenerateDataGraph(result, result.length).map(
+                //     (item) => item.y
+                // ), // Extract y values as data
+                backgroundColor: ['rgba(54, 162, 235, 1)']
+            },
+            {
+                data: [4],
+                // GenerateDataGraph(result, result.length).map(
+                //     (item) => item.y
+                // ), // Extract y values as data
+                backgroundColor: ['rgba(54, 162, 235, 1)']
             }
         ]
     };
@@ -110,7 +134,7 @@ export default function Dashboard(): JSX.Element {
         // if (sorted) {
         //     BubbleSort(generatedNumbers, dispatch);
         // } else
-        BubbleSort(result, sortedResultArray, dispatch);
+        BubbleSort(result, dispatch);
     };
 
     const insertionSort = async () => {
@@ -133,7 +157,7 @@ export default function Dashboard(): JSX.Element {
 
     useEffect(() => {
         GenerateDataGraph(result, result.length);
-    }, [result, sortedResultArray, arraySize]);
+    }, [result, arraySize]);
 
     return (
         <div>
@@ -250,7 +274,7 @@ export default function Dashboard(): JSX.Element {
                     </Container>
                 </AppBar>
             </ThemeProvider>
-            <Scatter options={options} data={data} />
+            <Bar options={options} data={data} /> {/* Use Bar chart */}
             <h1>{sortingInProgressState ? 'Sorting in progress' : ''}</h1>
         </div>
     );

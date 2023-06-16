@@ -11,7 +11,7 @@ export const sortInProgressAction = () => {
         type: 'SORT_IN_PROGRESS'
     };
 };
-export const sortedAction = () => {
+export const sortedActionAction = () => {
     console.log('sorted action reached');
     return {
         type: 'SORTED'
@@ -24,18 +24,12 @@ export const iterationsCompletedAction = (clean: boolean) => {
     };
 };
 
-export const sortNumbersBubbleAction = (
-    unsortedArray: number[],
-    sortedResultArray: number[]
-) => {
+export const sortNumbersBubbleAction = (newArray: number[]) => {
     console.log('SORT_NUMBERS_BUBBLE action reached');
 
     return {
         type: 'SORT_NUMBERS_BUBBLE',
-        payload: {
-            unsortedArray: unsortedArray,
-            sortedResultArray: sortedResultArray
-        }
+        payload: newArray
     };
 };
 export const sortNumbersInsertionAction = (newArray: number[]) => {
