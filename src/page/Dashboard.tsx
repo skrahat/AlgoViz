@@ -57,9 +57,13 @@ export const options = {
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
-    const { result, sorted, generateNumbers, sortInProgess } = useSelector(
-        (state: any) => state
-    );
+    const {
+        result,
+        sorted,
+        generateNumbers,
+        sortInProgess,
+        sortedResultArray
+    } = useSelector((state: any) => state);
 
     const [arraySize, setArraySize] = React.useState<number>(10);
     const sortingInProgressState = useSelector(
@@ -79,7 +83,7 @@ export default function Dashboard(): JSX.Element {
     ): { x: number; y: number }[] => {
         var result: { x: number; y: number }[] = [];
         for (var i = 0; i < arrayY; i++) {
-            result.push({ x: arrayX[i], y: i });
+            result.push({ x: i, y: arrayX[i] });
         }
         return result;
     };
@@ -88,7 +92,7 @@ export default function Dashboard(): JSX.Element {
         datasets: [
             {
                 label: 'Numbers',
-                data: GenerateDataGraph(result, arraySize),
+                data: GenerateDataGraph(result, result.length),
                 backgroundColor: 'rgba(55, 99, 132, 1)'
             }
         ]
@@ -106,7 +110,7 @@ export default function Dashboard(): JSX.Element {
         // if (sorted) {
         //     BubbleSort(generatedNumbers, dispatch);
         // } else
-        BubbleSort(result, dispatch);
+        BubbleSort(result, sortedResultArray, dispatch);
     };
 
     const insertionSort = async () => {
@@ -128,8 +132,8 @@ export default function Dashboard(): JSX.Element {
     };
 
     useEffect(() => {
-        GenerateDataGraph(result, arraySize);
-    }, [result, arraySize]);
+        GenerateDataGraph(result, result.length);
+    }, [result, sortedResultArray, arraySize]);
 
     return (
         <div>

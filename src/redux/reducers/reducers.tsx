@@ -2,6 +2,7 @@
 
 interface State {
     result: number[];
+    sortedResultArray: number[];
     displayComplete: boolean;
     sortInProgess: boolean;
     sorted: boolean;
@@ -11,6 +12,7 @@ interface State {
 
 const initialState: State = {
     result: [],
+    sortedResultArray: [],
     displayComplete: true,
     sortInProgess: false,
     sorted: false,
@@ -31,7 +33,8 @@ const rootReducer = (state = initialState, action: any) => {
             }
             return {
                 ...state,
-                result,
+                result: result,
+                sortedResultArray: [],
                 displayComplete: true,
                 generatedNumbers: result
             };
@@ -49,12 +52,25 @@ const rootReducer = (state = initialState, action: any) => {
         case 'SORTED':
             return { ...state, sorted: !state.sorted };
         case 'SORT_NUMBERS_BUBBLE':
-            const arrayBubble = action.payload;
+            const unsortedArray = action.payload.unsortedArray;
+            const sortedResultArray = action.payload.sortedResultArray;
             return {
                 ...state,
-                result: arrayBubble,
+                result: unsortedArray,
+                sortedResultArray: [
+                    ...sortedResultArray,
+                    ...state.sortedResultArray
+                ], // Create a new array by spreading the existing sortedResultArray and adding the new value
                 displayComplete: true
             };
+        // case 'SORT_RESULT_ARRAY':
+        //     const sortedResultArray = action.payload;
+        //     return {
+        //         ...state,
+        //         result: arrayBubble,
+        //         sortedResultArray: sortedResultArray,
+        //         displayComplete: true
+        //     };
         case 'SORT_NUMBERS_INSERTION':
             const arrayInsertion = action.payload;
             return {
