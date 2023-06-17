@@ -63,6 +63,9 @@ export const options = {
         y: {
             beginAtZero: true
         }
+    },
+    animation: {
+        duration: 0 // Disable animation
     }
 };
 
