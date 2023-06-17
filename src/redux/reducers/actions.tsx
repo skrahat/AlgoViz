@@ -11,7 +11,7 @@ export const sortInProgressAction = () => {
         type: 'SORT_IN_PROGRESS'
     };
 };
-export const sortedActionAction = () => {
+export const sortedAction = () => {
     console.log('sorted action reached');
     return {
         type: 'SORTED'

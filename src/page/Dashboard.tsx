@@ -18,7 +18,8 @@ import CustomButton from '../component/Button';
 import {
     generateNumbersAction,
     sortInProgressAction,
-    iterationsCompletedAction
+    iterationsCompletedAction,
+    sortedAction
 } from '../redux/reducers/actions';
 import { BubbleSort, InsertionSort } from '../component/Algorithms';
 import {
@@ -85,39 +86,39 @@ export default function Dashboard(): JSX.Element {
     };
 
     const GenerateDataGraph = (
-        arrayX: number[],
+        arrayX: { color: string; value: number }[],
         arrayY: number
     ): { x: number; y: number }[] => {
         var result: { x: number; y: number }[] = [];
         for (var i = 0; i < arrayY; i++) {
-            result.push({ x: i, y: arrayX[i] });
+            result.push({ x: i, y: arrayX[i].value });
+        }
+        return result;
+    };
+    const GenerateDataColourGraph = (
+        arrayX: { color: string; value: number }[],
+        arrayY: number
+    ): string[] => {
+        var result: string[] = [];
+        for (var i = 0; i < arrayY; i++) {
+            result.push(arrayX[i].color);
         }
         return result;
     };
 
     const data = {
-        labels: GenerateDataGraph(result, result.length).map((item) => item.x), // Extract x values as labels
+        labels: GenerateDataGraph(result, result.length).map((item) => item.x),
         datasets: [
             {
-                data: [2],
-                // GenerateDataGraph(result, result.length).map(
-                //     (item) => item.y
-                // ), // Extract y values as data
-                backgroundColor: ['rgba(55, 99, 132, 1)']
-            },
-            {
-                data: [3],
-                // GenerateDataGraph(result, result.length).map(
-                //     (item) => item.y
-                // ), // Extract y values as data
-                backgroundColor: ['rgba(54, 162, 235, 1)']
-            },
-            {
-                data: [4],
-                // GenerateDataGraph(result, result.length).map(
-                //     (item) => item.y
-                // ), // Extract y values as data
-                backgroundColor: ['rgba(54, 162, 235, 1)']
+                label: 'Numbers',
+                data: GenerateDataGraph(result, result.length),
+                backgroundColor: sortingInProgressState
+                    ? GenerateDataColourGraph(result, result.length)
+                    : sorted
+                    ? GenerateDataColourGraph(result, result.length).map(
+                          (color) => (color === 'red' ? 'red' : 'green')
+                      )
+                    : 'blue'
             }
         ]
     };
@@ -157,7 +158,7 @@ export default function Dashboard(): JSX.Element {
 
     useEffect(() => {
         GenerateDataGraph(result, result.length);
-    }, [result, arraySize]);
+    }, [result, arraySize, sortingInProgressState]);
 
     return (
         <div>
@@ -178,7 +179,7 @@ export default function Dashboard(): JSX.Element {
                             <Box sx={{ width: 100, padding: '0.4rem' }}>
                                 <Slider
                                     value={arraySize}
-                                    min={20}
+                                    min={10}
                                     step={1}
                                     max={100}
                                     color="secondary"
