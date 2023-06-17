@@ -1,12 +1,11 @@
 //import { bubbleSort } from '../../component/Algorithms';
-
 interface State {
-    result: number[];
+    result: { color: string; value: number }[];
     displayComplete: boolean;
     sortInProgess: boolean;
     sorted: boolean;
     iterationsCompleted: number;
-    generatedNumbers: number[];
+    generatedNumbers: { color: string; value: number }[];
 }
 
 const initialState: State = {
@@ -27,7 +26,7 @@ const rootReducer = (state = initialState, action: any) => {
                 const randomNumber = parseFloat(
                     (Math.random() * 100).toFixed(0)
                 );
-                result.push(randomNumber);
+                result.push({ color: 'blue', value: randomNumber });
             }
             return {
                 ...state,
@@ -47,7 +46,8 @@ const rootReducer = (state = initialState, action: any) => {
         case 'SORT_IN_PROGRESS':
             return { ...state, sortInProgess: !state.sortInProgess };
         case 'SORTED':
-            return { ...state, sorted: !state.sorted };
+            const sorted = action.payload;
+            return { ...state, sorted: sorted };
         case 'SORT_NUMBERS_BUBBLE':
             const arrayBubble = action.payload;
             return {

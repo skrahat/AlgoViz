@@ -11,10 +11,11 @@ export const sortInProgressAction = () => {
         type: 'SORT_IN_PROGRESS'
     };
 };
-export const sortedActionAction = () => {
+export const sortedAction = (sorted: boolean) => {
     console.log('sorted action reached');
     return {
-        type: 'SORTED'
+        type: 'SORTED',
+        payload: sorted
     };
 };
 export const iterationsCompletedAction = (clean: boolean) => {

@@ -12,13 +12,14 @@ import {
 import { useTranslation } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Scatter } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2'; // Import Bar from react-chartjs-2
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CustomButton from '../component/Button';
 import {
     generateNumbersAction,
     sortInProgressAction,
-    iterationsCompletedAction
+    iterationsCompletedAction,
+    sortedAction
 } from '../redux/reducers/actions';
 import { BubbleSort, InsertionSort } from '../component/Algorithms';
 import {
@@ -27,8 +28,11 @@ import {
     PointElement,
     LineElement,
     Tooltip,
-    Legend
+    Legend,
+    CategoryScale, // Import CategoryScale from chart.js
+    BarElement // Import BarElement from chart.js
 } from 'chart.js';
+
 const theme = createTheme({
     palette: {
         primary: {
@@ -44,7 +48,15 @@ const theme = createTheme({
     }
 });
 
-ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
+ChartJS.register(
+    LinearScale,
+    PointElement,
+    LineElement,
+    Tooltip,
+    Legend,
+    CategoryScale, // Register CategoryScale
+    BarElement // Register BarElement
+);
 
 export const options = {
     scales: {
@@ -70,33 +82,52 @@ export default function Dashboard(): JSX.Element {
     );
 
     const RandomNumberGeneratorFunction = () => {
+        dispatch(sortedAction(false));
         dispatch(generateNumbersAction(arraySize));
     };
 
     const GenerateDataGraph = (
-        arrayX: number[],
+        arrayX: { color: string; value: number }[],
         arrayY: number
     ): { x: number; y: number }[] => {
         var result: { x: number; y: number }[] = [];
         for (var i = 0; i < arrayY; i++) {
-            result.push({ x: arrayX[i], y: i });
+            result.push({ x: i, y: arrayX[i].value });
+        }
+        return result;
+    };
+    const GenerateDataColourGraph = (
+        arrayX: { color: string; value: number }[],
+        arrayY: number
+    ): string[] => {
+        var result: string[] = [];
+        for (var i = 0; i < arrayY; i++) {
+            result.push(arrayX[i].color);
         }
         return result;
     };
 
     const data = {
+        labels: GenerateDataGraph(result, result.length).map((item) => item.x),
         datasets: [
             {
                 label: 'Numbers',
-                data: GenerateDataGraph(result, arraySize),
-                backgroundColor: 'rgba(55, 99, 132, 1)'
+                data: GenerateDataGraph(result, result.length),
+                backgroundColor: sortingInProgressState
+                    ? GenerateDataColourGraph(result, result.length)
+                    : sorted
+                    ? GenerateDataColourGraph(result, result.length).map(
+                          (color) => (color === 'red' ? 'red' : 'green')
+                      )
+                    : Array(result.length).fill('blue')
             }
         ]
     };
 
     const RemoveNumberFunction = () => {
+        dispatch(sortedAction(false));
         dispatch(iterationsCompletedAction(true));
-        dispatch(generateNumbers(0));
+        dispatch(generateNumbersAction(0));
     };
 
     const bubbleSort = async () => {
@@ -128,8 +159,8 @@ export default function Dashboard(): JSX.Element {
     };
 
     useEffect(() => {
-        GenerateDataGraph(result, arraySize);
-    }, [result, arraySize]);
+        GenerateDataGraph(result, result.length);
+    }, [result, arraySize, sortingInProgressState]);
 
     return (
         <div>
@@ -150,7 +181,7 @@ export default function Dashboard(): JSX.Element {
                             <Box sx={{ width: 100, padding: '0.4rem' }}>
                                 <Slider
                                     value={arraySize}
-                                    min={20}
+                                    min={10}
                                     step={1}
                                     max={100}
                                     color="secondary"
@@ -213,7 +244,7 @@ export default function Dashboard(): JSX.Element {
                                         alignItems: 'center',
                                         padding: '0.5rem',
                                         borderRadius: '4px',
-                                        color: 'white'
+                                        color: theme.palette.text.primary
                                     }}
                                 >
                                     {t(`Iterations`)}:
@@ -223,7 +254,7 @@ export default function Dashboard(): JSX.Element {
                                             padding: '0.5rem',
                                             borderRadius: '4px',
                                             marginLeft: '0.5rem',
-                                            color: 'black'
+                                            color: theme.palette.text.secondary
                                         }}
                                     >
                                         {iterationsCompletedState}
@@ -246,7 +277,7 @@ export default function Dashboard(): JSX.Element {
                     </Container>
                 </AppBar>
             </ThemeProvider>
-            <Scatter options={options} data={data} />
+            <Bar options={options} data={data} /> {/* Use Bar chart */}
             <h1>{sortingInProgressState ? 'Sorting in progress' : ''}</h1>
         </div>
     );
