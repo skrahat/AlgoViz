@@ -82,6 +82,7 @@ export default function Dashboard(): JSX.Element {
     );
 
     const RandomNumberGeneratorFunction = () => {
+        dispatch(sortedAction(false));
         dispatch(generateNumbersAction(arraySize));
     };
 
@@ -118,12 +119,13 @@ export default function Dashboard(): JSX.Element {
                     ? GenerateDataColourGraph(result, result.length).map(
                           (color) => (color === 'red' ? 'red' : 'green')
                       )
-                    : 'blue'
+                    : Array(result.length).fill('blue')
             }
         ]
     };
 
     const RemoveNumberFunction = () => {
+        dispatch(sortedAction(false));
         dispatch(iterationsCompletedAction(true));
         dispatch(generateNumbersAction(0));
     };

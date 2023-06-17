@@ -12,7 +12,7 @@ export const BubbleSort = async (result: any[], dispatch: any) => {
     const len = newArray.length;
     for (let i = 0; i < len; i++) {
         for (let j = 0; j < len - 1; j++) {
-            await timer(5000 / len);
+            await timer(1000 / len);
             if (newArray[j].value > newArray[j + 1].value) {
                 let swap = newArray[j];
                 newArray[j] = newArray[j + 1];
@@ -42,7 +42,7 @@ export const BubbleSort = async (result: any[], dispatch: any) => {
     dispatch(sortNumbersBubbleAction(sortedArray));
 
     dispatch(sortInProgressAction());
-    dispatch(sortedAction());
+    dispatch(sortedAction(true));
     console.log('ended bubble sort');
 };
 
@@ -85,7 +85,7 @@ export const InsertionSort = async (array: any[], dispatch: any) => {
 
     dispatch(sortNumbersInsertionAction(sortedArray));
     dispatch(sortInProgressAction());
-    dispatch(sortedAction());
+    dispatch(sortedAction(true));
     console.log('ended insertion sort');
 };
 

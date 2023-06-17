@@ -46,7 +46,8 @@ const rootReducer = (state = initialState, action: any) => {
         case 'SORT_IN_PROGRESS':
             return { ...state, sortInProgess: !state.sortInProgess };
         case 'SORTED':
-            return { ...state, sorted: !state.sorted };
+            const sorted = action.payload;
+            return { ...state, sorted: sorted };
         case 'SORT_NUMBERS_BUBBLE':
             const arrayBubble = action.payload;
             return {
