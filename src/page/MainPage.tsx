@@ -32,6 +32,7 @@ import {
     CategoryScale, // Import CategoryScale from chart.js
     BarElement // Import BarElement from chart.js
 } from 'chart.js';
+import Footer from '../component/Footer';
 
 const theme = createTheme({
     palette: {
@@ -72,9 +73,7 @@ export const options = {
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
-    const { result, sorted, generateNumbers, sortInProgess } = useSelector(
-        (state: any) => state
-    );
+    const { result, sorted } = useSelector((state: any) => state);
 
     const [arraySize, setArraySize] = React.useState<number>(10);
     const sortingInProgressState = useSelector(
@@ -174,13 +173,14 @@ export default function Dashboard(): JSX.Element {
                             <Typography
                                 sx={{
                                     mr: 3,
-                                    display: { xs: 'none', md: 'flex' },
+                                    display: { xs: 'flex', md: 'flex' },
                                     color: theme.palette.text.primary,
                                     fontSize: '1.5rem'
                                 }}
                             >
                                 {t(`AlgoViz`)}
                             </Typography>
+
                             <Box sx={{ width: 100, padding: '0.4rem' }}>
                                 <Slider
                                     value={arraySize}
@@ -197,7 +197,7 @@ export default function Dashboard(): JSX.Element {
                             <Box
                                 sx={{
                                     flexGrow: 1,
-                                    display: { xs: 'none', md: 'flex' }
+                                    display: { xs: 'flex', md: 'flex' }
                                 }}
                             >
                                 <CustomButton
@@ -282,6 +282,9 @@ export default function Dashboard(): JSX.Element {
             </ThemeProvider>
             <Bar options={options} data={data} /> {/* Use Bar chart */}
             <h1>{sortingInProgressState ? 'Sorting in progress' : ''}</h1>
+            <div>
+                <Footer />
+            </div>
         </div>
     );
 }
