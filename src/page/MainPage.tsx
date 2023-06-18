@@ -12,7 +12,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Bar } from 'react-chartjs-2'; // Import Bar from react-chartjs-2
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CustomButton from '../component/Button';
 import {
@@ -22,17 +21,9 @@ import {
     sortedAction
 } from '../redux/reducers/actions';
 import { BubbleSort, InsertionSort } from '../component/Algorithms';
-import {
-    Chart as ChartJS,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Tooltip,
-    Legend,
-    CategoryScale, // Import CategoryScale from chart.js
-    BarElement // Import BarElement from chart.js
-} from 'chart.js';
+
 import Footer from '../component/Footer';
+import BarGraph from '../component/BarGraph';
 
 const theme = createTheme({
     palette: {
@@ -48,27 +39,6 @@ const theme = createTheme({
         }
     }
 });
-
-ChartJS.register(
-    LinearScale,
-    PointElement,
-    LineElement,
-    Tooltip,
-    Legend,
-    CategoryScale, // Register CategoryScale
-    BarElement // Register BarElement
-);
-
-export const options = {
-    scales: {
-        y: {
-            beginAtZero: true
-        }
-    },
-    animation: {
-        duration: 0 // Disable animation
-    }
-};
 
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
@@ -97,33 +67,6 @@ export default function Dashboard(): JSX.Element {
             result.push({ x: i, y: arrayX[i].value });
         }
         return result;
-    };
-    const GenerateDataColourGraph = (
-        arrayX: { color: string; value: number }[],
-        arrayY: number
-    ): string[] => {
-        var result: string[] = [];
-        for (var i = 0; i < arrayY; i++) {
-            result.push(arrayX[i].color);
-        }
-        return result;
-    };
-
-    const data = {
-        labels: GenerateDataGraph(result, result.length).map((item) => item.x),
-        datasets: [
-            {
-                label: 'Numbers',
-                data: GenerateDataGraph(result, result.length),
-                backgroundColor: sortingInProgressState
-                    ? GenerateDataColourGraph(result, result.length)
-                    : sorted
-                    ? GenerateDataColourGraph(result, result.length).map(
-                          (color) => (color === 'red' ? 'red' : 'green')
-                      )
-                    : Array(result.length).fill('blue')
-            }
-        ]
     };
 
     const RemoveNumberFunction = () => {
@@ -280,7 +223,11 @@ export default function Dashboard(): JSX.Element {
                     </Container>
                 </AppBar>
             </ThemeProvider>
-            <Bar options={options} data={data} /> {/* Use Bar chart */}
+            <BarGraph
+                result={result}
+                sortingInProgressState={sortingInProgressState}
+                sorted={sorted}
+            />
             <h1>{sortingInProgressState ? 'Sorting in progress' : ''}</h1>
             <div>
                 <Footer />
