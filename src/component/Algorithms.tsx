@@ -1,4 +1,5 @@
 import {
+    //algoStopAction,
     iterationsCompletedAction,
     sortInProgressAction,
     sortNumbersBubbleAction,
@@ -6,12 +7,22 @@ import {
     sortedAction
 } from '../redux/reducers/actions';
 
-export const BubbleSort = async (result: any[], dispatch: any) => {
+export const BubbleSort = async (
+    result: any[],
+    stop: boolean,
+    dispatch: any
+) => {
     console.log('started bubble sort');
     const newArray = [...result];
     const len = newArray.length;
     for (let i = 0; i < len; i++) {
         for (let j = 0; j < len - 1; j++) {
+            if (stop) {
+                //dispatch(algoStopAction(false));
+                dispatch(sortInProgressAction());
+                dispatch(sortedAction(false));
+                return;
+            }
             await timer(1000 / len);
             if (newArray[j].value > newArray[j + 1].value) {
                 let swap = newArray[j];

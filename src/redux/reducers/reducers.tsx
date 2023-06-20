@@ -4,6 +4,7 @@ interface State {
     displayComplete: boolean;
     sortInProgess: boolean;
     sorted: boolean;
+    algoStop: boolean;
     iterationsCompleted: number;
     generatedNumbers: { color: string; value: number }[];
 }
@@ -13,6 +14,7 @@ const initialState: State = {
     displayComplete: true,
     sortInProgess: false,
     sorted: false,
+    algoStop: false,
     iterationsCompleted: 0,
     generatedNumbers: []
 };
@@ -48,6 +50,11 @@ const rootReducer = (state = initialState, action: any) => {
         case 'SORTED':
             const sorted = action.payload;
             return { ...state, sorted: sorted };
+        case 'START_BUBBLE_SORT':
+            return { ...state, sortInProgess: true, algoStop: false };
+
+        case 'STOP_BUBBLE_SORT':
+            return { ...state, algoStop: true };
         case 'SORT_NUMBERS_BUBBLE':
             const arrayBubble = action.payload;
             return {

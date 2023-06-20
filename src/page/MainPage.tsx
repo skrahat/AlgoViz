@@ -15,6 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CustomButton from '../component/Button';
 import {
+    stopBubbleSortAction,
     generateNumbersAction,
     sortInProgressAction,
     iterationsCompletedAction,
@@ -24,6 +25,7 @@ import { BubbleSort, InsertionSort } from '../component/Algorithms';
 
 import Footer from '../component/Footer';
 import BarGraph from '../component/BarGraph';
+//import { algoStopAction } from '../redux/reducers/actions';
 
 const theme = createTheme({
     palette: {
@@ -43,7 +45,7 @@ const theme = createTheme({
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
-    const { result, sorted } = useSelector((state: any) => state);
+    const { result, sorted, algoStop } = useSelector((state: any) => state);
 
     const [arraySize, setArraySize] = React.useState<number>(10);
     const sortingInProgressState = useSelector(
@@ -52,11 +54,6 @@ export default function Dashboard(): JSX.Element {
     const iterationsCompletedState = useSelector(
         (state: any) => state.iterationsCompleted
     );
-
-    const RandomNumberGeneratorFunction = () => {
-        dispatch(sortedAction(false));
-        dispatch(generateNumbersAction(arraySize));
-    };
 
     const GenerateDataGraph = (
         arrayX: { color: string; value: number }[],
@@ -79,24 +76,24 @@ export default function Dashboard(): JSX.Element {
         console.log('started bubble sort');
         dispatch(iterationsCompletedAction(true));
         dispatch(sortInProgressAction());
-        // if (sorted) {
-        //     BubbleSort(generatedNumbers, dispatch);
-        // } else
-        BubbleSort(result, dispatch);
+        await BubbleSort(result, algoStop, dispatch);
     };
 
     const insertionSort = async () => {
         console.log('started Insertion sort');
         dispatch(iterationsCompletedAction(true));
         dispatch(sortInProgressAction());
-        // if (sorted) {
-        //     InsertionSort(generatedNumbers, dispatch);
-        // } else
         InsertionSort(result, dispatch);
     };
 
     const handleChange = (event: Event, value: number | number[]) => {
         if (typeof value === 'number') setArraySize(value);
+        dispatch(sortedAction(false));
+        dispatch(generateNumbersAction(arraySize));
+    };
+
+    const stopSortingHandler = () => {
+        dispatch(stopBubbleSortAction());
     };
 
     const changeLanguageHandler = (lng: string) => {
@@ -144,11 +141,11 @@ export default function Dashboard(): JSX.Element {
                                 }}
                             >
                                 <CustomButton
-                                    id="generateNumberID"
-                                    disabled={sortingInProgressState}
-                                    onClick={RandomNumberGeneratorFunction}
+                                    id="algoStopID"
+                                    disabled={!sortingInProgressState}
+                                    onClick={stopSortingHandler}
                                 >
-                                    {t('Generate Numbers')}
+                                    {t('Stop Sorting')}
                                 </CustomButton>
                                 <CustomButton
                                     id="clearNumberID"
