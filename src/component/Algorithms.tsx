@@ -27,6 +27,10 @@ export const BubbleSort = async (
             // Check if the abort signal is triggered
             if (signal.aborted) {
                 console.log('Bubble sort aborted');
+                const unsortedArray = newArray.map((item) => {
+                    return { ...item, color: 'blue' };
+                });
+                dispatch(sortNumbersBubbleAction(unsortedArray));
                 return;
             }
 
@@ -55,6 +59,10 @@ export const BubbleSort = async (
     }
     // Set the color of all elements to green to indicate the sorting is complete
     const sortedArray = newArray.map((item) => {
+        return { ...item, color: 'green' };
+    });
+    // Set the color of all elements to blue to indicate the sorting is incomplete
+    const unsortedArray = newArray.map((item) => {
         return { ...item, color: 'green' };
     });
     dispatch(sortNumbersBubbleAction(sortedArray));

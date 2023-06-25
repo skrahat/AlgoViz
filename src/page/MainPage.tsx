@@ -22,6 +22,7 @@ import {
     sortedAction
 } from '../redux/reducers/actions';
 import { BubbleSort, InsertionSort } from '../component/Algorithms';
+import LinearProgress from '@mui/material/LinearProgress';
 
 import Footer from '../component/Footer';
 import BarGraph from '../component/BarGraph';
@@ -101,14 +102,16 @@ export default function Dashboard(): JSX.Element {
             stopControllerRef.current?.abort();
             setRunning(false);
         }
-        //dispatch(stopBubbleSortAction());
         dispatch(sortInProgressAction());
     };
 
     const changeLanguageHandler = (lng: string) => {
         i18n.changeLanguage(lng);
     };
-
+    useEffect(() => {
+        dispatch(generateNumbersAction(arraySize));
+        GenerateDataGraph(result, result.length);
+    }, []);
     useEffect(() => {
         GenerateDataGraph(result, result.length);
     }, [result, arraySize, sortingInProgressState]);
@@ -241,12 +244,18 @@ export default function Dashboard(): JSX.Element {
                     </Container>
                 </AppBar>
             </ThemeProvider>
+            <div>
+                {sortingInProgressState && (
+                    <Box sx={{ width: '100%' }}>
+                        <LinearProgress color="secondary" />
+                    </Box>
+                )}
+            </div>
             <BarGraph
                 result={result}
                 sortingInProgressState={sortingInProgressState}
                 sorted={sorted}
             />
-            <h1>{sortingInProgressState ? 'Sorting in progress' : ''}</h1>
             <div>
                 <Footer />
             </div>
