@@ -15,7 +15,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CustomButton from '../component/Button';
 import {
-    stopBubbleSortAction,
     generateNumbersAction,
     sortInProgressAction,
     iterationsCompletedAction,
@@ -46,7 +45,7 @@ const theme = createTheme({
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
-    const { result, sorted, algoStop } = useSelector((state: any) => state);
+    const { result, sorted } = useSelector((state: any) => state);
     const [running, setRunning] = useState(false);
 
     const [arraySize, setArraySize] = React.useState<number>(10);
@@ -86,9 +85,10 @@ export default function Dashboard(): JSX.Element {
 
     const insertionSort = async () => {
         console.log('started Insertion sort');
+        stopControllerRef.current = new AbortController();
         dispatch(iterationsCompletedAction(true));
         dispatch(sortInProgressAction());
-        InsertionSort(result, dispatch);
+        InsertionSort(result, stopControllerRef.current.signal, dispatch);
     };
 
     const handleChange = (event: Event, value: number | number[]) => {
@@ -111,6 +111,7 @@ export default function Dashboard(): JSX.Element {
     useEffect(() => {
         dispatch(generateNumbersAction(arraySize));
         GenerateDataGraph(result, result.length);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
         GenerateDataGraph(result, result.length);

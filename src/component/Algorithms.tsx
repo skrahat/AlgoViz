@@ -17,12 +17,6 @@ export const BubbleSort = async (
     const len = newArray.length;
 
     for (let i = 0; i < len; i++) {
-        // Check if the abort signal is triggered
-        if (signal.aborted) {
-            console.log('Bubble sort aborted');
-            return;
-        }
-
         for (let j = 0; j < len - 1; j++) {
             // Check if the abort signal is triggered
             if (signal.aborted) {
@@ -61,10 +55,7 @@ export const BubbleSort = async (
     const sortedArray = newArray.map((item) => {
         return { ...item, color: 'green' };
     });
-    // Set the color of all elements to blue to indicate the sorting is incomplete
-    const unsortedArray = newArray.map((item) => {
-        return { ...item, color: 'green' };
-    });
+
     dispatch(sortNumbersBubbleAction(sortedArray));
 
     dispatch(sortInProgressAction());
@@ -72,7 +63,11 @@ export const BubbleSort = async (
     console.log('ended bubble sort');
 };
 
-export const InsertionSort = async (array: any[], dispatch: any) => {
+export const InsertionSort = async (
+    array: any[],
+    signal: AbortSignal,
+    dispatch: any
+) => {
     const newArray = [...array];
     const len = newArray.length;
 
@@ -81,11 +76,30 @@ export const InsertionSort = async (array: any[], dispatch: any) => {
         let j = i - 1;
 
         while (j >= 0 && newArray[j].value > current.value) {
+            if (signal.aborted) {
+                console.log('Insertion sort aborted');
+                const unsortedArray = newArray.map((item) => {
+                    return { ...item, color: 'blue' };
+                });
+                dispatch(sortNumbersInsertionAction(unsortedArray));
+                return;
+            }
             newArray[j + 1] = newArray[j];
-            const sortedArray = [...newArray]; // Create a copy of newArray
+            // Create a new sorted array with modified colors
+            // eslint-disable-next-line no-loop-func
+            const sortedArray = newArray.map((item, index) => {
+                if (index === j || index === j + 1) {
+                    if (item.color === 'red') {
+                        return { ...item, color: 'blue' };
+                    } else {
+                        return { ...item, color: 'red' };
+                    }
+                }
+                return item;
+            });
             dispatch(sortNumbersInsertionAction(sortedArray));
             dispatch(iterationsCompletedAction(false));
-            await timer(5000 / len);
+            await timer(1000 / len);
             j--;
         }
 
@@ -100,8 +114,8 @@ export const InsertionSort = async (array: any[], dispatch: any) => {
         });
 
         dispatch(sortNumbersInsertionAction(sortedArray));
-        dispatch(iterationsCompletedAction(false));
-        await timer(100);
+        //dispatch(iterationsCompletedAction(false));
+        //await timer(100);
     }
 
     // Set the color of all elements to green to indicate the sorting is complete
