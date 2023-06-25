@@ -9,20 +9,27 @@ import {
 
 export const BubbleSort = async (
     result: any[],
-    stop: boolean,
+    signal: AbortSignal,
     dispatch: any
 ) => {
     console.log('started bubble sort');
     const newArray = [...result];
     const len = newArray.length;
+
     for (let i = 0; i < len; i++) {
+        // Check if the abort signal is triggered
+        if (signal.aborted) {
+            console.log('Bubble sort aborted');
+            return;
+        }
+
         for (let j = 0; j < len - 1; j++) {
-            if (stop) {
-                //dispatch(algoStopAction(false));
-                dispatch(sortInProgressAction());
-                dispatch(sortedAction(false));
+            // Check if the abort signal is triggered
+            if (signal.aborted) {
+                console.log('Bubble sort aborted');
                 return;
             }
+
             await timer(1000 / len);
             if (newArray[j].value > newArray[j + 1].value) {
                 let swap = newArray[j];

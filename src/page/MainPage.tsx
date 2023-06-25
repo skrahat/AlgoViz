@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     AppBar,
@@ -46,6 +46,7 @@ export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
     const { result, sorted, algoStop } = useSelector((state: any) => state);
+    const [running, setRunning] = useState(false);
 
     const [arraySize, setArraySize] = React.useState<number>(10);
     const sortingInProgressState = useSelector(
@@ -54,7 +55,7 @@ export default function Dashboard(): JSX.Element {
     const iterationsCompletedState = useSelector(
         (state: any) => state.iterationsCompleted
     );
-
+    const stopControllerRef = useRef<AbortController | null>(null);
     const GenerateDataGraph = (
         arrayX: { color: string; value: number }[],
         arrayY: number
@@ -73,10 +74,13 @@ export default function Dashboard(): JSX.Element {
     };
 
     const bubbleSort = async () => {
+        setRunning(true);
+        stopControllerRef.current = new AbortController();
+
         console.log('started bubble sort');
         dispatch(iterationsCompletedAction(true));
         dispatch(sortInProgressAction());
-        await BubbleSort(result, algoStop, dispatch);
+        await BubbleSort(result, stopControllerRef.current.signal, dispatch);
     };
 
     const insertionSort = async () => {
@@ -93,7 +97,12 @@ export default function Dashboard(): JSX.Element {
     };
 
     const stopSortingHandler = () => {
-        dispatch(stopBubbleSortAction());
+        if (running) {
+            stopControllerRef.current?.abort();
+            setRunning(false);
+        }
+        //dispatch(stopBubbleSortAction());
+        dispatch(sortInProgressAction());
     };
 
     const changeLanguageHandler = (lng: string) => {
@@ -107,7 +116,19 @@ export default function Dashboard(): JSX.Element {
     return (
         <div>
             <ThemeProvider theme={theme}>
-                <AppBar position="static">
+                <AppBar
+                    position="static"
+                    sx={{
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        zIndex: theme.zIndex.drawer + 1,
+                        marginTop: 0,
+                        marginLeft: 0,
+                        marginRight: 0,
+                        backgroundColor: theme.palette.text.secondary
+                    }}
+                >
                     <Container maxWidth="xl">
                         <Toolbar disableGutters>
                             <Typography
