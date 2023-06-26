@@ -1,10 +1,11 @@
 {
   "Bubble sort": "Bubble sort",
-  "Generate Numbers": "Generate Number",
-  "learnolej": "learnolej",
+  "Generate Number": "Generate Number",
+  "AlgoViz": "AlgoViz",
   "Merge sort": "Merge sort",
   "Numbers": "Numbers",
   "Remove Numbers": "Remove Numbers",
   "Insertion sort": "Insertion sort",
-  "Iterations": "Iterations"
+  "Iterations": "Iterations",
+  "Stop Sorting": "Stop Sorting"
 }

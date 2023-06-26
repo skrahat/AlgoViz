@@ -1,9 +1,12 @@
 //import { bubbleSort } from '../../component/Algorithms';
+import { colours } from '../../styling/colours';
+
 interface State {
     result: { color: string; value: number }[];
     displayComplete: boolean;
     sortInProgess: boolean;
     sorted: boolean;
+    algoStop: boolean;
     iterationsCompleted: number;
     generatedNumbers: { color: string; value: number }[];
 }
@@ -13,6 +16,7 @@ const initialState: State = {
     displayComplete: true,
     sortInProgess: false,
     sorted: false,
+    algoStop: false,
     iterationsCompleted: 0,
     generatedNumbers: []
 };
@@ -26,7 +30,7 @@ const rootReducer = (state = initialState, action: any) => {
                 const randomNumber = parseFloat(
                     (Math.random() * 100).toFixed(0)
                 );
-                result.push({ color: 'blue', value: randomNumber });
+                result.push({ color: colours.accent, value: randomNumber });
             }
             return {
                 ...state,
@@ -36,7 +40,7 @@ const rootReducer = (state = initialState, action: any) => {
             };
         case 'ITERATIONS_COMPLETED':
             if (action.payload.clean === true) {
-                console.log('ITERATIONS_COMPLETED payload: clean');
+                //console.log('ITERATIONS_COMPLETED payload: clean');
                 return { ...state, iterationsCompleted: 0 };
             }
             return {
@@ -48,6 +52,11 @@ const rootReducer = (state = initialState, action: any) => {
         case 'SORTED':
             const sorted = action.payload;
             return { ...state, sorted: sorted };
+        case 'START_BUBBLE_SORT':
+            return { ...state, sortInProgess: true, algoStop: false };
+
+        case 'STOP_BUBBLE_SORT':
+            return { ...state, algoStop: true };
         case 'SORT_NUMBERS_BUBBLE':
             const arrayBubble = action.payload;
             return {
