@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import {
     AppBar,
     Box,
@@ -7,7 +8,14 @@ import {
     Typography,
     Container,
     Slider,
-    Paper
+    Paper,
+    FormControlLabel,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
@@ -25,28 +33,33 @@ import LinearProgress from '@mui/material/LinearProgress';
 
 import Footer from '../component/Footer';
 import BarGraph from '../component/BarGraph';
-//import { algoStopAction } from '../redux/reducers/actions';
-
+import Switch, { SwitchProps } from '@mui/material/Switch';
+import { colours } from '../styling/colours';
+import { fetchData } from '../api/factApi';
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#42a5f5'
+            main: colours.primary
         },
         secondary: {
-            main: '#bbdefb'
+            main: colours.secondary
         },
         text: {
-            primary: '#e3f2fd',
-            secondary: '#0d47a1'
+            primary: colours.accent,
+            secondary: colours.primary
         }
     }
 });
-
+interface Fact {
+    fact: string;
+}
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
     const { result, sorted } = useSelector((state: any) => state);
     const [running, setRunning] = useState(false);
+    const [languageValue, setLanguageValue] = useState(true);
+    const [factData, setFactData] = useState<Fact[]>([]);
 
     const [arraySize, setArraySize] = React.useState<number>(10);
     const sortingInProgressState = useSelector(
@@ -70,31 +83,36 @@ export default function Dashboard(): JSX.Element {
     const RemoveNumberFunction = () => {
         dispatch(sortedAction(false));
         dispatch(iterationsCompletedAction(true));
-        dispatch(generateNumbersAction(0));
+        dispatch(generateNumbersAction(arraySize));
     };
 
     const bubbleSort = async () => {
         setRunning(true);
         stopControllerRef.current = new AbortController();
 
-        console.log('started bubble sort');
+        //console.log('started bubble sort');
+        callFacts();
         dispatch(iterationsCompletedAction(true));
         dispatch(sortInProgressAction());
         await BubbleSort(result, stopControllerRef.current.signal, dispatch);
     };
 
     const insertionSort = async () => {
-        console.log('started Insertion sort');
+        //console.log('started Insertion sort');
         stopControllerRef.current = new AbortController();
+        callFacts();
+
         dispatch(iterationsCompletedAction(true));
         dispatch(sortInProgressAction());
         InsertionSort(result, stopControllerRef.current.signal, dispatch);
     };
 
     const handleChange = (event: Event, value: number | number[]) => {
-        if (typeof value === 'number') setArraySize(value);
+        if (typeof value === 'number') {
+            setArraySize(value);
+            dispatch(generateNumbersAction(value)); // Update the array size in the Redux state
+        }
         dispatch(sortedAction(false));
-        dispatch(generateNumbersAction(arraySize));
     };
 
     const stopSortingHandler = () => {
@@ -105,9 +123,20 @@ export default function Dashboard(): JSX.Element {
         dispatch(sortInProgressAction());
     };
 
-    const changeLanguageHandler = (lng: string) => {
-        i18n.changeLanguage(lng);
+    const changeLanguageHandler = () => {
+        if (languageValue) {
+            i18n.changeLanguage('fr');
+        } else i18n.changeLanguage('en');
+        setLanguageValue(!languageValue);
     };
+    // generate random facts
+    const limit = 3;
+    const callFacts = async () => {
+        const data = await fetchData(limit);
+        console.log('fetched fact data: ' + data);
+        setFactData(data);
+    };
+
     useEffect(() => {
         dispatch(generateNumbersAction(arraySize));
         GenerateDataGraph(result, result.length);
@@ -115,21 +144,23 @@ export default function Dashboard(): JSX.Element {
     }, []);
     useEffect(() => {
         GenerateDataGraph(result, result.length);
-    }, [result, arraySize, sortingInProgressState]);
+    }, [result, arraySize, sortingInProgressState, factData]);
 
     return (
-        <div>
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: '100vh'
+            }}
+        >
+            {' '}
             <ThemeProvider theme={theme}>
                 <AppBar
                     position="static"
                     sx={{
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        zIndex: theme.zIndex.drawer + 1,
-                        marginTop: 0,
-                        marginLeft: 0,
-                        marginRight: 0,
+                        minHeight: '4rem',
+                        maxHeight: '6rem',
                         backgroundColor: theme.palette.text.secondary
                     }}
                 >
@@ -193,7 +224,7 @@ export default function Dashboard(): JSX.Element {
                                 >
                                     {t('Insertion sort')}
                                 </CustomButton>
-                                <CustomButton
+                                {/* <CustomButton
                                     id="FR-language-button"
                                     onClick={() => changeLanguageHandler('fr')}
                                 >
@@ -204,15 +235,15 @@ export default function Dashboard(): JSX.Element {
                                     onClick={() => changeLanguageHandler('en')}
                                 >
                                     En
-                                </CustomButton>
+                                </CustomButton> */}
+
                                 <div
                                     style={{
                                         marginRight: 3,
                                         display: 'flex',
                                         alignItems: 'center',
                                         padding: '0.5rem',
-                                        borderRadius: '4px',
-                                        color: theme.palette.text.primary
+                                        borderRadius: '4px'
                                     }}
                                 >
                                     {t(`Iterations`)}:
@@ -222,13 +253,26 @@ export default function Dashboard(): JSX.Element {
                                             padding: '0.5rem',
                                             borderRadius: '4px',
                                             marginLeft: '0.5rem',
-                                            color: theme.palette.text.secondary
+                                            color: colours.primary
                                         }}
                                     >
                                         {iterationsCompletedState}
                                     </Paper>
                                 </div>
-
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            disabled={true}
+                                            checked={!languageValue}
+                                            onChange={changeLanguageHandler}
+                                            color="secondary"
+                                        />
+                                    }
+                                    label={
+                                        languageValue ? 'English' : 'Français'
+                                    }
+                                    labelPlacement="start"
+                                />
                                 <ToastContainer
                                     position="top-center"
                                     autoClose={2000}
@@ -252,12 +296,36 @@ export default function Dashboard(): JSX.Element {
                     </Box>
                 )}
             </div>
-            <BarGraph
-                result={result}
-                sortingInProgressState={sortingInProgressState}
-                sorted={sorted}
-            />
+            <div
+                style={{
+                    marginTop: '2rem'
+                }}
+            >
+                <BarGraph
+                    result={result}
+                    sortingInProgressState={sortingInProgressState}
+                    sorted={sorted}
+                />
+            </div>
             <div>
+                {sortingInProgressState && (
+                    <div>
+                        <Typography>Random facts:</Typography>
+                        <TableContainer>
+                            <Table>
+                                <TableBody>
+                                    {factData.map((fact, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>{fact.fact}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>
+                )}
+            </div>
+            <div style={{ marginTop: 'auto' }}>
                 <Footer />
             </div>
         </div>

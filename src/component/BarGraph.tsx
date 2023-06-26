@@ -9,6 +9,7 @@ import {
     Title,
     Tooltip
 } from 'chart.js';
+import { colours } from '../styling/colours';
 
 Chart.register(
     BarController,
@@ -71,27 +72,35 @@ const BarGraph: React.FC<BarGraphProps> = ({
                     ? GenerateDataColourGraph(result, result.length)
                     : sorted
                     ? GenerateDataColourGraph(result, result.length).map(
-                          (color) => (color === 'red' ? 'red' : 'green')
+                          (color) =>
+                              color === colours.error
+                                  ? colours.error
+                                  : colours.success
                       )
-                    : Array(result.length).fill('blue')
+                    : Array(result.length).fill(colours.accent)
             }
         ]
     };
 
     const options = {
-        scales: {
-            x: {
-                type: 'category' as const,
-                beginAtZero: true
-            },
-            y: {
-                beginAtZero: true
+        plugins: {
+            legend: {
+                display: false
             }
         },
-        animation: {
-            duration: 0
+        scales: {
+            x: {
+                grid: {
+                    display: false // Remove x-axis grid lines
+                }
+            },
+            y: {
+                grid: {
+                    display: false // Remove y-axis grid lines
+                }
+            }
         }
-    } as const;
+    };
 
     return <Bar options={options} data={data} />;
 };

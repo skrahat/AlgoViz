@@ -1,4 +1,6 @@
 //import { bubbleSort } from '../../component/Algorithms';
+import { colours } from '../../styling/colours';
+
 interface State {
     result: { color: string; value: number }[];
     displayComplete: boolean;
@@ -28,7 +30,7 @@ const rootReducer = (state = initialState, action: any) => {
                 const randomNumber = parseFloat(
                     (Math.random() * 100).toFixed(0)
                 );
-                result.push({ color: 'blue', value: randomNumber });
+                result.push({ color: colours.accent, value: randomNumber });
             }
             return {
                 ...state,
@@ -38,7 +40,7 @@ const rootReducer = (state = initialState, action: any) => {
             };
         case 'ITERATIONS_COMPLETED':
             if (action.payload.clean === true) {
-                console.log('ITERATIONS_COMPLETED payload: clean');
+                //console.log('ITERATIONS_COMPLETED payload: clean');
                 return { ...state, iterationsCompleted: 0 };
             }
             return {
