@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.js": "/algoviz/static/js/main.b8586080.chunk.js",
-    "main.js.map": "/algoviz/static/js/main.b8586080.chunk.js.map",
-    "runtime-main.js": "/algoviz/static/js/runtime-main.4f3e22e6.js",
-    "runtime-main.js.map": "/algoviz/static/js/runtime-main.4f3e22e6.js.map",
-    "static/css/2.b28305bc.chunk.css": "/algoviz/static/css/2.b28305bc.chunk.css",
-    "static/js/2.dbddfdc5.chunk.js": "/algoviz/static/js/2.dbddfdc5.chunk.js",
-    "static/js/2.dbddfdc5.chunk.js.map": "/algoviz/static/js/2.dbddfdc5.chunk.js.map",
-    "index.html": "/algoviz/index.html",
-    "static/css/2.b28305bc.chunk.css.map": "/algoviz/static/css/2.b28305bc.chunk.css.map",
-    "static/js/2.dbddfdc5.chunk.js.LICENSE.txt": "/algoviz/static/js/2.dbddfdc5.chunk.js.LICENSE.txt",
-    "static/media/getFetch.cjs": "/algoviz/static/media/getFetch.5fde86e3.cjs"
+    "main.js": "/AlgoViz/static/js/main.b8586080.chunk.js",
+    "main.js.map": "/AlgoViz/static/js/main.b8586080.chunk.js.map",
+    "runtime-main.js": "/AlgoViz/static/js/runtime-main.7749ceca.js",
+    "runtime-main.js.map": "/AlgoViz/static/js/runtime-main.7749ceca.js.map",
+    "static/css/2.b28305bc.chunk.css": "/AlgoViz/static/css/2.b28305bc.chunk.css",
+    "static/js/2.dbddfdc5.chunk.js": "/AlgoViz/static/js/2.dbddfdc5.chunk.js",
+    "static/js/2.dbddfdc5.chunk.js.map": "/AlgoViz/static/js/2.dbddfdc5.chunk.js.map",
+    "index.html": "/AlgoViz/index.html",
+    "static/css/2.b28305bc.chunk.css.map": "/AlgoViz/static/css/2.b28305bc.chunk.css.map",
+    "static/js/2.dbddfdc5.chunk.js.LICENSE.txt": "/AlgoViz/static/js/2.dbddfdc5.chunk.js.LICENSE.txt",
+    "static/media/getFetch.cjs": "/AlgoViz/static/media/getFetch.5fde86e3.cjs"
   },
   "entrypoints": [
-    "static/js/runtime-main.4f3e22e6.js",
+    "static/js/runtime-main.7749ceca.js",
     "static/css/2.b28305bc.chunk.css",
     "static/js/2.dbddfdc5.chunk.js",
     "static/js/main.b8586080.chunk.js"
