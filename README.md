@@ -1,13 +1,3 @@
-# V1.02
-
-colour transition when sorting and at finish
-
-# V1.01
-
-bubble sort and insert sort with redux
-generate numbers
-remove numbers
-
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

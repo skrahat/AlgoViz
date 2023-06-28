@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import {
     AppBar,
     Box,
@@ -7,12 +8,18 @@ import {
     Typography,
     Container,
     Slider,
-    Paper
+    Paper,
+    FormControlLabel,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Bar } from 'react-chartjs-2'; // Import Bar from react-chartjs-2
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CustomButton from '../component/Button';
 import {
@@ -22,58 +29,37 @@ import {
     sortedAction
 } from '../redux/reducers/actions';
 import { BubbleSort, InsertionSort } from '../component/Algorithms';
-import {
-    Chart as ChartJS,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Tooltip,
-    Legend,
-    CategoryScale, // Import CategoryScale from chart.js
-    BarElement // Import BarElement from chart.js
-} from 'chart.js';
-import Footer from '../component/Footer';
+import LinearProgress from '@mui/material/LinearProgress';
 
+import Footer from '../component/Footer';
+import BarGraph from '../component/BarGraph';
+import Switch, { SwitchProps } from '@mui/material/Switch';
+import { colours } from '../styling/colours';
+import { fetchData } from '../api/factApi';
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#42a5f5'
+            main: colours.primary
         },
         secondary: {
-            main: '#bbdefb'
+            main: colours.secondary
         },
         text: {
-            primary: '#e3f2fd',
-            secondary: '#0d47a1'
+            primary: colours.accent,
+            secondary: colours.primary
         }
     }
 });
-
-ChartJS.register(
-    LinearScale,
-    PointElement,
-    LineElement,
-    Tooltip,
-    Legend,
-    CategoryScale, // Register CategoryScale
-    BarElement // Register BarElement
-);
-
-export const options = {
-    scales: {
-        y: {
-            beginAtZero: true
-        }
-    },
-    animation: {
-        duration: 0 // Disable animation
-    }
-};
-
+interface Fact {
+    fact: string;
+}
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
     const { result, sorted } = useSelector((state: any) => state);
+    const [running, setRunning] = useState(false);
+    const [languageValue, setLanguageValue] = useState(true);
+    const [factData, setFactData] = useState<Fact[]>([]);
 
     const [arraySize, setArraySize] = React.useState<number>(10);
     const sortingInProgressState = useSelector(
@@ -82,12 +68,7 @@ export default function Dashboard(): JSX.Element {
     const iterationsCompletedState = useSelector(
         (state: any) => state.iterationsCompleted
     );
-
-    const RandomNumberGeneratorFunction = () => {
-        dispatch(sortedAction(false));
-        dispatch(generateNumbersAction(arraySize));
-    };
-
+    const stopControllerRef = useRef<AbortController | null>(null);
     const GenerateDataGraph = (
         arrayX: { color: string; value: number }[],
         arrayY: number
@@ -98,76 +79,91 @@ export default function Dashboard(): JSX.Element {
         }
         return result;
     };
-    const GenerateDataColourGraph = (
-        arrayX: { color: string; value: number }[],
-        arrayY: number
-    ): string[] => {
-        var result: string[] = [];
-        for (var i = 0; i < arrayY; i++) {
-            result.push(arrayX[i].color);
-        }
-        return result;
-    };
-
-    const data = {
-        labels: GenerateDataGraph(result, result.length).map((item) => item.x),
-        datasets: [
-            {
-                label: 'Numbers',
-                data: GenerateDataGraph(result, result.length),
-                backgroundColor: sortingInProgressState
-                    ? GenerateDataColourGraph(result, result.length)
-                    : sorted
-                    ? GenerateDataColourGraph(result, result.length).map(
-                          (color) => (color === 'red' ? 'red' : 'green')
-                      )
-                    : Array(result.length).fill('blue')
-            }
-        ]
-    };
 
     const RemoveNumberFunction = () => {
         dispatch(sortedAction(false));
         dispatch(iterationsCompletedAction(true));
-        dispatch(generateNumbersAction(0));
+        dispatch(generateNumbersAction(arraySize));
     };
 
     const bubbleSort = async () => {
-        console.log('started bubble sort');
+        setRunning(true);
+        stopControllerRef.current = new AbortController();
+
+        //console.log('started bubble sort');
+        callFacts();
         dispatch(iterationsCompletedAction(true));
         dispatch(sortInProgressAction());
-        // if (sorted) {
-        //     BubbleSort(generatedNumbers, dispatch);
-        // } else
-        BubbleSort(result, dispatch);
+        await BubbleSort(result, stopControllerRef.current.signal, dispatch);
     };
 
     const insertionSort = async () => {
-        console.log('started Insertion sort');
+        //console.log('started Insertion sort');
+        stopControllerRef.current = new AbortController();
+        callFacts();
+
         dispatch(iterationsCompletedAction(true));
         dispatch(sortInProgressAction());
-        // if (sorted) {
-        //     InsertionSort(generatedNumbers, dispatch);
-        // } else
-        InsertionSort(result, dispatch);
+        InsertionSort(result, stopControllerRef.current.signal, dispatch);
     };
 
     const handleChange = (event: Event, value: number | number[]) => {
-        if (typeof value === 'number') setArraySize(value);
+        if (typeof value === 'number') {
+            setArraySize(value);
+            dispatch(generateNumbersAction(value)); // Update the array size in the Redux state
+        }
+        dispatch(sortedAction(false));
     };
 
-    const changeLanguageHandler = (lng: string) => {
-        i18n.changeLanguage(lng);
+    const stopSortingHandler = () => {
+        if (running) {
+            stopControllerRef.current?.abort();
+            setRunning(false);
+        }
+        dispatch(sortInProgressAction());
+    };
+
+    const changeLanguageHandler = () => {
+        if (languageValue) {
+            i18n.changeLanguage('fr');
+        } else i18n.changeLanguage('en');
+        setLanguageValue(!languageValue);
+    };
+    // generate random facts
+    const limit = 3;
+    const callFacts = async () => {
+        const data = await fetchData(limit);
+        console.log('fetched fact data: ' + data);
+        setFactData(data);
     };
 
     useEffect(() => {
+        dispatch(generateNumbersAction(arraySize));
         GenerateDataGraph(result, result.length);
-    }, [result, arraySize, sortingInProgressState]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    useEffect(() => {
+        GenerateDataGraph(result, result.length);
+    }, [result, arraySize, sortingInProgressState, factData]);
 
     return (
-        <div>
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: '100vh'
+            }}
+        >
+            {' '}
             <ThemeProvider theme={theme}>
-                <AppBar position="static">
+                <AppBar
+                    position="static"
+                    sx={{
+                        minHeight: '4rem',
+                        maxHeight: '6rem',
+                        backgroundColor: theme.palette.text.secondary
+                    }}
+                >
                     <Container maxWidth="xl">
                         <Toolbar disableGutters>
                             <Typography
@@ -201,11 +197,11 @@ export default function Dashboard(): JSX.Element {
                                 }}
                             >
                                 <CustomButton
-                                    id="generateNumberID"
-                                    disabled={sortingInProgressState}
-                                    onClick={RandomNumberGeneratorFunction}
+                                    id="algoStopID"
+                                    disabled={!sortingInProgressState}
+                                    onClick={stopSortingHandler}
                                 >
-                                    {t('Generate Numbers')}
+                                    {t('Stop Sorting')}
                                 </CustomButton>
                                 <CustomButton
                                     id="clearNumberID"
@@ -228,7 +224,7 @@ export default function Dashboard(): JSX.Element {
                                 >
                                     {t('Insertion sort')}
                                 </CustomButton>
-                                <CustomButton
+                                {/* <CustomButton
                                     id="FR-language-button"
                                     onClick={() => changeLanguageHandler('fr')}
                                 >
@@ -239,15 +235,15 @@ export default function Dashboard(): JSX.Element {
                                     onClick={() => changeLanguageHandler('en')}
                                 >
                                     En
-                                </CustomButton>
+                                </CustomButton> */}
+
                                 <div
                                     style={{
                                         marginRight: 3,
                                         display: 'flex',
                                         alignItems: 'center',
                                         padding: '0.5rem',
-                                        borderRadius: '4px',
-                                        color: theme.palette.text.primary
+                                        borderRadius: '4px'
                                     }}
                                 >
                                     {t(`Iterations`)}:
@@ -257,13 +253,26 @@ export default function Dashboard(): JSX.Element {
                                             padding: '0.5rem',
                                             borderRadius: '4px',
                                             marginLeft: '0.5rem',
-                                            color: theme.palette.text.secondary
+                                            color: colours.primary
                                         }}
                                     >
                                         {iterationsCompletedState}
                                     </Paper>
                                 </div>
-
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            disabled={true}
+                                            checked={!languageValue}
+                                            onChange={changeLanguageHandler}
+                                            color="secondary"
+                                        />
+                                    }
+                                    label={
+                                        languageValue ? 'English' : 'Français'
+                                    }
+                                    labelPlacement="start"
+                                />
                                 <ToastContainer
                                     position="top-center"
                                     autoClose={2000}
@@ -280,9 +289,43 @@ export default function Dashboard(): JSX.Element {
                     </Container>
                 </AppBar>
             </ThemeProvider>
-            <Bar options={options} data={data} /> {/* Use Bar chart */}
-            <h1>{sortingInProgressState ? 'Sorting in progress' : ''}</h1>
             <div>
+                {sortingInProgressState && (
+                    <Box sx={{ width: '100%' }}>
+                        <LinearProgress color="secondary" />
+                    </Box>
+                )}
+            </div>
+            <div
+                style={{
+                    marginTop: '2rem'
+                }}
+            >
+                <BarGraph
+                    result={result}
+                    sortingInProgressState={sortingInProgressState}
+                    sorted={sorted}
+                />
+            </div>
+            <div>
+                {sortingInProgressState && (
+                    <div>
+                        <Typography>Random facts:</Typography>
+                        <TableContainer>
+                            <Table>
+                                <TableBody>
+                                    {factData.map((fact, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>{fact.fact}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>
+                )}
+            </div>
+            <div style={{ marginTop: 'auto' }}>
                 <Footer />
             </div>
         </div>
