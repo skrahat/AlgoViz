@@ -99,6 +99,9 @@ const BarGraph: React.FC<BarGraphProps> = ({
                     display: false // Remove y-axis grid lines
                 }
             }
+        },
+        animation: {
+            duration: 0
         }
     };
 
