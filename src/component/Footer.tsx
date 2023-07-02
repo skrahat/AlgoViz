@@ -1,14 +1,12 @@
 import React from 'react';
 
 const Footer = () => {
-    const name = 'Asaduzzaman Rahat';
     const email = 'asaduzzaman.rahat@mail.mcgill.ca';
     const website = 'https://www.asadrahat.ca';
 
     return (
         <footer
             style={{
-                //backgroundColor: '#f5f5f5',
                 padding: '1rem',
                 textAlign: 'center',
                 marginTop: '2rem',
@@ -22,7 +20,7 @@ const Footer = () => {
                     asadrahat.ca
                 </a>
                 <br />
-                Ping me at <a href={`mailto:${email}`}>{email}</a>
+                Contact me! <a href={`mailto:${email}`}>{email}</a>
                 <br />
             </p>
         </footer>

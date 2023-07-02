@@ -1,5 +1,4 @@
 import {
-    //algoStopAction,
     iterationsCompletedAction,
     sortInProgressAction,
     sortNumbersBubbleAction,
