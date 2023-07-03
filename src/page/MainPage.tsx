@@ -36,6 +36,7 @@ import BarGraph from '../component/BarGraph';
 import Switch, { SwitchProps } from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import { fetchData } from '../api/factApi';
+
 const theme = createTheme({
     palette: {
         primary: {
@@ -50,9 +51,11 @@ const theme = createTheme({
         }
     }
 });
+
 interface Fact {
     fact: string;
 }
+
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
@@ -69,6 +72,7 @@ export default function Dashboard(): JSX.Element {
         (state: any) => state.iterationsCompleted
     );
     const stopControllerRef = useRef<AbortController | null>(null);
+
     const GenerateDataGraph = (
         arrayX: { color: string; value: number }[],
         arrayY: number
@@ -90,7 +94,6 @@ export default function Dashboard(): JSX.Element {
         setRunning(true);
         stopControllerRef.current = new AbortController();
 
-        //console.log('started bubble sort');
         callFacts();
         dispatch(iterationsCompletedAction(true));
         dispatch(sortInProgressAction());
@@ -98,7 +101,6 @@ export default function Dashboard(): JSX.Element {
     };
 
     const insertionSort = async () => {
-        //console.log('started Insertion sort');
         stopControllerRef.current = new AbortController();
         callFacts();
 
@@ -129,7 +131,7 @@ export default function Dashboard(): JSX.Element {
         } else i18n.changeLanguage('en');
         setLanguageValue(!languageValue);
     };
-    // generate random facts
+
     const limit = 3;
     const callFacts = async () => {
         const data = await fetchData(limit);
@@ -142,6 +144,7 @@ export default function Dashboard(): JSX.Element {
         GenerateDataGraph(result, result.length);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
     useEffect(() => {
         GenerateDataGraph(result, result.length);
     }, [result, arraySize, sortingInProgressState, factData]);
@@ -154,7 +157,6 @@ export default function Dashboard(): JSX.Element {
                 minHeight: '100vh'
             }}
         >
-            {' '}
             <ThemeProvider theme={theme}>
                 <AppBar
                     position="static"
@@ -224,18 +226,6 @@ export default function Dashboard(): JSX.Element {
                                 >
                                     {t('Insertion sort')}
                                 </CustomButton>
-                                {/* <CustomButton
-                                    id="FR-language-button"
-                                    onClick={() => changeLanguageHandler('fr')}
-                                >
-                                    Fr
-                                </CustomButton>
-                                <CustomButton
-                                    id="EN-language-button"
-                                    onClick={() => changeLanguageHandler('en')}
-                                >
-                                    En
-                                </CustomButton> */}
 
                                 <div
                                     style={{
@@ -298,7 +288,8 @@ export default function Dashboard(): JSX.Element {
             </div>
             <div
                 style={{
-                    marginTop: '2rem'
+                    marginTop: '2rem',
+                    flex: '1' // Add this to make the content take the remaining space
                 }}
             >
                 <BarGraph
