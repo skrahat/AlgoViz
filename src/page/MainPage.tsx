@@ -14,7 +14,6 @@ import {
     TableBody,
     TableCell,
     TableContainer,
-    TableHead,
     TableRow
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -33,7 +32,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 
 import Footer from '../component/Footer';
 import BarGraph from '../component/BarGraph';
-import Switch, { SwitchProps } from '@mui/material/Switch';
+import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import { fetchData } from '../api/factApi';
 
@@ -126,10 +125,10 @@ export default function Dashboard(): JSX.Element {
     };
 
     const changeLanguageHandler = () => {
-        if (languageValue) {
-            i18n.changeLanguage('fr');
-        } else i18n.changeLanguage('en');
-        setLanguageValue(!languageValue);
+        const newLanguage = languageValue ? 'fr' : 'en';
+        i18n.changeLanguage(newLanguage).then(() => {
+            setLanguageValue(!languageValue);
+        });
     };
 
     const limit = 3;
@@ -252,7 +251,7 @@ export default function Dashboard(): JSX.Element {
                                 <FormControlLabel
                                     control={
                                         <Switch
-                                            disabled={true}
+                                            disabled={false}
                                             checked={!languageValue}
                                             onChange={changeLanguageHandler}
                                             color="secondary"

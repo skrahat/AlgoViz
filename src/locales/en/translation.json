@@ -1,11 +1,11 @@
 {
-  "AlgoViz": "AlgoViz",
-  "Stop Sorting": "Stop Sorting",
-  "Remove Numbers": "Remove Numbers",
-  "Bubble sort": "Bubble sort",
-  "Insertion sort": "Insertion sort",
-  "Iterations": "Iterations",
-  "Generate Number": "Generate Number",
-  "Merge sort": "Merge sort",
-  "Numbers": "Numbers"
+    "AlgoViz": "AlgoViz",
+    "Stop Sorting": "Stop Sorting",
+    "Remove Numbers": "Remove Numbers",
+    "Bubble sort": "Bubble sort",
+    "Insertion sort": "Insertion sort",
+    "Iterations": "Iterations",
+    "Generate Number": "Generate Number",
+    "Merge sort": "Merge sort",
+    "Numbers": "Numbers"
 }
