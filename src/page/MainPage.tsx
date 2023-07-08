@@ -158,7 +158,8 @@ export default function Dashboard(): JSX.Element {
             style={{
                 display: 'flex',
                 flexDirection: 'column',
-                minHeight: '100vh'
+                minHeight: '100vh',
+                background: colours.background
             }}
         >
             <Container>
@@ -221,7 +222,7 @@ export default function Dashboard(): JSX.Element {
                                         disabled={sortingInProgressState}
                                         onClick={RemoveNumberFunction}
                                     >
-                                        {t('Remove Numbers')}
+                                        {t('Update Numbers')}
                                     </CustomButton>
                                     <CustomButton
                                         id="bubble-sort-button"
@@ -337,7 +338,7 @@ export default function Dashboard(): JSX.Element {
                 )}
             </Container>
             {/* Footer */}
-            <Container style={{ marginTop: 'auto' }}>
+            <Container style={{ marginTop: 'auto', width: '100%' }}>
                 <Footer />
             </Container>
         </Container>

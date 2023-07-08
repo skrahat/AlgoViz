@@ -1,34 +1,33 @@
-import Button from '@mui/material/Button';
+import Button, { ButtonProps } from '@mui/material/Button';
+import { colours } from '../styling/colours';
 
-interface CustomButtonProps {
+interface CustomButtonProps extends ButtonProps {
     id: string;
-    disabled?: boolean;
-    onClick: () => void;
-    sx?: React.CSSProperties;
     children: React.ReactNode;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
     id,
-    disabled = false,
-    onClick,
-    sx,
-    children
+    children,
+    ...props
 }) => {
     return (
         <Button
             id={id}
-            disabled={disabled}
             sx={{
                 my: 2,
                 color: 'white',
                 display: 'block',
-                ...sx
+                '&:hover': {
+                    backgroundColor: colours.accent
+                },
+                ...props.sx
             }}
-            onClick={onClick}
+            {...props}
         >
             {children}
         </Button>
     );
 };
+
 export default CustomButton;
