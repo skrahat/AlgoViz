@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import {
     AppBar,
     Box,
@@ -29,13 +28,13 @@ import {
 } from '../redux/reducers/actions';
 import { BubbleSort, InsertionSort } from '../component/Algorithms';
 import LinearProgress from '@mui/material/LinearProgress';
-
 import Footer from '../component/Footer';
 import BarGraph from '../component/BarGraph';
 import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import { fetchData } from '../api/factApi';
 
+// Define the MUI theme
 const theme = createTheme({
     palette: {
         primary: {
@@ -51,6 +50,7 @@ const theme = createTheme({
     }
 });
 
+// Define the fact data structure
 interface Fact {
     fact: string;
 }
@@ -62,8 +62,7 @@ export default function Dashboard(): JSX.Element {
     const [running, setRunning] = useState(false);
     const [languageValue, setLanguageValue] = useState(true);
     const [factData, setFactData] = useState<Fact[]>([]);
-
-    const [arraySize, setArraySize] = React.useState<number>(10);
+    const [arraySize, setArraySize] = useState<number>(10);
     const sortingInProgressState = useSelector(
         (state: any) => state.sortInProgess
     );
@@ -72,23 +71,22 @@ export default function Dashboard(): JSX.Element {
     );
     const stopControllerRef = useRef<AbortController | null>(null);
 
+    // Generate the data array for the BarGraph component
     const GenerateDataGraph = (
         arrayX: { color: string; value: number }[],
         arrayY: number
     ): { x: number; y: number }[] => {
-        var result: { x: number; y: number }[] = [];
-        for (var i = 0; i < arrayY; i++) {
-            result.push({ x: i, y: arrayX[i].value });
-        }
-        return result;
+        return arrayX.map((item, index) => ({ x: index, y: item.value }));
     };
 
+    // Clear the numbers and reset the sorting state
     const RemoveNumberFunction = () => {
         dispatch(sortedAction(false));
         dispatch(iterationsCompletedAction(true));
         dispatch(generateNumbersAction(arraySize));
     };
 
+    // Perform bubble sort
     const bubbleSort = async () => {
         setRunning(true);
         stopControllerRef.current = new AbortController();
@@ -99,6 +97,7 @@ export default function Dashboard(): JSX.Element {
         await BubbleSort(result, stopControllerRef.current.signal, dispatch);
     };
 
+    // Perform insertion sort
     const insertionSort = async () => {
         stopControllerRef.current = new AbortController();
         callFacts();
@@ -108,6 +107,7 @@ export default function Dashboard(): JSX.Element {
         InsertionSort(result, stopControllerRef.current.signal, dispatch);
     };
 
+    // Handle the array size slider change
     const handleChange = (event: Event, value: number | number[]) => {
         if (typeof value === 'number') {
             setArraySize(value);
@@ -116,6 +116,7 @@ export default function Dashboard(): JSX.Element {
         dispatch(sortedAction(false));
     };
 
+    // Stop the sorting process
     const stopSortingHandler = () => {
         if (running) {
             stopControllerRef.current?.abort();
@@ -124,6 +125,7 @@ export default function Dashboard(): JSX.Element {
         dispatch(sortInProgressAction());
     };
 
+    // Change the app language
     const changeLanguageHandler = () => {
         const newLanguage = languageValue ? 'fr' : 'en';
         i18n.changeLanguage(newLanguage).then(() => {
@@ -131,20 +133,23 @@ export default function Dashboard(): JSX.Element {
         });
     };
 
+    // Fetch facts data
     const limit = 3;
     const callFacts = async () => {
         const data = await fetchData(limit);
-        console.log('fetched fact data: ' + data);
+        console.log('Fetched fact data:', data);
         setFactData(data);
     };
 
     useEffect(() => {
         dispatch(generateNumbersAction(arraySize));
+        // Generate the initial data array for the BarGraph component
         GenerateDataGraph(result, result.length);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
+        // Update the data array for the BarGraph component when result, arraySize, sortingInProgressState, or factData change
         GenerateDataGraph(result, result.length);
     }, [result, arraySize, sortingInProgressState, factData]);
 
@@ -157,6 +162,7 @@ export default function Dashboard(): JSX.Element {
             }}
         >
             <ThemeProvider theme={theme}>
+                {/* App Bar */}
                 <AppBar
                     position="static"
                     sx={{
@@ -167,6 +173,7 @@ export default function Dashboard(): JSX.Element {
                 >
                     <Container maxWidth="xl">
                         <Toolbar disableGutters>
+                            {/* App Title */}
                             <Typography
                                 sx={{
                                     mr: 3,
@@ -178,8 +185,10 @@ export default function Dashboard(): JSX.Element {
                                 {t(`AlgoViz`)}
                             </Typography>
 
+                            {/* Array Size Slider */}
                             <Box sx={{ width: 100, padding: '0.4rem' }}>
                                 <Slider
+                                    id="array-size-slider"
                                     value={arraySize}
                                     min={10}
                                     step={1}
@@ -188,9 +197,11 @@ export default function Dashboard(): JSX.Element {
                                     onChange={handleChange}
                                     disabled={sortingInProgressState}
                                     valueLabelDisplay="auto"
-                                    aria-labelledby="non-linear-slider"
+                                    aria-labelledby="array-size-slider"
                                 />
                             </Box>
+
+                            {/* Action Buttons */}
                             <Box
                                 sx={{
                                     flexGrow: 1,
@@ -198,14 +209,14 @@ export default function Dashboard(): JSX.Element {
                                 }}
                             >
                                 <CustomButton
-                                    id="algoStopID"
+                                    id="stop-sortingID button"
                                     disabled={!sortingInProgressState}
                                     onClick={stopSortingHandler}
                                 >
                                     {t('Stop Sorting')}
                                 </CustomButton>
                                 <CustomButton
-                                    id="clearNumberID"
+                                    id="clear-numbers-button"
                                     disabled={sortingInProgressState}
                                     onClick={RemoveNumberFunction}
                                 >
@@ -216,17 +227,19 @@ export default function Dashboard(): JSX.Element {
                                     disabled={sortingInProgressState}
                                     onClick={bubbleSort}
                                 >
-                                    {t('Bubble sort')}
+                                    {t('Bubble Sort')}
                                 </CustomButton>
                                 <CustomButton
-                                    id="Insertion-sort-button"
+                                    id="insertion-sort-button"
                                     disabled={sortingInProgressState}
                                     onClick={insertionSort}
                                 >
-                                    {t('Insertion sort')}
+                                    {t('Insertion Sort')}
                                 </CustomButton>
 
+                                {/* Iterations Counter */}
                                 <div
+                                    id="iterations-counter"
                                     style={{
                                         marginRight: 3,
                                         display: 'flex',
@@ -248,9 +261,12 @@ export default function Dashboard(): JSX.Element {
                                         {iterationsCompletedState}
                                     </Paper>
                                 </div>
+
+                                {/* Language Switch */}
                                 <FormControlLabel
                                     control={
                                         <Switch
+                                            id="language-switch"
                                             disabled={false}
                                             checked={!languageValue}
                                             onChange={changeLanguageHandler}
@@ -262,6 +278,8 @@ export default function Dashboard(): JSX.Element {
                                     }
                                     labelPlacement="start"
                                 />
+
+                                {/* Toast Container */}
                                 <ToastContainer
                                     position="top-center"
                                     autoClose={2000}
@@ -278,43 +296,42 @@ export default function Dashboard(): JSX.Element {
                     </Container>
                 </AppBar>
             </ThemeProvider>
-            <div>
-                {sortingInProgressState && (
-                    <Box sx={{ width: '100%' }}>
-                        <LinearProgress color="secondary" />
-                    </Box>
-                )}
-            </div>
-            <div
-                style={{
-                    marginTop: '2rem',
-                    flex: '1' // Add this to make the content take the remaining space
-                }}
-            >
+
+            {/* Linear Progress */}
+            {sortingInProgressState && (
+                <Box sx={{ width: '100%' }}>
+                    <LinearProgress color="secondary" />
+                </Box>
+            )}
+
+            {/* Bar Graph */}
+            <div style={{ marginTop: '2rem', flex: '1' }}>
                 <BarGraph
                     result={result}
                     sortingInProgressState={sortingInProgressState}
                     sorted={sorted}
                 />
             </div>
-            <div>
-                {sortingInProgressState && (
-                    <div>
-                        <Typography>Random facts:</Typography>
-                        <TableContainer>
-                            <Table>
-                                <TableBody>
-                                    {factData.map((fact, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell>{fact.fact}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </div>
-                )}
-            </div>
+
+            {/* Facts */}
+            {sortingInProgressState && (
+                <div>
+                    <Typography>{t('Random Facts')}:</Typography>
+                    <TableContainer>
+                        <Table>
+                            <TableBody>
+                                {factData.map((fact, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{fact.fact}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </div>
+            )}
+
+            {/* Footer */}
             <div style={{ marginTop: 'auto' }}>
                 <Footer />
             </div>
