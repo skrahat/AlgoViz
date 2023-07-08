@@ -1,6 +1,5 @@
 // BubbleSort.tsx
-
-import React, { useState } from 'react';
+import React from 'react';
 
 interface BubbleSortProps {
     array: number[];
