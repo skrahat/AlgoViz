@@ -63,7 +63,7 @@ interface Fact {
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
-    const { resultOne, sorted } = useSelector((state: any) => state);
+    const { resultOne, sorted, resultTwo } = useSelector((state: any) => state);
     const [running, setRunning] = useState(false);
     const [languageValue, setLanguageValue] = useState(true);
     const [factData, setFactData] = useState<Fact[]>([]);
@@ -117,29 +117,25 @@ export default function Dashboard(): JSX.Element {
     };
 
     // Perform bubble sort
-    const bubbleSort = async () => {
+    const bubbleSort = async (stopControllerRef: any) => {
         setRunning(true);
-        stopControllerRef.current = new AbortController();
+        //stopControllerRef.current = new AbortController();
 
         callFacts();
-        dispatch(iterationsCompletedAction(true));
-        dispatch(sortInProgressAction());
-        await BubbleSort(resultOne, stopControllerRef.current.signal, dispatch);
+        //dispatch(iterationsCompletedAction(true));
+        dispatch(sortInProgressAction(true));
+        await BubbleSort(resultOne, stopControllerRef.signal, dispatch);
     };
 
     // Perform insertion sort
-    const insertionSort = async () => {
+    const insertionSort = async (stopControllerRef: any) => {
         setRunning(true);
-        stopControllerRef.current = new AbortController();
+        //stopControllerRef.current = new AbortController();
         callFacts();
 
-        dispatch(iterationsCompletedAction(true));
-        dispatch(sortInProgressAction());
-        await InsertionSort(
-            resultOne,
-            stopControllerRef.current.signal,
-            dispatch
-        );
+        //dispatch(iterationsCompletedAction(true));
+        dispatch(sortInProgressAction(true));
+        await InsertionSort(resultTwo, stopControllerRef.signal, dispatch);
     };
     // const bubbleSortHandler = () => {
     //     setSelectedAlgorithm('bubble');
@@ -149,11 +145,15 @@ export default function Dashboard(): JSX.Element {
     //     setSelectedAlgorithm('insertion');
     // };
     const startSorting = () => {
-        // if (selectedAlgorithm === 'bubble') {
-        //     bubbleSort();
-        // } else if (selectedAlgorithm === 'insertion') {
-        //     insertionSort();
-        // }
+        dispatch(iterationsCompletedAction(true));
+        stopControllerRef.current = new AbortController();
+
+        if (selectedAlgorithm.includes('Bubble')) {
+            bubbleSort(stopControllerRef.current);
+        }
+        if (selectedAlgorithm.includes('Insertion')) {
+            insertionSort(stopControllerRef.current);
+        }
     };
 
     // Handle the array size slider change
@@ -171,7 +171,7 @@ export default function Dashboard(): JSX.Element {
             stopControllerRef.current?.abort();
             setRunning(false);
         }
-        dispatch(sortInProgressAction());
+        dispatch(sortInProgressAction(false));
         //setSelectedAlgorithm('');
     };
 
@@ -283,20 +283,20 @@ export default function Dashboard(): JSX.Element {
                                         >
                                             {t('Update Numbers')}
                                         </CustomButton>
-                                        <CustomButton
+                                        {/* <CustomButton
                                             id="bubble-sort-button"
-                                            disabled={sortingInProgressState}
-                                            onClick={bubbleSort}
+                                            //disabled={sortingInProgressState}
+                                            //onClick={bubbleSort()}
                                         >
                                             {t('Bubble Sort')}
                                         </CustomButton>
                                         <CustomButton
                                             id="insertion-sort-button"
-                                            disabled={sortingInProgressState}
-                                            onClick={insertionSort}
+                                            //disabled={sortingInProgressState}
+                                            //onClick={insertionSort}
                                         >
                                             {t('Insertion Sort')}
-                                        </CustomButton>
+                                        </CustomButton> */}
                                         <FormControl
                                             sx={{ m: 1, width: 175, mt: 2 }}
                                         >
@@ -344,7 +344,7 @@ export default function Dashboard(): JSX.Element {
                                             id="start-button"
                                             disabled={sortingInProgressState}
                                             width="5rem"
-                                            onClick={() => {}}
+                                            onClick={startSorting}
                                         >
                                             {t('Start')}
                                         </CustomButton>
@@ -368,7 +368,8 @@ export default function Dashboard(): JSX.Element {
                                                     color: colours.primary
                                                 }}
                                             >
-                                                {iterationsCompletedState}
+                                                {iterationsCompletedState[0]} /{' '}
+                                                {iterationsCompletedState[1]}
                                             </Paper>
                                         </div>
 
@@ -421,6 +422,11 @@ export default function Dashboard(): JSX.Element {
                     >
                         <BarGraph
                             result={resultOne}
+                            sortingInProgressState={sortingInProgressState}
+                            sorted={sorted}
+                        />
+                        <BarGraph
+                            result={resultTwo}
                             sortingInProgressState={sortingInProgressState}
                             sorted={sorted}
                         />

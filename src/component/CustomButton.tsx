@@ -28,6 +28,11 @@ const CustomButton: React.FC<CustomButtonProps> = ({
                     backgroundColor: colours.accent,
                     color: 'black'
                 },
+                '&:active': {
+                    boxShadow: 'none',
+                    backgroundColor: '#0062cc',
+                    borderColor: '#005cbf'
+                },
                 ...props.sx
             }}
             {...props}

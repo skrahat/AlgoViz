@@ -28,7 +28,6 @@ export const BubbleSort = async (
                 return;
             }
 
-            await timer(1000 / len);
             if (newArray[j].value > newArray[j + 1].value) {
                 let swap = newArray[j];
                 newArray[j] = newArray[j + 1];
@@ -48,7 +47,8 @@ export const BubbleSort = async (
                 });
 
                 dispatch(sortNumbersBubbleAction(sortedArray));
-                dispatch(iterationsCompletedAction(false));
+                dispatch(iterationsCompletedAction(false, 0));
+                await timer(1000 / len);
             }
         }
     }
@@ -59,7 +59,7 @@ export const BubbleSort = async (
 
     dispatch(sortNumbersBubbleAction(sortedArray));
 
-    dispatch(sortInProgressAction());
+    dispatch(sortInProgressAction(false));
     dispatch(sortedAction(true));
     //console.log('ended bubble sort');
 };
@@ -99,7 +99,7 @@ export const InsertionSort = async (
                 return item;
             });
             dispatch(sortNumbersInsertionAction(sortedArray));
-            dispatch(iterationsCompletedAction(false));
+            dispatch(iterationsCompletedAction(false, 1));
             await timer(1000 / len);
             j--;
         }
@@ -125,7 +125,7 @@ export const InsertionSort = async (
     });
 
     dispatch(sortNumbersInsertionAction(sortedArray));
-    dispatch(sortInProgressAction());
+    dispatch(sortInProgressAction(true));
     dispatch(sortedAction(true));
     //console.log('ended insertion sort');
 };

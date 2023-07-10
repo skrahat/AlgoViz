@@ -9,7 +9,7 @@ interface State {
     sortInProgess: boolean;
     sorted: boolean;
     algoStop: boolean;
-    iterationsCompleted: number;
+    iterationsCompleted: number[];
     generatedNumbers: { color: string; value: number }[];
 }
 
@@ -20,7 +20,7 @@ const initialState: State = {
     sortInProgess: false,
     sorted: false,
     algoStop: false,
-    iterationsCompleted: 0,
+    iterationsCompleted: [0, 0],
     generatedNumbers: []
 };
 
@@ -47,15 +47,24 @@ const rootReducer = (state = initialState, action: any) => {
             };
         case 'ITERATIONS_COMPLETED':
             if (action.payload.clean === true) {
-                //console.log('ITERATIONS_COMPLETED payload: clean');
-                return { ...state, iterationsCompleted: 0 };
+                return { ...state, iterationsCompleted: [0, 0] };
             }
-            return {
-                ...state,
-                iterationsCompleted: state.iterationsCompleted + 1
-            };
+
+            const { choice } = action.payload;
+            const iterationsCompleted = [...state.iterationsCompleted];
+
+            if (choice === 0) {
+                iterationsCompleted[0] += 1;
+            } else if (choice === 1) {
+                iterationsCompleted[1] += 1;
+            }
+
+            return { ...state, iterationsCompleted };
+
         case 'SORT_IN_PROGRESS':
-            return { ...state, sortInProgess: !state.sortInProgess };
+            const status = action.payload;
+
+            return { ...state, sortInProgess: status };
         case 'SORTED':
             const sorted = action.payload;
             return { ...state, sorted: sorted };
@@ -75,7 +84,7 @@ const rootReducer = (state = initialState, action: any) => {
             const arrayInsertion = action.payload;
             return {
                 ...state,
-                resultOne: arrayInsertion,
+                resultTwo: arrayInsertion,
                 displayComplete: true
             };
         default:
