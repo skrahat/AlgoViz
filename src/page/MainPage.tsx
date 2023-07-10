@@ -70,6 +70,7 @@ export default function Dashboard(): JSX.Element {
         (state: any) => state.iterationsCompleted
     );
     const stopControllerRef = useRef<AbortController | null>(null);
+    const [selectedAlgorithm, setSelectedAlgorithm] = useState('');
 
     // Generate the data array for the BarGraph component
     const GenerateDataGraph = (
@@ -99,12 +100,27 @@ export default function Dashboard(): JSX.Element {
 
     // Perform insertion sort
     const insertionSort = async () => {
+        setRunning(true);
         stopControllerRef.current = new AbortController();
         callFacts();
 
         dispatch(iterationsCompletedAction(true));
         dispatch(sortInProgressAction());
-        InsertionSort(result, stopControllerRef.current.signal, dispatch);
+        await InsertionSort(result, stopControllerRef.current.signal, dispatch);
+    };
+    const bubbleSortHandler = () => {
+        setSelectedAlgorithm('bubble');
+    };
+
+    const insertionSortHandler = () => {
+        setSelectedAlgorithm('insertion');
+    };
+    const startSorting = () => {
+        if (selectedAlgorithm === 'bubble') {
+            bubbleSort();
+        } else if (selectedAlgorithm === 'insertion') {
+            insertionSort();
+        }
     };
 
     // Handle the array size slider change
@@ -123,6 +139,7 @@ export default function Dashboard(): JSX.Element {
             setRunning(false);
         }
         dispatch(sortInProgressAction());
+        setSelectedAlgorithm('');
     };
 
     // Change the app language
