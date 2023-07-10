@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import CustomButton from '../component/Button';
+import CustomButton from '../component/CustomButton';
 import {
     generateNumbersAction,
     sortInProgressAction,
@@ -154,193 +154,206 @@ export default function Dashboard(): JSX.Element {
     }, [result, arraySize, sortingInProgressState, factData]);
 
     return (
-        <Container
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: '100vh',
-                background: colours.background
-            }}
-        >
-            <Container>
-                {/* App Bar */}
-                <ThemeProvider theme={theme}>
-                    <AppBar
-                        position="static"
-                        sx={{
-                            minHeight: '4rem',
-                            maxHeight: '6rem',
-                            backgroundColor: theme.palette.text.secondary
-                        }}
-                    >
-                        <Container maxWidth="xl">
-                            <Toolbar disableGutters>
-                                {/* App Title */}
-                                <Typography
-                                    sx={{
-                                        mr: 3,
-                                        display: { xs: 'flex', md: 'flex' },
-                                        color: theme.palette.text.primary,
-                                        fontSize: '1.5rem'
-                                    }}
-                                >
-                                    {t(`AlgoViz`)}
-                                </Typography>
-
-                                {/* Array Size Slider */}
-                                <Box sx={{ width: 100, padding: '0.4rem' }}>
-                                    <Slider
-                                        id="array-size-slider"
-                                        value={arraySize}
-                                        min={10}
-                                        step={1}
-                                        max={100}
-                                        color="secondary"
-                                        onChange={handleChange}
-                                        disabled={sortingInProgressState}
-                                        valueLabelDisplay="auto"
-                                        aria-labelledby="array-size-slider"
-                                    />
-                                </Box>
-
-                                {/* Action Buttons */}
-                                <Box
-                                    sx={{
-                                        flexGrow: 1,
-                                        display: { xs: 'flex', md: 'flex' }
-                                    }}
-                                >
-                                    <CustomButton
-                                        id="stop-sorting-button"
-                                        disabled={!sortingInProgressState}
-                                        onClick={stopSortingHandler}
-                                    >
-                                        {t('Stop Sorting')}
-                                    </CustomButton>
-                                    <CustomButton
-                                        id="clear-numbers-button"
-                                        disabled={sortingInProgressState}
-                                        onClick={RemoveNumberFunction}
-                                    >
-                                        {t('Update Numbers')}
-                                    </CustomButton>
-                                    <CustomButton
-                                        id="bubble-sort-button"
-                                        disabled={sortingInProgressState}
-                                        onClick={bubbleSort}
-                                    >
-                                        {t('Bubble Sort')}
-                                    </CustomButton>
-                                    <CustomButton
-                                        id="insertion-sort-button"
-                                        disabled={sortingInProgressState}
-                                        onClick={insertionSort}
-                                    >
-                                        {t('Insertion Sort')}
-                                    </CustomButton>
-
-                                    {/* Iterations Counter */}
-                                    <div
-                                        style={{
-                                            marginRight: 3,
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            padding: '0.5rem',
-                                            borderRadius: '4px'
+        <div style={{ background: colours.background }}>
+            <Container
+                disableGutters={true}
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minHeight: '100vh',
+                    background: colours.background
+                }}
+            >
+                <Container disableGutters={true}>
+                    {/* App Bar */}
+                    <ThemeProvider theme={theme}>
+                        <AppBar
+                            position="static"
+                            sx={{
+                                minHeight: '4rem',
+                                maxHeight: '6rem',
+                                backgroundColor: theme.palette.text.secondary
+                            }}
+                        >
+                            <Container maxWidth="xl">
+                                <Toolbar disableGutters>
+                                    {/* App Title */}
+                                    <Typography
+                                        sx={{
+                                            mr: 3,
+                                            display: { xs: 'flex', md: 'flex' },
+                                            color: theme.palette.text.primary,
+                                            fontSize: '1.5rem'
                                         }}
                                     >
-                                        {t(`Iterations`)}:
-                                        <Paper
-                                            elevation={3}
-                                            sx={{
+                                        {t(`AlgoViz`)}
+                                    </Typography>
+
+                                    {/* Array Size Slider */}
+                                    <Box sx={{ width: 100, padding: '0.4rem' }}>
+                                        <Slider
+                                            id="array-size-slider"
+                                            value={arraySize}
+                                            min={10}
+                                            step={1}
+                                            max={100}
+                                            color="secondary"
+                                            onChange={handleChange}
+                                            disabled={sortingInProgressState}
+                                            valueLabelDisplay="auto"
+                                            aria-labelledby="array-size-slider"
+                                        />
+                                    </Box>
+
+                                    {/* Action Buttons */}
+                                    <Box
+                                        sx={{
+                                            flexGrow: 1,
+                                            display: { xs: 'flex', md: 'flex' }
+                                        }}
+                                    >
+                                        <CustomButton
+                                            id="stop-sorting-button"
+                                            disabled={!sortingInProgressState}
+                                            onClick={stopSortingHandler}
+                                        >
+                                            {t('Stop Sorting')}
+                                        </CustomButton>
+                                        <CustomButton
+                                            id="clear-numbers-button"
+                                            disabled={sortingInProgressState}
+                                            onClick={RemoveNumberFunction}
+                                        >
+                                            {t('Update Numbers')}
+                                        </CustomButton>
+                                        <CustomButton
+                                            id="bubble-sort-button"
+                                            disabled={sortingInProgressState}
+                                            onClick={bubbleSort}
+                                        >
+                                            {t('Bubble Sort')}
+                                        </CustomButton>
+                                        <CustomButton
+                                            id="insertion-sort-button"
+                                            disabled={sortingInProgressState}
+                                            onClick={insertionSort}
+                                        >
+                                            {t('Insertion Sort')}
+                                        </CustomButton>
+
+                                        {/* Iterations Counter */}
+                                        <div
+                                            style={{
+                                                marginRight: 3,
+                                                display: 'flex',
+                                                alignItems: 'center',
                                                 padding: '0.5rem',
-                                                borderRadius: '4px',
-                                                marginLeft: '0.5rem',
-                                                color: colours.primary
+                                                borderRadius: '4px'
                                             }}
                                         >
-                                            {iterationsCompletedState}
-                                        </Paper>
-                                    </div>
+                                            {t(`Iterations`)}:
+                                            <Paper
+                                                elevation={3}
+                                                sx={{
+                                                    padding: '0.5rem',
+                                                    borderRadius: '4px',
+                                                    marginLeft: '0.5rem',
+                                                    color: colours.primary
+                                                }}
+                                            >
+                                                {iterationsCompletedState}
+                                            </Paper>
+                                        </div>
 
-                                    {/* Language Switch */}
-                                    <FormControlLabel
-                                        control={
-                                            <Switch
-                                                id="language-switch"
-                                                disabled={false}
-                                                checked={!languageValue}
-                                                onChange={changeLanguageHandler}
-                                                color="secondary"
-                                            />
-                                        }
-                                        label={
-                                            languageValue
-                                                ? 'English'
-                                                : 'Français'
-                                        }
-                                        labelPlacement="start"
-                                    />
+                                        {/* Language Switch */}
+                                        <FormControlLabel
+                                            control={
+                                                <Switch
+                                                    id="language-switch"
+                                                    disabled={false}
+                                                    checked={!languageValue}
+                                                    onChange={
+                                                        changeLanguageHandler
+                                                    }
+                                                    color="secondary"
+                                                />
+                                            }
+                                            label={
+                                                languageValue
+                                                    ? 'English'
+                                                    : 'Français'
+                                            }
+                                            labelPlacement="start"
+                                        />
 
-                                    {/* Toast Container */}
-                                    <ToastContainer
-                                        position="top-center"
-                                        autoClose={2000}
-                                        hideProgressBar
-                                        newestOnTop={false}
-                                        closeOnClick
-                                        rtl={false}
-                                        pauseOnFocusLoss
-                                        draggable
-                                        pauseOnHover
-                                    />
-                                </Box>
-                            </Toolbar>
-                        </Container>
-                    </AppBar>
-                </ThemeProvider>
+                                        {/* Toast Container */}
+                                        <ToastContainer
+                                            position="top-center"
+                                            autoClose={2000}
+                                            hideProgressBar
+                                            newestOnTop={false}
+                                            closeOnClick
+                                            rtl={false}
+                                            pauseOnFocusLoss
+                                            draggable
+                                            pauseOnHover
+                                        />
+                                    </Box>
+                                </Toolbar>
+                            </Container>
+                        </AppBar>
+                    </ThemeProvider>
 
-                {/* Linear Progress */}
-                {sortingInProgressState && (
-                    <Box sx={{ width: '100%' }}>
-                        <LinearProgress color="secondary" />
-                    </Box>
-                )}
+                    {/* Linear Progress */}
+                    {sortingInProgressState && (
+                        <Box sx={{ width: '100%' }}>
+                            <LinearProgress color="secondary" />
+                        </Box>
+                    )}
 
-                {/* Bar Graph */}
-                <Container
-                    maxWidth="xl"
-                    style={{ marginTop: '2rem', flex: '1' }}
-                >
-                    <BarGraph
-                        result={result}
-                        sortingInProgressState={sortingInProgressState}
-                        sorted={sorted}
-                    />
-                </Container>
-
-                {/* Facts */}
-                {sortingInProgressState && (
-                    <Container maxWidth="xl" style={{ marginBottom: '2rem' }}>
-                        <Typography>{t('Random Facts')}:</Typography>
-                        <TableContainer>
-                            <Table>
-                                <TableBody>
-                                    {factData.map((fact, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell>{fact.fact}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                    {/* Bar Graph */}
+                    <Container
+                        maxWidth="xl"
+                        style={{ marginTop: '2rem', flex: '1' }}
+                    >
+                        <BarGraph
+                            result={result}
+                            sortingInProgressState={sortingInProgressState}
+                            sorted={sorted}
+                        />
                     </Container>
-                )}
+
+                    {/* Facts */}
+                    {sortingInProgressState && (
+                        <Container
+                            maxWidth="xl"
+                            style={{ marginBottom: '2rem' }}
+                        >
+                            <Typography>{t('Random Facts')}:</Typography>
+                            <TableContainer>
+                                <Table>
+                                    <TableBody>
+                                        {factData.map((fact, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell>
+                                                    {fact.fact}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Container>
+                    )}
+                </Container>
+                {/* Footer */}
+                <Container
+                    disableGutters={true}
+                    style={{ marginTop: 'auto', width: '100%' }}
+                >
+                    <Footer />
+                </Container>
             </Container>
-            {/* Footer */}
-            <Container style={{ marginTop: 'auto', width: '100%' }}>
-                <Footer />
-            </Container>
-        </Container>
+        </div>
     );
 }

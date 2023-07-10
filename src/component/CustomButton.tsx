@@ -15,6 +15,9 @@ const CustomButton: React.FC<CustomButtonProps> = ({
         <Button
             id={id}
             sx={{
+                width: '10rem',
+                height: '4rem',
+
                 my: 2,
                 color: 'white',
                 display: 'block',
