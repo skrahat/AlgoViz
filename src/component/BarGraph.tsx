@@ -90,11 +90,18 @@ const BarGraph: React.FC<BarGraphProps> = ({
         },
         scales: {
             x: {
+                title: {
+                    display: false
+                },
                 grid: {
                     display: false // Remove x-axis grid lines
                 }
             },
             y: {
+                title: {
+                    display: true,
+                    text: 'Size'
+                },
                 grid: {
                     display: false // Remove y-axis grid lines
                 }
