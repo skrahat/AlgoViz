@@ -22,7 +22,8 @@ const CustomButton: React.FC<CustomButtonProps> = ({
                 color: 'white',
                 display: 'block',
                 '&:hover': {
-                    backgroundColor: colours.accent
+                    backgroundColor: colours.accent,
+                    color: 'black'
                 },
                 ...props.sx
             }}
