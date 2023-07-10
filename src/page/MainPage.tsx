@@ -13,7 +13,12 @@ import {
     TableBody,
     TableCell,
     TableContainer,
-    TableRow
+    TableRow,
+    SelectChangeEvent,
+    OutlinedInput,
+    FormControl,
+    Select,
+    MenuItem
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
@@ -58,7 +63,7 @@ interface Fact {
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
-    const { result, sorted } = useSelector((state: any) => state);
+    const { resultOne, sorted } = useSelector((state: any) => state);
     const [running, setRunning] = useState(false);
     const [languageValue, setLanguageValue] = useState(true);
     const [factData, setFactData] = useState<Fact[]>([]);
@@ -70,8 +75,32 @@ export default function Dashboard(): JSX.Element {
         (state: any) => state.iterationsCompleted
     );
     const stopControllerRef = useRef<AbortController | null>(null);
-    const [selectedAlgorithm, setSelectedAlgorithm] = useState('');
+    const [selectedAlgorithm, setSelectedAlgorithm] = React.useState<string[]>(
+        []
+    );
 
+    const ITEM_HEIGHT = 48;
+    const ITEM_PADDING_TOP = 8;
+    const MenuProps = {
+        PaperProps: {
+            style: {
+                maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+                width: '4rem'
+            }
+        }
+    };
+    const algorithmList = ['Bubble', 'Insertion'];
+    const algorithmHandleChange = (
+        event: SelectChangeEvent<typeof selectedAlgorithm>
+    ) => {
+        const {
+            target: { value }
+        } = event;
+        setSelectedAlgorithm(
+            // On autofill we get a stringified value.
+            typeof value === 'string' ? value.split(',') : value
+        );
+    };
     // Generate the data array for the BarGraph component
     const GenerateDataGraph = (
         arrayX: { color: string; value: number }[],
@@ -95,7 +124,7 @@ export default function Dashboard(): JSX.Element {
         callFacts();
         dispatch(iterationsCompletedAction(true));
         dispatch(sortInProgressAction());
-        await BubbleSort(result, stopControllerRef.current.signal, dispatch);
+        await BubbleSort(resultOne, stopControllerRef.current.signal, dispatch);
     };
 
     // Perform insertion sort
@@ -106,21 +135,25 @@ export default function Dashboard(): JSX.Element {
 
         dispatch(iterationsCompletedAction(true));
         dispatch(sortInProgressAction());
-        await InsertionSort(result, stopControllerRef.current.signal, dispatch);
+        await InsertionSort(
+            resultOne,
+            stopControllerRef.current.signal,
+            dispatch
+        );
     };
-    const bubbleSortHandler = () => {
-        setSelectedAlgorithm('bubble');
-    };
+    // const bubbleSortHandler = () => {
+    //     setSelectedAlgorithm('bubble');
+    // };
 
-    const insertionSortHandler = () => {
-        setSelectedAlgorithm('insertion');
-    };
+    // const insertionSortHandler = () => {
+    //     setSelectedAlgorithm('insertion');
+    // };
     const startSorting = () => {
-        if (selectedAlgorithm === 'bubble') {
-            bubbleSort();
-        } else if (selectedAlgorithm === 'insertion') {
-            insertionSort();
-        }
+        // if (selectedAlgorithm === 'bubble') {
+        //     bubbleSort();
+        // } else if (selectedAlgorithm === 'insertion') {
+        //     insertionSort();
+        // }
     };
 
     // Handle the array size slider change
@@ -139,7 +172,7 @@ export default function Dashboard(): JSX.Element {
             setRunning(false);
         }
         dispatch(sortInProgressAction());
-        setSelectedAlgorithm('');
+        //setSelectedAlgorithm('');
     };
 
     // Change the app language
@@ -161,14 +194,14 @@ export default function Dashboard(): JSX.Element {
     useEffect(() => {
         dispatch(generateNumbersAction(arraySize));
         // Generate the initial data array for the BarGraph component
-        GenerateDataGraph(result, result.length);
+        GenerateDataGraph(resultOne, resultOne.length);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
         // Update the data array for the BarGraph component when result, arraySize, sortingInProgressState, or factData change
-        GenerateDataGraph(result, result.length);
-    }, [result, arraySize, sortingInProgressState, factData]);
+        GenerateDataGraph(resultOne, resultOne.length);
+    }, [resultOne, arraySize, sortingInProgressState, factData]);
 
     return (
         <div style={{ background: colours.background }}>
@@ -192,7 +225,7 @@ export default function Dashboard(): JSX.Element {
                                 backgroundColor: theme.palette.text.secondary
                             }}
                         >
-                            <Container maxWidth="xl">
+                            <Container disableGutters={true}>
                                 <Toolbar disableGutters>
                                     {/* App Title */}
                                     <Typography
@@ -207,7 +240,13 @@ export default function Dashboard(): JSX.Element {
                                     </Typography>
 
                                     {/* Array Size Slider */}
-                                    <Box sx={{ width: 100, padding: '0.4rem' }}>
+                                    <Box
+                                        sx={{
+                                            maxWidth: 100,
+                                            padding: '0.4rem',
+                                            minWidth: 50
+                                        }}
+                                    >
                                         <Slider
                                             id="array-size-slider"
                                             value={arraySize}
@@ -230,11 +269,12 @@ export default function Dashboard(): JSX.Element {
                                         }}
                                     >
                                         <CustomButton
-                                            id="stop-sorting-button"
-                                            disabled={!sortingInProgressState}
+                                            id="stop-button"
+                                            //disabled={!sortingInProgressState}
                                             onClick={stopSortingHandler}
+                                            width="5rem"
                                         >
-                                            {t('Stop Sorting')}
+                                            {t('Stop')}
                                         </CustomButton>
                                         <CustomButton
                                             id="clear-numbers-button"
@@ -257,7 +297,57 @@ export default function Dashboard(): JSX.Element {
                                         >
                                             {t('Insertion Sort')}
                                         </CustomButton>
+                                        <FormControl
+                                            sx={{ m: 1, width: 175, mt: 2 }}
+                                        >
+                                            <Select
+                                                multiple
+                                                displayEmpty
+                                                value={selectedAlgorithm}
+                                                onChange={algorithmHandleChange}
+                                                input={<OutlinedInput />}
+                                                renderValue={(selected) => {
+                                                    if (selected.length === 0) {
+                                                        return (
+                                                            <em>pick algo</em>
+                                                        );
+                                                    }
 
+                                                    return selected.join(', ');
+                                                }}
+                                                MenuProps={MenuProps}
+                                                inputProps={{
+                                                    'aria-label':
+                                                        'Without label'
+                                                }}
+                                                sx={{
+                                                    color: colours.secondary
+                                                }}
+                                            >
+                                                <MenuItem disabled value="">
+                                                    <em></em>
+                                                </MenuItem>
+                                                {algorithmList.map((name) => (
+                                                    <MenuItem
+                                                        key={name}
+                                                        value={name}
+                                                        style={{
+                                                            color: colours.primary
+                                                        }}
+                                                    >
+                                                        {name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                        <CustomButton
+                                            id="start-button"
+                                            disabled={sortingInProgressState}
+                                            width="5rem"
+                                            onClick={() => {}}
+                                        >
+                                            {t('Start')}
+                                        </CustomButton>
                                         {/* Iterations Counter */}
                                         <div
                                             style={{
@@ -295,11 +385,7 @@ export default function Dashboard(): JSX.Element {
                                                     color="secondary"
                                                 />
                                             }
-                                            label={
-                                                languageValue
-                                                    ? 'English'
-                                                    : 'Français'
-                                            }
+                                            label={languageValue ? 'En' : 'Fr'}
                                             labelPlacement="start"
                                         />
 
@@ -334,7 +420,7 @@ export default function Dashboard(): JSX.Element {
                         style={{ marginTop: '2rem', flex: '1' }}
                     >
                         <BarGraph
-                            result={result}
+                            result={resultOne}
                             sortingInProgressState={sortingInProgressState}
                             sorted={sorted}
                         />

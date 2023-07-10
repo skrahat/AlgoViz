@@ -2,7 +2,9 @@
 import { colours } from '../../styling/colours';
 
 interface State {
-    result: { color: string; value: number }[];
+    resultOne: { color: string; value: number }[];
+    resultTwo: { color: string; value: number }[];
+
     displayComplete: boolean;
     sortInProgess: boolean;
     sorted: boolean;
@@ -12,7 +14,8 @@ interface State {
 }
 
 const initialState: State = {
-    result: [],
+    resultOne: [],
+    resultTwo: [],
     displayComplete: true,
     sortInProgess: false,
     sorted: false,
@@ -32,9 +35,13 @@ const rootReducer = (state = initialState, action: any) => {
                 );
                 result.push({ color: colours.accent, value: randomNumber });
             }
+            const resultOne = result;
+            const resultTwo = result;
+
             return {
                 ...state,
-                result,
+                resultOne,
+                resultTwo,
                 displayComplete: true,
                 generatedNumbers: result
             };
@@ -61,14 +68,14 @@ const rootReducer = (state = initialState, action: any) => {
             const arrayBubble = action.payload;
             return {
                 ...state,
-                result: arrayBubble,
+                resultOne: arrayBubble,
                 displayComplete: true
             };
         case 'SORT_NUMBERS_INSERTION':
             const arrayInsertion = action.payload;
             return {
                 ...state,
-                result: arrayInsertion,
+                resultOne: arrayInsertion,
                 displayComplete: true
             };
         default:
