@@ -2,22 +2,25 @@
 import { colours } from '../../styling/colours';
 
 interface State {
-    result: { color: string; value: number }[];
+    resultOne: { color: string; value: number }[];
+    resultTwo: { color: string; value: number }[];
+
     displayComplete: boolean;
-    sortInProgess: boolean;
+    sortInProgress: boolean;
     sorted: boolean;
     algoStop: boolean;
-    iterationsCompleted: number;
+    iterationsCompleted: number[];
     generatedNumbers: { color: string; value: number }[];
 }
 
 const initialState: State = {
-    result: [],
+    resultOne: [],
+    resultTwo: [],
     displayComplete: true,
-    sortInProgess: false,
+    sortInProgress: false,
     sorted: false,
     algoStop: false,
-    iterationsCompleted: 0,
+    iterationsCompleted: [0, 0],
     generatedNumbers: []
 };
 
@@ -32,43 +35,70 @@ const rootReducer = (state = initialState, action: any) => {
                 );
                 result.push({ color: colours.accent, value: randomNumber });
             }
+            const resultOne = result;
+            const resultTwo = result;
+
             return {
                 ...state,
-                result,
+                resultOne,
+                resultTwo,
                 displayComplete: true,
                 generatedNumbers: result
             };
         case 'ITERATIONS_COMPLETED':
             if (action.payload.clean === true) {
-                //console.log('ITERATIONS_COMPLETED payload: clean');
-                return { ...state, iterationsCompleted: 0 };
+                return { ...state, iterationsCompleted: [0, 0] };
             }
-            return {
-                ...state,
-                iterationsCompleted: state.iterationsCompleted + 1
-            };
+
+            const { choice } = action.payload;
+            const iterationsCompleted = [...state.iterationsCompleted];
+
+            if (choice === 0) {
+                iterationsCompleted[0] += 1;
+            } else if (choice === 1) {
+                iterationsCompleted[1] += 1;
+            }
+
+            return { ...state, iterationsCompleted };
+
         case 'SORT_IN_PROGRESS':
-            return { ...state, sortInProgess: !state.sortInProgess };
+            const status = action.payload;
+
+            return { ...state, sortInProgress: status };
         case 'SORTED':
             const sorted = action.payload;
             return { ...state, sorted: sorted };
         case 'START_BUBBLE_SORT':
-            return { ...state, sortInProgess: true, algoStop: false };
+            return { ...state, sortInProgress: true, algoStop: false };
 
         case 'STOP_BUBBLE_SORT':
             return { ...state, algoStop: true };
         case 'SORT_NUMBERS_BUBBLE':
-            const arrayBubble = action.payload;
+            const arrayBubble = action.payload.newArray;
+            const graphNumberBubble = action.payload.graphNumber;
+            if (graphNumberBubble === 0)
+                return {
+                    ...state,
+                    resultOne: arrayBubble,
+                    displayComplete: true
+                };
             return {
                 ...state,
-                result: arrayBubble,
+                resultTwo: arrayBubble,
                 displayComplete: true
             };
         case 'SORT_NUMBERS_INSERTION':
-            const arrayInsertion = action.payload;
+            const arrayInsertion = action.payload.newArray;
+            const graphNumberInsertion = action.payload.graphNumber;
+            if (graphNumberInsertion === 0)
+                return {
+                    ...state,
+                    resultOne: arrayInsertion,
+                    displayComplete: true
+                };
             return {
                 ...state,
-                result: arrayInsertion,
+                resultTwo: arrayInsertion,
                 displayComplete: true
             };
         default:

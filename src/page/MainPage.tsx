@@ -13,7 +13,13 @@ import {
     TableBody,
     TableCell,
     TableContainer,
-    TableRow
+    TableRow,
+    SelectChangeEvent,
+    OutlinedInput,
+    FormControl,
+    Select,
+    MenuItem,
+    Checkbox
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
@@ -33,7 +39,8 @@ import BarGraph from '../component/BarGraph';
 import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import { fetchData } from '../api/factApi';
-
+import StickyNote2Icon from '@mui/icons-material/StickyNote2';
+import Filter1OutlinedIcon from '@mui/icons-material/Filter1Outlined';
 // Define the MUI theme
 const theme = createTheme({
     palette: {
@@ -58,20 +65,46 @@ interface Fact {
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
-    const { result, sorted } = useSelector((state: any) => state);
+    const { resultOne, sorted, resultTwo } = useSelector((state: any) => state);
     const [running, setRunning] = useState(false);
     const [languageValue, setLanguageValue] = useState(true);
+    const [displayFact, setDisplayFact] = useState(false);
+
     const [factData, setFactData] = useState<Fact[]>([]);
     const [arraySize, setArraySize] = useState<number>(10);
     const sortingInProgressState = useSelector(
-        (state: any) => state.sortInProgess
+        (state: any) => state.sortInProgress
     );
     const iterationsCompletedState = useSelector(
         (state: any) => state.iterationsCompleted
     );
     const stopControllerRef = useRef<AbortController | null>(null);
-    const [selectedAlgorithm, setSelectedAlgorithm] = useState('');
+    const [selectedAlgorithm, setSelectedAlgorithm] = React.useState<string[]>(
+        []
+    );
 
+    const ITEM_HEIGHT = 48;
+    const ITEM_PADDING_TOP = 8;
+    const MenuProps = {
+        PaperProps: {
+            style: {
+                maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+                width: '4rem'
+            }
+        }
+    };
+    const algorithmList = ['Bubble', 'Insertion'];
+    const algorithmHandleChange = (
+        event: SelectChangeEvent<typeof selectedAlgorithm>
+    ) => {
+        const {
+            target: { value }
+        } = event;
+        setSelectedAlgorithm(
+            // On autofill we get a stringified value.
+            typeof value === 'string' ? value.split(',') : value
+        );
+    };
     // Generate the data array for the BarGraph component
     const GenerateDataGraph = (
         arrayX: { color: string; value: number }[],
@@ -88,38 +121,58 @@ export default function Dashboard(): JSX.Element {
     };
 
     // Perform bubble sort
-    const bubbleSort = async () => {
+    const bubbleSort = async (stopControllerRef: any, graphNumber: number) => {
         setRunning(true);
-        stopControllerRef.current = new AbortController();
+        //stopControllerRef.current = new AbortController();
 
-        callFacts();
-        dispatch(iterationsCompletedAction(true));
-        dispatch(sortInProgressAction());
-        await BubbleSort(result, stopControllerRef.current.signal, dispatch);
+        //callFacts();
+        //dispatch(iterationsCompletedAction(true));
+        dispatch(sortInProgressAction(true));
+        await BubbleSort(
+            resultOne,
+            stopControllerRef.signal,
+            dispatch,
+            graphNumber
+        );
     };
 
     // Perform insertion sort
-    const insertionSort = async () => {
+    const insertionSort = async (
+        stopControllerRef: any,
+        graphNumber: number
+    ) => {
         setRunning(true);
-        stopControllerRef.current = new AbortController();
-        callFacts();
+        //stopControllerRef.current = new AbortController();
+        //callFacts();
 
-        dispatch(iterationsCompletedAction(true));
-        dispatch(sortInProgressAction());
-        await InsertionSort(result, stopControllerRef.current.signal, dispatch);
-    };
-    const bubbleSortHandler = () => {
-        setSelectedAlgorithm('bubble');
-    };
-
-    const insertionSortHandler = () => {
-        setSelectedAlgorithm('insertion');
+        //dispatch(iterationsCompletedAction(true));
+        dispatch(sortInProgressAction(true));
+        await InsertionSort(
+            resultTwo,
+            stopControllerRef.signal,
+            dispatch,
+            graphNumber
+        );
     };
     const startSorting = () => {
-        if (selectedAlgorithm === 'bubble') {
-            bubbleSort();
-        } else if (selectedAlgorithm === 'insertion') {
-            insertionSort();
+        dispatch(iterationsCompletedAction(true));
+        stopControllerRef.current = new AbortController();
+        try {
+            if (
+                selectedAlgorithm.includes('Bubble') &&
+                selectedAlgorithm.includes('Insertion')
+            ) {
+                Promise.all([
+                    bubbleSort(stopControllerRef.current, 0),
+                    insertionSort(stopControllerRef.current, 1)
+                ]);
+            } else if (selectedAlgorithm.includes('Bubble')) {
+                bubbleSort(stopControllerRef.current, 0);
+            } else if (selectedAlgorithm.includes('Insertion')) {
+                insertionSort(stopControllerRef.current, 0);
+            }
+        } catch (err) {
+            console.log(`error caught while calling sorting algo: ${err}`);
         }
     };
 
@@ -138,8 +191,8 @@ export default function Dashboard(): JSX.Element {
             stopControllerRef.current?.abort();
             setRunning(false);
         }
-        dispatch(sortInProgressAction());
-        setSelectedAlgorithm('');
+        dispatch(sortInProgressAction(false));
+        //setSelectedAlgorithm('');
     };
 
     // Change the app language
@@ -154,21 +207,24 @@ export default function Dashboard(): JSX.Element {
     const limit = 3;
     const callFacts = async () => {
         const data = await fetchData(limit);
-        console.log('Fetched fact data:', data);
+        //console.log('Fetched fact data:', data);
         setFactData(data);
     };
-
+    const handleCheckboxClick = () => {
+        setDisplayFact((prevValue) => !prevValue);
+        callFacts();
+    };
     useEffect(() => {
         dispatch(generateNumbersAction(arraySize));
         // Generate the initial data array for the BarGraph component
-        GenerateDataGraph(result, result.length);
+        GenerateDataGraph(resultOne, resultOne.length);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
         // Update the data array for the BarGraph component when result, arraySize, sortingInProgressState, or factData change
-        GenerateDataGraph(result, result.length);
-    }, [result, arraySize, sortingInProgressState, factData]);
+        GenerateDataGraph(resultOne, resultOne.length);
+    }, [resultOne, resultTwo, arraySize, sortingInProgressState, factData]);
 
     return (
         <div style={{ background: colours.background }}>
@@ -192,7 +248,7 @@ export default function Dashboard(): JSX.Element {
                                 backgroundColor: theme.palette.text.secondary
                             }}
                         >
-                            <Container maxWidth="xl">
+                            <Container disableGutters={true}>
                                 <Toolbar disableGutters>
                                     {/* App Title */}
                                     <Typography
@@ -207,7 +263,13 @@ export default function Dashboard(): JSX.Element {
                                     </Typography>
 
                                     {/* Array Size Slider */}
-                                    <Box sx={{ width: 100, padding: '0.4rem' }}>
+                                    <Box
+                                        sx={{
+                                            maxWidth: 100,
+                                            padding: '0.8rem 0 0 0',
+                                            minWidth: 50
+                                        }}
+                                    >
                                         <Slider
                                             id="array-size-slider"
                                             value={arraySize}
@@ -222,19 +284,21 @@ export default function Dashboard(): JSX.Element {
                                         />
                                     </Box>
 
-                                    {/* Action Buttons */}
                                     <Box
                                         sx={{
                                             flexGrow: 1,
-                                            display: { xs: 'flex', md: 'flex' }
+                                            display: { xs: 'flex', md: 'flex' },
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
                                         }}
                                     >
                                         <CustomButton
-                                            id="stop-sorting-button"
+                                            id="stop-button"
                                             disabled={!sortingInProgressState}
                                             onClick={stopSortingHandler}
+                                            width="5rem"
                                         >
-                                            {t('Stop Sorting')}
+                                            {t('Stop')}
                                         </CustomButton>
                                         <CustomButton
                                             id="clear-numbers-button"
@@ -243,21 +307,61 @@ export default function Dashboard(): JSX.Element {
                                         >
                                             {t('Update Numbers')}
                                         </CustomButton>
-                                        <CustomButton
-                                            id="bubble-sort-button"
-                                            disabled={sortingInProgressState}
-                                            onClick={bubbleSort}
-                                        >
-                                            {t('Bubble Sort')}
-                                        </CustomButton>
-                                        <CustomButton
-                                            id="insertion-sort-button"
-                                            disabled={sortingInProgressState}
-                                            onClick={insertionSort}
-                                        >
-                                            {t('Insertion Sort')}
-                                        </CustomButton>
 
+                                        <FormControl
+                                            sx={{
+                                                width: 175,
+                                                height: '3rem'
+                                            }}
+                                        >
+                                            <Select
+                                                multiple
+                                                displayEmpty
+                                                value={selectedAlgorithm}
+                                                onChange={algorithmHandleChange}
+                                                input={<OutlinedInput />}
+                                                renderValue={(selected) => {
+                                                    if (selected.length === 0) {
+                                                        return (
+                                                            <em>pick algo</em>
+                                                        );
+                                                    }
+
+                                                    return selected.join(', ');
+                                                }}
+                                                MenuProps={MenuProps}
+                                                inputProps={{
+                                                    'aria-label':
+                                                        'Without label'
+                                                }}
+                                                sx={{
+                                                    color: colours.secondary
+                                                }}
+                                            >
+                                                <MenuItem disabled value="">
+                                                    <em></em>
+                                                </MenuItem>
+                                                {algorithmList.map((name) => (
+                                                    <MenuItem
+                                                        key={name}
+                                                        value={name}
+                                                        style={{
+                                                            color: colours.primary
+                                                        }}
+                                                    >
+                                                        {name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                        <CustomButton
+                                            id="start-button"
+                                            disabled={sortingInProgressState}
+                                            width="5rem"
+                                            onClick={startSorting}
+                                        >
+                                            {t('Start')}
+                                        </CustomButton>
                                         {/* Iterations Counter */}
                                         <div
                                             style={{
@@ -278,9 +382,33 @@ export default function Dashboard(): JSX.Element {
                                                     color: colours.primary
                                                 }}
                                             >
-                                                {iterationsCompletedState}
+                                                {selectedAlgorithm.length ===
+                                                    1 &&
+                                                selectedAlgorithm.includes(
+                                                    'Bubble'
+                                                )
+                                                    ? iterationsCompletedState[0]
+                                                    : selectedAlgorithm.length ===
+                                                          1 &&
+                                                      selectedAlgorithm.includes(
+                                                          'Insertion'
+                                                      )
+                                                    ? iterationsCompletedState[1]
+                                                    : `${iterationsCompletedState[0]}/ ${iterationsCompletedState[1]}`}
                                             </Paper>
                                         </div>
+                                        <Checkbox
+                                            onClick={handleCheckboxClick}
+                                            sx={{ color: colours.error }}
+                                            icon={<StickyNote2Icon />}
+                                            checkedIcon={
+                                                <StickyNote2Icon
+                                                    sx={{
+                                                        color: colours.success
+                                                    }}
+                                                />
+                                            }
+                                        />
 
                                         {/* Language Switch */}
                                         <FormControlLabel
@@ -295,11 +423,7 @@ export default function Dashboard(): JSX.Element {
                                                     color="secondary"
                                                 />
                                             }
-                                            label={
-                                                languageValue
-                                                    ? 'English'
-                                                    : 'Français'
-                                            }
+                                            label={languageValue ? 'En' : 'Fr'}
                                             labelPlacement="start"
                                         />
 
@@ -333,15 +457,35 @@ export default function Dashboard(): JSX.Element {
                         maxWidth="xl"
                         style={{ marginTop: '2rem', flex: '1' }}
                     >
+                        {selectedAlgorithm.length === 0
+                            ? ''
+                            : selectedAlgorithm.length === 1 &&
+                              selectedAlgorithm.includes('Insertion')
+                            ? 'Insertion Sort'
+                            : 'Bubble Sort'}
+
                         <BarGraph
-                            result={result}
+                            result={resultOne}
                             sortingInProgressState={sortingInProgressState}
                             sorted={sorted}
                         />
+                        {selectedAlgorithm.length === 2 &&
+                        selectedAlgorithm.includes('Insertion')
+                            ? `Insertion Sort`
+                            : ''}
+                        {selectedAlgorithm.length === 2 ? (
+                            <BarGraph
+                                result={resultTwo}
+                                sortingInProgressState={sortingInProgressState}
+                                sorted={sorted}
+                            />
+                        ) : (
+                            ''
+                        )}
                     </Container>
 
                     {/* Facts */}
-                    {sortingInProgressState && (
+                    {displayFact && (
                         <Container
                             maxWidth="xl"
                             style={{ marginBottom: '2rem' }}

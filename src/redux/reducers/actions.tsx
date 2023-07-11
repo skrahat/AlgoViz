@@ -5,10 +5,11 @@ export const generateNumbersAction = (arraySize: number) => {
         payload: arraySize
     };
 };
-export const sortInProgressAction = () => {
+export const sortInProgressAction = (status: boolean) => {
     //console.log('sortInProgess action reached');
     return {
-        type: 'SORT_IN_PROGRESS'
+        type: 'SORT_IN_PROGRESS',
+        payload: status
     };
 };
 export const sortedAction = (sorted: boolean) => {
@@ -31,25 +32,31 @@ export const stopBubbleSortAction = () => {
     };
 };
 
-export const iterationsCompletedAction = (clean: boolean) => {
+export const iterationsCompletedAction = (clean: boolean, choice?: number) => {
     return {
         type: 'ITERATIONS_COMPLETED',
-        payload: { clean: clean }
+        payload: { clean: clean, choice: choice }
     };
 };
-export const sortNumbersBubbleAction = (newArray: number[]) => {
+export const sortNumbersBubbleAction = (
+    newArray: number[],
+    graphNumber: number
+) => {
     //console.log('SORT_NUMBERS_BUBBLE action reached');
 
     return {
         type: 'SORT_NUMBERS_BUBBLE',
-        payload: newArray
+        payload: { newArray: newArray, graphNumber: graphNumber }
     };
 };
-export const sortNumbersInsertionAction = (newArray: number[]) => {
+export const sortNumbersInsertionAction = (
+    newArray: number[],
+    graphNumber: number
+) => {
     //console.log('SORT_NUMBERS_INSERTION action reached');
 
     return {
         type: 'SORT_NUMBERS_INSERTION',
-        payload: newArray
+        payload: { newArray: newArray, graphNumber: graphNumber }
     };
 };
