@@ -39,7 +39,7 @@ import BarGraph from '../component/BarGraph';
 import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import { fetchData } from '../api/factApi';
-import Filter2OutlinedIcon from '@mui/icons-material/Filter2Outlined';
+import StickyNote2Icon from '@mui/icons-material/StickyNote2';
 import Filter1OutlinedIcon from '@mui/icons-material/Filter1Outlined';
 // Define the MUI theme
 const theme = createTheme({
@@ -68,7 +68,7 @@ export default function Dashboard(): JSX.Element {
     const { resultOne, sorted, resultTwo } = useSelector((state: any) => state);
     const [running, setRunning] = useState(false);
     const [languageValue, setLanguageValue] = useState(true);
-    const [doubleGraph, setDoubleGraph] = useState(false);
+    const [displayFact, setDisplayFact] = useState(false);
 
     const [factData, setFactData] = useState<Fact[]>([]);
     const [arraySize, setArraySize] = useState<number>(10);
@@ -156,7 +156,6 @@ export default function Dashboard(): JSX.Element {
     };
     const startSorting = () => {
         dispatch(iterationsCompletedAction(true));
-        callFacts();
         stopControllerRef.current = new AbortController();
         try {
             if (
@@ -211,7 +210,10 @@ export default function Dashboard(): JSX.Element {
         //console.log('Fetched fact data:', data);
         setFactData(data);
     };
-
+    const handleCheckboxClick = () => {
+        setDisplayFact((prevValue) => !prevValue);
+        callFacts();
+    };
     useEffect(() => {
         dispatch(generateNumbersAction(arraySize));
         // Generate the initial data array for the BarGraph component
@@ -264,7 +266,7 @@ export default function Dashboard(): JSX.Element {
                                     <Box
                                         sx={{
                                             maxWidth: 100,
-                                            padding: '0.4rem',
+                                            padding: '0.8rem 0 0 0',
                                             minWidth: 50
                                         }}
                                     >
@@ -282,16 +284,17 @@ export default function Dashboard(): JSX.Element {
                                         />
                                     </Box>
 
-                                    {/* Action Buttons */}
                                     <Box
                                         sx={{
                                             flexGrow: 1,
-                                            display: { xs: 'flex', md: 'flex' }
+                                            display: { xs: 'flex', md: 'flex' },
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
                                         }}
                                     >
                                         <CustomButton
                                             id="stop-button"
-                                            //disabled={!sortingInProgressState}
+                                            disabled={!sortingInProgressState}
                                             onClick={stopSortingHandler}
                                             width="5rem"
                                         >
@@ -304,22 +307,12 @@ export default function Dashboard(): JSX.Element {
                                         >
                                             {t('Update Numbers')}
                                         </CustomButton>
-                                        {/* <CustomButton
-                                            id="bubble-sort-button"
-                                            //disabled={sortingInProgressState}
-                                            //onClick={bubbleSort()}
-                                        >
-                                            {t('Bubble Sort')}
-                                        </CustomButton>
-                                        <CustomButton
-                                            id="insertion-sort-button"
-                                            //disabled={sortingInProgressState}
-                                            //onClick={insertionSort}
-                                        >
-                                            {t('Insertion Sort')}
-                                        </CustomButton> */}
+
                                         <FormControl
-                                            sx={{ m: 1, width: 175, mt: 2 }}
+                                            sx={{
+                                                width: 175,
+                                                height: '3rem'
+                                            }}
                                         >
                                             <Select
                                                 multiple
@@ -389,24 +382,29 @@ export default function Dashboard(): JSX.Element {
                                                     color: colours.primary
                                                 }}
                                             >
-                                                {iterationsCompletedState[0]}
-                                                {selectedAlgorithm.length === 2
-                                                    ? `/ ${iterationsCompletedState[1]}`
-                                                    : ''}
+                                                {selectedAlgorithm.length ===
+                                                    1 &&
+                                                selectedAlgorithm.includes(
+                                                    'Bubble'
+                                                )
+                                                    ? iterationsCompletedState[0]
+                                                    : selectedAlgorithm.length ===
+                                                          1 &&
+                                                      selectedAlgorithm.includes(
+                                                          'Insertion'
+                                                      )
+                                                    ? iterationsCompletedState[1]
+                                                    : `${iterationsCompletedState[0]}/ ${iterationsCompletedState[1]}`}
                                             </Paper>
                                         </div>
                                         <Checkbox
-                                            onClick={() =>
-                                                setDoubleGraph(
-                                                    (prevValue) => !prevValue
-                                                )
-                                            }
+                                            onClick={handleCheckboxClick}
                                             sx={{ color: colours.error }}
-                                            icon={<Filter2OutlinedIcon />}
+                                            icon={<StickyNote2Icon />}
                                             checkedIcon={
-                                                <Filter1OutlinedIcon
+                                                <StickyNote2Icon
                                                     sx={{
-                                                        color: colours.error
+                                                        color: colours.success
                                                     }}
                                                 />
                                             }
@@ -484,37 +482,10 @@ export default function Dashboard(): JSX.Element {
                         ) : (
                             ''
                         )}
-                        {/* {doubleGraph ? (
-                            ''
-                        ) : (
-                            <BarGraph
-                                result={resultTwo}
-                                sortingInProgressState={sortingInProgressState}
-                                sorted={sorted}
-                            />
-                        )} */}
                     </Container>
 
-                    {/* <Container
-                        maxWidth="xl"
-                        style={{ marginTop: '2rem', flex: '1' }}
-                    >
-                        <BarGraph
-                            result={resultOne}
-                            sortingInProgressState={sortingInProgressState}
-                            sorted={sorted}
-                            selectedAlgorithm={selectedAlgorithm}
-                        />
-                        <BarGraph
-                            result={resultTwo}
-                            sortingInProgressState={sortingInProgressState}
-                            sorted={sorted}
-                            selectedAlgorithm={selectedAlgorithm}
-                        />
-                    </Container> */}
-
                     {/* Facts */}
-                    {sortingInProgressState && (
+                    {displayFact && (
                         <Container
                             maxWidth="xl"
                             style={{ marginBottom: '2rem' }}

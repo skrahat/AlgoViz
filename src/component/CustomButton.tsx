@@ -18,20 +18,19 @@ const CustomButton: React.FC<CustomButtonProps> = ({
             id={id}
             sx={{
                 width: width ? width : '10rem',
-                height: '4rem',
-
-                my: 2,
+                height: '3rem',
                 color: 'white',
                 display: 'block',
-                border: `1px solid ${colours.accent}`,
+                margin: '0rem 0.8rem',
+                //border: `1px solid ${colours.accent}`,
                 '&:hover': {
                     backgroundColor: colours.accent,
                     color: 'black'
                 },
-                '&:active': {
-                    boxShadow: 'none',
-                    backgroundColor: '#0062cc',
-                    borderColor: '#005cbf'
+                '&.Mui-disabled': {
+                    // Override disabled text color
+                    color: colours.disable,
+                    border: `1px solid ${colours.disable}`
                 },
                 ...props.sx
             }}
