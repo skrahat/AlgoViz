@@ -38,19 +38,25 @@ export const iterationsCompletedAction = (clean: boolean, choice?: number) => {
         payload: { clean: clean, choice: choice }
     };
 };
-export const sortNumbersBubbleAction = (newArray: number[]) => {
+export const sortNumbersBubbleAction = (
+    newArray: number[],
+    graphNumber: number
+) => {
     //console.log('SORT_NUMBERS_BUBBLE action reached');
 
     return {
         type: 'SORT_NUMBERS_BUBBLE',
-        payload: newArray
+        payload: { newArray: newArray, graphNumber: graphNumber }
     };
 };
-export const sortNumbersInsertionAction = (newArray: number[]) => {
+export const sortNumbersInsertionAction = (
+    newArray: number[],
+    graphNumber: number
+) => {
     //console.log('SORT_NUMBERS_INSERTION action reached');
 
     return {
         type: 'SORT_NUMBERS_INSERTION',
-        payload: newArray
+        payload: { newArray: newArray, graphNumber: graphNumber }
     };
 };

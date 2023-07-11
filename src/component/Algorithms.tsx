@@ -10,7 +10,8 @@ import { colours } from '../styling/colours';
 export const BubbleSort = async (
     result: any[],
     signal: AbortSignal,
-    dispatch: any
+    dispatch: any,
+    graphNumber: number
 ) => {
     //console.log('started bubble sort');
     const newArray = [...result];
@@ -24,7 +25,7 @@ export const BubbleSort = async (
                 const unsortedArray = newArray.map((item) => {
                     return { ...item, color: colours.accent };
                 });
-                dispatch(sortNumbersBubbleAction(unsortedArray));
+                dispatch(sortNumbersBubbleAction(unsortedArray, graphNumber));
                 return;
             }
 
@@ -46,7 +47,7 @@ export const BubbleSort = async (
                     return item;
                 });
 
-                dispatch(sortNumbersBubbleAction(sortedArray));
+                dispatch(sortNumbersBubbleAction(sortedArray, graphNumber));
                 dispatch(iterationsCompletedAction(false, 0));
                 await timer(1000 / len);
             }
@@ -57,7 +58,7 @@ export const BubbleSort = async (
         return { ...item, color: colours.success };
     });
 
-    dispatch(sortNumbersBubbleAction(sortedArray));
+    dispatch(sortNumbersBubbleAction(sortedArray, graphNumber));
 
     dispatch(sortInProgressAction(false));
     dispatch(sortedAction(true));
@@ -67,7 +68,8 @@ export const BubbleSort = async (
 export const InsertionSort = async (
     array: any[],
     signal: AbortSignal,
-    dispatch: any
+    dispatch: any,
+    graphNumber: number
 ) => {
     const newArray = [...array];
     const len = newArray.length;
@@ -82,7 +84,9 @@ export const InsertionSort = async (
                 const unsortedArray = newArray.map((item) => {
                     return { ...item, color: colours.accent };
                 });
-                dispatch(sortNumbersInsertionAction(unsortedArray));
+                dispatch(
+                    sortNumbersInsertionAction(unsortedArray, graphNumber)
+                );
                 return;
             }
             newArray[j + 1] = newArray[j];
@@ -98,7 +102,7 @@ export const InsertionSort = async (
                 }
                 return item;
             });
-            dispatch(sortNumbersInsertionAction(sortedArray));
+            dispatch(sortNumbersInsertionAction(sortedArray, graphNumber));
             dispatch(iterationsCompletedAction(false, 1));
             await timer(1000 / len);
             j--;
@@ -114,7 +118,7 @@ export const InsertionSort = async (
             return item;
         });
 
-        dispatch(sortNumbersInsertionAction(sortedArray));
+        dispatch(sortNumbersInsertionAction(sortedArray, graphNumber));
         //dispatch(iterationsCompletedAction(false));
         //await timer(100);
     }
@@ -124,8 +128,8 @@ export const InsertionSort = async (
         return { ...item, color: colours.success };
     });
 
-    dispatch(sortNumbersInsertionAction(sortedArray));
-    dispatch(sortInProgressAction(true));
+    dispatch(sortNumbersInsertionAction(sortedArray, graphNumber));
+    dispatch(sortInProgressAction(false));
     dispatch(sortedAction(true));
     //console.log('ended insertion sort');
 };

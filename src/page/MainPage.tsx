@@ -18,7 +18,8 @@ import {
     OutlinedInput,
     FormControl,
     Select,
-    MenuItem
+    MenuItem,
+    Checkbox
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
@@ -38,7 +39,8 @@ import BarGraph from '../component/BarGraph';
 import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import { fetchData } from '../api/factApi';
-
+import Filter2OutlinedIcon from '@mui/icons-material/Filter2Outlined';
+import Filter1OutlinedIcon from '@mui/icons-material/Filter1Outlined';
 // Define the MUI theme
 const theme = createTheme({
     palette: {
@@ -66,10 +68,12 @@ export default function Dashboard(): JSX.Element {
     const { resultOne, sorted, resultTwo } = useSelector((state: any) => state);
     const [running, setRunning] = useState(false);
     const [languageValue, setLanguageValue] = useState(true);
+    const [doubleGraph, setDoubleGraph] = useState(false);
+
     const [factData, setFactData] = useState<Fact[]>([]);
     const [arraySize, setArraySize] = useState<number>(10);
     const sortingInProgressState = useSelector(
-        (state: any) => state.sortInProgess
+        (state: any) => state.sortInProgress
     );
     const iterationsCompletedState = useSelector(
         (state: any) => state.iterationsCompleted
@@ -117,42 +121,59 @@ export default function Dashboard(): JSX.Element {
     };
 
     // Perform bubble sort
-    const bubbleSort = async (stopControllerRef: any) => {
+    const bubbleSort = async (stopControllerRef: any, graphNumber: number) => {
         setRunning(true);
         //stopControllerRef.current = new AbortController();
 
-        callFacts();
+        //callFacts();
         //dispatch(iterationsCompletedAction(true));
         dispatch(sortInProgressAction(true));
-        await BubbleSort(resultOne, stopControllerRef.signal, dispatch);
+        await BubbleSort(
+            resultOne,
+            stopControllerRef.signal,
+            dispatch,
+            graphNumber
+        );
     };
 
     // Perform insertion sort
-    const insertionSort = async (stopControllerRef: any) => {
+    const insertionSort = async (
+        stopControllerRef: any,
+        graphNumber: number
+    ) => {
         setRunning(true);
         //stopControllerRef.current = new AbortController();
-        callFacts();
+        //callFacts();
 
         //dispatch(iterationsCompletedAction(true));
         dispatch(sortInProgressAction(true));
-        await InsertionSort(resultTwo, stopControllerRef.signal, dispatch);
+        await InsertionSort(
+            resultTwo,
+            stopControllerRef.signal,
+            dispatch,
+            graphNumber
+        );
     };
-    // const bubbleSortHandler = () => {
-    //     setSelectedAlgorithm('bubble');
-    // };
-
-    // const insertionSortHandler = () => {
-    //     setSelectedAlgorithm('insertion');
-    // };
     const startSorting = () => {
         dispatch(iterationsCompletedAction(true));
+        callFacts();
         stopControllerRef.current = new AbortController();
-
-        if (selectedAlgorithm.includes('Bubble')) {
-            bubbleSort(stopControllerRef.current);
-        }
-        if (selectedAlgorithm.includes('Insertion')) {
-            insertionSort(stopControllerRef.current);
+        try {
+            if (
+                selectedAlgorithm.includes('Bubble') &&
+                selectedAlgorithm.includes('Insertion')
+            ) {
+                Promise.all([
+                    bubbleSort(stopControllerRef.current, 0),
+                    insertionSort(stopControllerRef.current, 1)
+                ]);
+            } else if (selectedAlgorithm.includes('Bubble')) {
+                bubbleSort(stopControllerRef.current, 0);
+            } else if (selectedAlgorithm.includes('Insertion')) {
+                insertionSort(stopControllerRef.current, 0);
+            }
+        } catch (err) {
+            console.log(`error caught while calling sorting algo: ${err}`);
         }
     };
 
@@ -187,7 +208,7 @@ export default function Dashboard(): JSX.Element {
     const limit = 3;
     const callFacts = async () => {
         const data = await fetchData(limit);
-        console.log('Fetched fact data:', data);
+        //console.log('Fetched fact data:', data);
         setFactData(data);
     };
 
@@ -201,7 +222,7 @@ export default function Dashboard(): JSX.Element {
     useEffect(() => {
         // Update the data array for the BarGraph component when result, arraySize, sortingInProgressState, or factData change
         GenerateDataGraph(resultOne, resultOne.length);
-    }, [resultOne, arraySize, sortingInProgressState, factData]);
+    }, [resultOne, resultTwo, arraySize, sortingInProgressState, factData]);
 
     return (
         <div style={{ background: colours.background }}>
@@ -368,10 +389,28 @@ export default function Dashboard(): JSX.Element {
                                                     color: colours.primary
                                                 }}
                                             >
-                                                {iterationsCompletedState[0]} /{' '}
-                                                {iterationsCompletedState[1]}
+                                                {iterationsCompletedState[0]}
+                                                {selectedAlgorithm.length === 2
+                                                    ? `/ ${iterationsCompletedState[1]}`
+                                                    : ''}
                                             </Paper>
                                         </div>
+                                        <Checkbox
+                                            onClick={() =>
+                                                setDoubleGraph(
+                                                    (prevValue) => !prevValue
+                                                )
+                                            }
+                                            sx={{ color: colours.error }}
+                                            icon={<Filter2OutlinedIcon />}
+                                            checkedIcon={
+                                                <Filter1OutlinedIcon
+                                                    sx={{
+                                                        color: colours.error
+                                                    }}
+                                                />
+                                            }
+                                        />
 
                                         {/* Language Switch */}
                                         <FormControlLabel
@@ -420,17 +459,59 @@ export default function Dashboard(): JSX.Element {
                         maxWidth="xl"
                         style={{ marginTop: '2rem', flex: '1' }}
                     >
+                        {selectedAlgorithm.length === 0
+                            ? ''
+                            : selectedAlgorithm.length === 1 &&
+                              selectedAlgorithm.includes('Insertion')
+                            ? 'Insertion Sort'
+                            : 'Bubble Sort'}
+
                         <BarGraph
                             result={resultOne}
                             sortingInProgressState={sortingInProgressState}
                             sorted={sorted}
                         />
+                        {selectedAlgorithm.length === 2 &&
+                        selectedAlgorithm.includes('Insertion')
+                            ? `Insertion Sort`
+                            : ''}
+                        {selectedAlgorithm.length === 2 ? (
+                            <BarGraph
+                                result={resultTwo}
+                                sortingInProgressState={sortingInProgressState}
+                                sorted={sorted}
+                            />
+                        ) : (
+                            ''
+                        )}
+                        {/* {doubleGraph ? (
+                            ''
+                        ) : (
+                            <BarGraph
+                                result={resultTwo}
+                                sortingInProgressState={sortingInProgressState}
+                                sorted={sorted}
+                            />
+                        )} */}
+                    </Container>
+
+                    {/* <Container
+                        maxWidth="xl"
+                        style={{ marginTop: '2rem', flex: '1' }}
+                    >
+                        <BarGraph
+                            result={resultOne}
+                            sortingInProgressState={sortingInProgressState}
+                            sorted={sorted}
+                            selectedAlgorithm={selectedAlgorithm}
+                        />
                         <BarGraph
                             result={resultTwo}
                             sortingInProgressState={sortingInProgressState}
                             sorted={sorted}
+                            selectedAlgorithm={selectedAlgorithm}
                         />
-                    </Container>
+                    </Container> */}
 
                     {/* Facts */}
                     {sortingInProgressState && (
