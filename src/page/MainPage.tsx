@@ -40,7 +40,8 @@ import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import { fetchData } from '../api/factApi';
 import StickyNote2Icon from '@mui/icons-material/StickyNote2';
-import Filter1OutlinedIcon from '@mui/icons-material/Filter1Outlined';
+import MultiActionAreaCard from '../component/Facts';
+
 // Define the MUI theme
 const theme = createTheme({
     palette: {
@@ -69,7 +70,6 @@ export default function Dashboard(): JSX.Element {
     const [running, setRunning] = useState(false);
     const [languageValue, setLanguageValue] = useState(true);
     const [displayFact, setDisplayFact] = useState(false);
-
     const [factData, setFactData] = useState<Fact[]>([]);
     const [arraySize, setArraySize] = useState<number>(10);
     const sortingInProgressState = useSelector(
@@ -105,6 +105,7 @@ export default function Dashboard(): JSX.Element {
             typeof value === 'string' ? value.split(',') : value
         );
     };
+
     // Generate the data array for the BarGraph component
     const GenerateDataGraph = (
         arrayX: { color: string; value: number }[],
@@ -123,10 +124,6 @@ export default function Dashboard(): JSX.Element {
     // Perform bubble sort
     const bubbleSort = async (stopControllerRef: any, graphNumber: number) => {
         setRunning(true);
-        //stopControllerRef.current = new AbortController();
-
-        //callFacts();
-        //dispatch(iterationsCompletedAction(true));
         dispatch(sortInProgressAction(true));
         await BubbleSort(
             resultOne,
@@ -142,10 +139,6 @@ export default function Dashboard(): JSX.Element {
         graphNumber: number
     ) => {
         setRunning(true);
-        //stopControllerRef.current = new AbortController();
-        //callFacts();
-
-        //dispatch(iterationsCompletedAction(true));
         dispatch(sortInProgressAction(true));
         await InsertionSort(
             resultTwo,
@@ -154,6 +147,7 @@ export default function Dashboard(): JSX.Element {
             graphNumber
         );
     };
+
     const startSorting = () => {
         dispatch(iterationsCompletedAction(true));
         stopControllerRef.current = new AbortController();
@@ -192,7 +186,6 @@ export default function Dashboard(): JSX.Element {
             setRunning(false);
         }
         dispatch(sortInProgressAction(false));
-        //setSelectedAlgorithm('');
     };
 
     // Change the app language
@@ -207,22 +200,19 @@ export default function Dashboard(): JSX.Element {
     const limit = 3;
     const callFacts = async () => {
         const data = await fetchData(limit);
-        //console.log('Fetched fact data:', data);
         setFactData(data);
     };
+
     const handleCheckboxClick = () => {
         setDisplayFact((prevValue) => !prevValue);
         callFacts();
     };
+
     useEffect(() => {
         dispatch(generateNumbersAction(arraySize));
-        // Generate the initial data array for the BarGraph component
-        GenerateDataGraph(resultOne, resultOne.length);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
-        // Update the data array for the BarGraph component when result, arraySize, sortingInProgressState, or factData change
         GenerateDataGraph(resultOne, resultOne.length);
     }, [resultOne, resultTwo, arraySize, sortingInProgressState, factData]);
 
@@ -237,242 +227,243 @@ export default function Dashboard(): JSX.Element {
                     background: colours.background
                 }}
             >
-                <Container disableGutters={true}>
-                    {/* App Bar */}
-                    <ThemeProvider theme={theme}>
-                        <AppBar
-                            position="static"
-                            sx={{
-                                minHeight: '4rem',
-                                maxHeight: '6rem',
-                                backgroundColor: theme.palette.text.secondary
-                            }}
-                        >
-                            <Container disableGutters={true}>
-                                <Toolbar disableGutters>
-                                    {/* App Title */}
-                                    <Typography
-                                        sx={{
-                                            mr: 3,
-                                            display: { xs: 'flex', md: 'flex' },
-                                            color: theme.palette.text.primary,
-                                            fontSize: '1.5rem'
-                                        }}
-                                    >
-                                        {t(`AlgoViz`)}
-                                    </Typography>
-
-                                    {/* Array Size Slider */}
-                                    <Box
-                                        sx={{
-                                            maxWidth: 100,
-                                            padding: '0.8rem 0 0 0',
-                                            minWidth: 50
-                                        }}
-                                    >
-                                        <Slider
-                                            id="array-size-slider"
-                                            value={arraySize}
-                                            min={10}
-                                            step={1}
-                                            max={100}
-                                            color="secondary"
-                                            onChange={handleChange}
-                                            disabled={sortingInProgressState}
-                                            valueLabelDisplay="auto"
-                                            aria-labelledby="array-size-slider"
-                                        />
-                                    </Box>
-
-                                    <Box
-                                        sx={{
-                                            flexGrow: 1,
-                                            display: { xs: 'flex', md: 'flex' },
-                                            alignItems: 'center',
-                                            justifyContent: 'center'
-                                        }}
-                                    >
-                                        <CustomButton
-                                            id="stop-button"
-                                            disabled={!sortingInProgressState}
-                                            onClick={stopSortingHandler}
-                                            width="5rem"
-                                        >
-                                            {t('Stop')}
-                                        </CustomButton>
-                                        <CustomButton
-                                            id="clear-numbers-button"
-                                            disabled={sortingInProgressState}
-                                            onClick={RemoveNumberFunction}
-                                        >
-                                            {t('Update Numbers')}
-                                        </CustomButton>
-
-                                        <FormControl
-                                            sx={{
-                                                width: 175,
-                                                height: '3rem'
-                                            }}
-                                        >
-                                            <Select
-                                                multiple
-                                                displayEmpty
-                                                value={selectedAlgorithm}
-                                                onChange={algorithmHandleChange}
-                                                input={<OutlinedInput />}
-                                                renderValue={(selected) => {
-                                                    if (selected.length === 0) {
-                                                        return (
-                                                            <em>pick algo</em>
-                                                        );
-                                                    }
-
-                                                    return selected.join(', ');
-                                                }}
-                                                MenuProps={MenuProps}
-                                                inputProps={{
-                                                    'aria-label':
-                                                        'Without label'
-                                                }}
-                                                sx={{
-                                                    color: colours.secondary
-                                                }}
-                                            >
-                                                <MenuItem disabled value="">
-                                                    <em></em>
-                                                </MenuItem>
-                                                {algorithmList.map((name) => (
-                                                    <MenuItem
-                                                        key={name}
-                                                        value={name}
-                                                        style={{
-                                                            color: colours.primary
-                                                        }}
-                                                    >
-                                                        {name}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                        <CustomButton
-                                            id="start-button"
-                                            disabled={sortingInProgressState}
-                                            width="5rem"
-                                            onClick={startSorting}
-                                        >
-                                            {t('Start')}
-                                        </CustomButton>
-                                        {/* Iterations Counter */}
-                                        <div
-                                            style={{
-                                                marginRight: 3,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                padding: '0.5rem',
-                                                borderRadius: '4px'
-                                            }}
-                                        >
-                                            {t(`Iterations`)}:
-                                            <Paper
-                                                elevation={3}
-                                                sx={{
-                                                    padding: '0.5rem',
-                                                    borderRadius: '4px',
-                                                    marginLeft: '0.5rem',
-                                                    color: colours.primary
-                                                }}
-                                            >
-                                                {selectedAlgorithm.length ===
-                                                    1 &&
-                                                selectedAlgorithm.includes(
-                                                    'Bubble'
-                                                )
-                                                    ? iterationsCompletedState[0]
-                                                    : selectedAlgorithm.length ===
-                                                          1 &&
-                                                      selectedAlgorithm.includes(
-                                                          'Insertion'
-                                                      )
-                                                    ? iterationsCompletedState[1]
-                                                    : `${iterationsCompletedState[0]}/ ${iterationsCompletedState[1]}`}
-                                            </Paper>
-                                        </div>
-                                        <Checkbox
-                                            onClick={handleCheckboxClick}
-                                            sx={{ color: colours.error }}
-                                            icon={<StickyNote2Icon />}
-                                            checkedIcon={
-                                                <StickyNote2Icon
-                                                    sx={{
-                                                        color: colours.success
-                                                    }}
-                                                />
-                                            }
-                                        />
-
-                                        {/* Language Switch */}
-                                        <FormControlLabel
-                                            control={
-                                                <Switch
-                                                    id="language-switch"
-                                                    disabled={false}
-                                                    checked={!languageValue}
-                                                    onChange={
-                                                        changeLanguageHandler
-                                                    }
-                                                    color="secondary"
-                                                />
-                                            }
-                                            label={languageValue ? 'En' : 'Fr'}
-                                            labelPlacement="start"
-                                        />
-
-                                        {/* Toast Container */}
-                                        <ToastContainer
-                                            position="top-center"
-                                            autoClose={2000}
-                                            hideProgressBar
-                                            newestOnTop={false}
-                                            closeOnClick
-                                            rtl={false}
-                                            pauseOnFocusLoss
-                                            draggable
-                                            pauseOnHover
-                                        />
-                                    </Box>
-                                </Toolbar>
-                            </Container>
-                        </AppBar>
-                    </ThemeProvider>
-
-                    {/* Linear Progress */}
-                    {sortingInProgressState && (
-                        <Box sx={{ width: '100%' }}>
-                            <LinearProgress color="secondary" />
-                        </Box>
-                    )}
-
-                    {/* Bar Graph */}
-                    <Container
-                        maxWidth="xl"
-                        style={{ marginTop: '2rem', flex: '1' }}
+                {/* App Bar */}
+                <ThemeProvider theme={theme}>
+                    <AppBar
+                        position="static"
+                        sx={{
+                            minHeight: '4rem',
+                            maxHeight: '6rem',
+                            backgroundColor: theme.palette.text.secondary
+                        }}
                     >
-                        {selectedAlgorithm.length === 0
-                            ? ''
-                            : selectedAlgorithm.length === 1 &&
-                              selectedAlgorithm.includes('Insertion')
-                            ? 'Insertion Sort'
-                            : 'Bubble Sort'}
+                        <Container disableGutters={true}>
+                            <Toolbar disableGutters>
+                                {/* App Title */}
+                                <Typography
+                                    sx={{
+                                        mr: 3,
+                                        display: { xs: 'flex', md: 'flex' },
+                                        color: theme.palette.text.primary,
+                                        fontSize: '1.5rem',
+                                        padding: '0 0 0 1.6rem'
+                                    }}
+                                >
+                                    {t(`AlgoViz`)}
+                                </Typography>
 
+                                {/* Array Size Slider */}
+                                <Box
+                                    sx={{
+                                        maxWidth: 125,
+                                        minWidth: 75
+                                    }}
+                                >
+                                    <Slider
+                                        id="array-size-slider"
+                                        value={arraySize}
+                                        min={10}
+                                        step={1}
+                                        max={100}
+                                        color="secondary"
+                                        onChange={handleChange}
+                                        disabled={sortingInProgressState}
+                                        valueLabelDisplay="auto"
+                                        aria-labelledby="array-size-slider"
+                                    />
+                                </Box>
+
+                                <Box
+                                    sx={{
+                                        flexGrow: 1,
+                                        display: { xs: 'flex', md: 'flex' },
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
+                                    }}
+                                >
+                                    <CustomButton
+                                        id="stop-button"
+                                        disabled={!sortingInProgressState}
+                                        onClick={stopSortingHandler}
+                                        width="5rem"
+                                    >
+                                        {t('Stop')}
+                                    </CustomButton>
+                                    <CustomButton
+                                        id="clear-numbers-button"
+                                        disabled={sortingInProgressState}
+                                        onClick={RemoveNumberFunction}
+                                    >
+                                        {t('Update Numbers')}
+                                    </CustomButton>
+
+                                    <FormControl
+                                        sx={{
+                                            width: 175,
+                                            height: '3rem'
+                                        }}
+                                    >
+                                        <Select
+                                            multiple
+                                            displayEmpty
+                                            value={selectedAlgorithm}
+                                            onChange={algorithmHandleChange}
+                                            input={<OutlinedInput />}
+                                            renderValue={(selected) => {
+                                                if (selected.length === 0) {
+                                                    return <em>pick algo</em>;
+                                                }
+
+                                                return selected.join(', ');
+                                            }}
+                                            MenuProps={MenuProps}
+                                            inputProps={{
+                                                'aria-label': 'Without label'
+                                            }}
+                                            sx={{
+                                                color: colours.secondary
+                                            }}
+                                        >
+                                            <MenuItem disabled value="">
+                                                <em></em>
+                                            </MenuItem>
+                                            {algorithmList.map((name) => (
+                                                <MenuItem
+                                                    key={name}
+                                                    value={name}
+                                                    style={{
+                                                        color: colours.primary
+                                                    }}
+                                                >
+                                                    {name}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                    <CustomButton
+                                        id="start-button"
+                                        disabled={sortingInProgressState}
+                                        width="5rem"
+                                        onClick={startSorting}
+                                    >
+                                        {t('Start')}
+                                    </CustomButton>
+                                    {/* Iterations Counter */}
+                                    <div
+                                        style={{
+                                            marginRight: 3,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            padding: '0.5rem',
+                                            borderRadius: '4px'
+                                        }}
+                                    >
+                                        {t(`Iterations`)}:
+                                        <Paper
+                                            elevation={3}
+                                            sx={{
+                                                padding: '0.5rem',
+                                                borderRadius: '4px',
+                                                marginLeft: '0.5rem',
+                                                color: colours.primary
+                                            }}
+                                        >
+                                            {selectedAlgorithm.length === 1 &&
+                                            selectedAlgorithm.includes('Bubble')
+                                                ? iterationsCompletedState[0]
+                                                : selectedAlgorithm.length ===
+                                                      1 &&
+                                                  selectedAlgorithm.includes(
+                                                      'Insertion'
+                                                  )
+                                                ? iterationsCompletedState[1]
+                                                : `${iterationsCompletedState[0]}/ ${iterationsCompletedState[1]}`}
+                                        </Paper>
+                                    </div>
+                                    <Checkbox
+                                        onClick={handleCheckboxClick}
+                                        sx={{ color: colours.error }}
+                                        icon={<StickyNote2Icon />}
+                                        checkedIcon={
+                                            <StickyNote2Icon
+                                                sx={{
+                                                    color: colours.success
+                                                }}
+                                            />
+                                        }
+                                    />
+
+                                    {/* Language Switch */}
+                                    <FormControlLabel
+                                        control={
+                                            <Switch
+                                                id="language-switch"
+                                                disabled={false}
+                                                checked={!languageValue}
+                                                onChange={changeLanguageHandler}
+                                                color="secondary"
+                                            />
+                                        }
+                                        label={languageValue ? 'En' : 'Fr'}
+                                        labelPlacement="start"
+                                    />
+
+                                    {/* Toast Container */}
+                                    <ToastContainer
+                                        position="top-center"
+                                        autoClose={2000}
+                                        hideProgressBar
+                                        newestOnTop={false}
+                                        closeOnClick
+                                        rtl={false}
+                                        pauseOnFocusLoss
+                                        draggable
+                                        pauseOnHover
+                                    />
+                                </Box>
+                            </Toolbar>
+                        </Container>
+                    </AppBar>
+                </ThemeProvider>
+
+                <Container
+                    maxWidth="xl"
+                    style={{
+                        marginTop: '2rem',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        minHeight: '20rem'
+                    }}
+                >
+                    <Box
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            marginRight: '2rem',
+                            width: '80%'
+                        }}
+                    >
+                        {/* Bar Graph */}
+                        {selectedAlgorithm.length === 0 ? (
+                            ''
+                        ) : selectedAlgorithm.length === 1 &&
+                          selectedAlgorithm.includes('Insertion') ? (
+                            <Typography variant="h6">Insertion Sort</Typography>
+                        ) : (
+                            <Typography variant="h6">Bubble Sort</Typography>
+                        )}
                         <BarGraph
                             result={resultOne}
                             sortingInProgressState={sortingInProgressState}
                             sorted={sorted}
                         />
                         {selectedAlgorithm.length === 2 &&
-                        selectedAlgorithm.includes('Insertion')
-                            ? `Insertion Sort`
-                            : ''}
+                        selectedAlgorithm.includes('Insertion') ? (
+                            <Typography variant="h6">Insertion Sort</Typography>
+                        ) : (
+                            ''
+                        )}
                         {selectedAlgorithm.length === 2 ? (
                             <BarGraph
                                 result={resultTwo}
@@ -482,35 +473,28 @@ export default function Dashboard(): JSX.Element {
                         ) : (
                             ''
                         )}
-                    </Container>
+                    </Box>
 
-                    {/* Facts */}
-                    {displayFact && (
-                        <Container
-                            maxWidth="xl"
-                            style={{ marginBottom: '2rem' }}
-                        >
-                            <Typography>{t('Random Facts')}:</Typography>
-                            <TableContainer>
-                                <Table>
-                                    <TableBody>
-                                        {factData.map((fact, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell>
-                                                    {fact.fact}
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </Container>
-                    )}
+                    {/* MultiActionAreaCards */}
+                    <Box
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            width: '20%'
+                        }}
+                    >
+                        <MultiActionAreaCard />
+                    </Box>
                 </Container>
+
                 {/* Footer */}
                 <Container
                     disableGutters={true}
-                    style={{ marginTop: 'auto', width: '100%' }}
+                    style={{
+                        marginTop: 'auto',
+                        width: '100%'
+                    }}
                 >
                     <Footer />
                 </Container>
