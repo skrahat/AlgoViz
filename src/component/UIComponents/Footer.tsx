@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, Link } from '@mui/material';
-import { colours } from '../styling/colours';
+import { colours } from '../../styling/colours';
 
 const Footer = () => {
     const email = 'asaduzzaman.rahat@mail.mcgill.ca';

@@ -25,7 +25,7 @@ import { useTranslation } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import CustomButton from '../component/CustomButton';
+import CustomButton from '../component/UIComponents/CustomButton';
 import {
     generateNumbersAction,
     sortInProgressAction,
@@ -34,7 +34,7 @@ import {
 } from '../redux/reducers/actions';
 import { BubbleSort, InsertionSort } from '../component/Algorithms';
 import LinearProgress from '@mui/material/LinearProgress';
-import Footer from '../component/Footer';
+import Footer from '../component/UIComponents/Footer';
 import BarGraph from '../component/BarGraph';
 import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
