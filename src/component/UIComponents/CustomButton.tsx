@@ -1,5 +1,5 @@
 import Button, { ButtonProps } from '@mui/material/Button';
-import { colours } from '../styling/colours';
+import { colours } from '../../styling/colours';
 
 interface CustomButtonProps extends ButtonProps {
     id: string;
