@@ -249,7 +249,7 @@ export default function Dashboard(): JSX.Element {
                                         padding: '0 0 0 1.6rem'
                                     }}
                                 >
-                                    {t(`AlgoViz`)}
+                                    {t(`title.mainPage`)}
                                 </Typography>
 
                                 {/* Array Size Slider */}
@@ -287,14 +287,14 @@ export default function Dashboard(): JSX.Element {
                                         onClick={stopSortingHandler}
                                         width="5rem"
                                     >
-                                        {t('Stop')}
+                                        {t('buttons.stop')}
                                     </CustomButton>
                                     <CustomButton
                                         id="clear-numbers-button"
                                         disabled={sortingInProgressState}
                                         onClick={RemoveNumberFunction}
                                     >
-                                        {t('Update Numbers')}
+                                        {t(`buttons.updateNumbers`)}
                                     </CustomButton>
 
                                     <FormControl
@@ -346,7 +346,7 @@ export default function Dashboard(): JSX.Element {
                                         width="5rem"
                                         onClick={startSorting}
                                     >
-                                        {t('Start')}
+                                        {t('buttons.start')}
                                     </CustomButton>
                                     {/* Iterations Counter */}
                                     <div
@@ -358,7 +358,7 @@ export default function Dashboard(): JSX.Element {
                                             borderRadius: '4px'
                                         }}
                                     >
-                                        {t(`Iterations`)}:
+                                        {t(`buttons.iterations`)}:
                                         <Paper
                                             elevation={3}
                                             sx={{
@@ -369,12 +369,14 @@ export default function Dashboard(): JSX.Element {
                                             }}
                                         >
                                             {selectedAlgorithm.length === 1 &&
-                                            selectedAlgorithm.includes('Bubble')
+                                            selectedAlgorithm.includes(
+                                                `buttons.bubble`
+                                            )
                                                 ? iterationsCompletedState[0]
                                                 : selectedAlgorithm.length ===
                                                       1 &&
                                                   selectedAlgorithm.includes(
-                                                      'Insertion'
+                                                      t(`buttons.insertion`)
                                                   )
                                                 ? iterationsCompletedState[1]
                                                 : `${iterationsCompletedState[0]}/ ${iterationsCompletedState[1]}`}
@@ -448,7 +450,7 @@ export default function Dashboard(): JSX.Element {
                         {selectedAlgorithm.length === 0 ? (
                             ''
                         ) : selectedAlgorithm.length === 1 &&
-                          selectedAlgorithm.includes('Insertion') ? (
+                          selectedAlgorithm.includes(t(`buttons.Insertion`)) ? (
                             <Typography variant="h6">Insertion Sort</Typography>
                         ) : (
                             <Typography variant="h6">Bubble Sort</Typography>
@@ -459,7 +461,7 @@ export default function Dashboard(): JSX.Element {
                             sorted={sorted}
                         />
                         {selectedAlgorithm.length === 2 &&
-                        selectedAlgorithm.includes('Insertion') ? (
+                        selectedAlgorithm.includes(t(`buttons.Insertion`)) ? (
                             <Typography variant="h6">Insertion Sort</Typography>
                         ) : (
                             ''
