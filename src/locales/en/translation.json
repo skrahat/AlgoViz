@@ -11,6 +11,7 @@
         "iterations": "Iterations",
         "merge": "Merge sort"
     },
+    "pickAlgo": "pick algo",
     "Numbers": "Numbers",
     "Random Facts": "Random Facts"
 }

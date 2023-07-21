@@ -93,7 +93,7 @@ export default function Dashboard(): JSX.Element {
             }
         }
     };
-    const algorithmList = ['Bubble', 'Insertion'];
+    const algorithmList = ['bubble', 'insertion'];
     const algorithmHandleChange = (
         event: SelectChangeEvent<typeof selectedAlgorithm>
     ) => {
@@ -153,16 +153,16 @@ export default function Dashboard(): JSX.Element {
         stopControllerRef.current = new AbortController();
         try {
             if (
-                selectedAlgorithm.includes('Bubble') &&
-                selectedAlgorithm.includes('Insertion')
+                selectedAlgorithm.includes('bubble') &&
+                selectedAlgorithm.includes('insertion')
             ) {
                 Promise.all([
                     bubbleSort(stopControllerRef.current, 0),
                     insertionSort(stopControllerRef.current, 1)
                 ]);
-            } else if (selectedAlgorithm.includes('Bubble')) {
+            } else if (selectedAlgorithm.includes('bubble')) {
                 bubbleSort(stopControllerRef.current, 0);
-            } else if (selectedAlgorithm.includes('Insertion')) {
+            } else if (selectedAlgorithm.includes('insertion')) {
                 insertionSort(stopControllerRef.current, 0);
             }
         } catch (err) {
@@ -311,7 +311,11 @@ export default function Dashboard(): JSX.Element {
                                             input={<OutlinedInput />}
                                             renderValue={(selected) => {
                                                 if (selected.length === 0) {
-                                                    return <em>pick algo</em>;
+                                                    return (
+                                                        <em>
+                                                            {t(`pick algo`)}
+                                                        </em>
+                                                    );
                                                 }
 
                                                 return selected.join(', ');
@@ -335,7 +339,7 @@ export default function Dashboard(): JSX.Element {
                                                         color: colours.primary
                                                     }}
                                                 >
-                                                    {name}
+                                                    {t(`buttons.${name}`)}
                                                 </MenuItem>
                                             ))}
                                         </Select>

@@ -1,13 +1,16 @@
 {
-    "Bubble Sort": "Tri à bulles",
-    "Generate Numbers": "Générer des nombres",
-    "AlgoViz": "AlgoViz",
-    "Merge sort": "Tri par fusion",
+    "title": {
+        "mainPage": "AlgoViz"
+    },
+    "buttons": {
+        "bubble": "Tri à bulles",
+        "insertion": "tri par insertion",
+        "stop": "Stop",
+        "start": "Start",
+        "updateNumbers": "mettre à jour les numéros",
+        "iterations": "Itérations",
+        "merge": "Tri par fusion"
+    },
     "Numbers": "Nombres",
-    "Update Numbers": "mettre à jour les numéros",
-    "Insertion Sort": "tri par insertion",
-    "Iterations": "Itérations",
-    "Stop": "Stop",
-    "Start": "Start",
     "Random Facts": "Random Facts"
 }
