@@ -11,7 +11,13 @@
         "iterations": "Iterations",
         "merge": "Merge sort"
     },
-    "pickAlgo": "pick algo",
+    "dropDown": { "pickAlgo": "pick algo" },
     "Numbers": "Numbers",
-    "Random Facts": "Random Facts"
+    "cards": {
+        "bubbleSort": "Bubble Sort",
+        "insertionSort": "Insertion Sort"
+    },
+    "otherTexts": {
+        "Random Facts": "Random Facts"
+    }
 }

@@ -313,7 +313,9 @@ export default function Dashboard(): JSX.Element {
                                                 if (selected.length === 0) {
                                                     return (
                                                         <em>
-                                                            {t(`pick algo`)}
+                                                            {t(
+                                                                `dropDown.pickAlgo`
+                                                            )}
                                                         </em>
                                                     );
                                                 }
@@ -376,14 +378,12 @@ export default function Dashboard(): JSX.Element {
                                             }}
                                         >
                                             {selectedAlgorithm.length === 1 &&
-                                            selectedAlgorithm.includes(
-                                                `buttons.bubble`
-                                            )
+                                            selectedAlgorithm.includes(`bubble`)
                                                 ? iterationsCompletedState[0]
                                                 : selectedAlgorithm.length ===
                                                       1 &&
                                                   selectedAlgorithm.includes(
-                                                      t(`buttons.insertion`)
+                                                      `insertion`
                                                   )
                                                 ? iterationsCompletedState[1]
                                                 : `${iterationsCompletedState[0]}/ ${iterationsCompletedState[1]}`}
@@ -457,10 +457,14 @@ export default function Dashboard(): JSX.Element {
                         {selectedAlgorithm.length === 0 ? (
                             ''
                         ) : selectedAlgorithm.length === 1 &&
-                          selectedAlgorithm.includes(t(`buttons.Insertion`)) ? (
-                            <Typography variant="h6">Insertion Sort</Typography>
+                          selectedAlgorithm.includes(`insertion`) ? (
+                            <Typography variant="h6">
+                                {t(`cards.insertionSort`)}
+                            </Typography>
                         ) : (
-                            <Typography variant="h6">Bubble Sort</Typography>
+                            <Typography variant="h6">
+                                {t(`cards.bubbleSort`)}
+                            </Typography>
                         )}
                         <BarGraph
                             result={resultOne}
@@ -468,8 +472,10 @@ export default function Dashboard(): JSX.Element {
                             sorted={sorted}
                         />
                         {selectedAlgorithm.length === 2 &&
-                        selectedAlgorithm.includes(t(`buttons.Insertion`)) ? (
-                            <Typography variant="h6">Insertion Sort</Typography>
+                        selectedAlgorithm.includes(`insertion`) ? (
+                            <Typography variant="h6">
+                                {t(`cards.insertionSort`)}
+                            </Typography>
                         ) : (
                             ''
                         )}

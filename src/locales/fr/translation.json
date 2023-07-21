@@ -5,12 +5,19 @@
     "buttons": {
         "bubble": "Tri à bulles",
         "insertion": "tri par insertion",
-        "stop": "Stop",
-        "start": "Start",
+        "stop": "Arrêt",
+        "start": "Commencer",
         "updateNumbers": "mettre à jour les numéros",
         "iterations": "Itérations",
         "merge": "Tri par fusion"
     },
+    "dropDown": { "pickAlgo": "choisir un algorithme" },
     "Numbers": "Nombres",
-    "Random Facts": "Random Facts"
+    "cards": {
+        "bubbleSort": "Tri à bulles",
+        "insertionSort": "Tri par insertion"
+    },
+    "otherTexts": {
+        "Random Facts": "Faits aléatoires"
+    }
 }
