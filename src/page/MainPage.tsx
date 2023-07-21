@@ -346,7 +346,10 @@ export default function Dashboard(): JSX.Element {
                                     </FormControl>
                                     <CustomButton
                                         id="start-button"
-                                        disabled={sortingInProgressState}
+                                        disabled={
+                                            sortingInProgressState ||
+                                            selectedAlgorithm.length === 0
+                                        }
                                         width="5rem"
                                         onClick={startSorting}
                                     >
