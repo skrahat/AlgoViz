@@ -5,8 +5,18 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
+interface cardType {
+    title: string;
+    description1: string;
+    description2: string;
+}
 
-export default function MultiActionAreaCard() {
+const FactCard: React.FC<cardType> = ({
+    title,
+    description1,
+    description2,
+    ...props
+}) => {
     return (
         <Card sx={{ maxWidth: '15rem', maxHeight: '15rem' }}>
             <CardActionArea>
@@ -19,17 +29,14 @@ export default function MultiActionAreaCard() {
                 /> */}
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
-                        Bubble sort
+                        {title}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        Bubble sort is like lining up bubbles of different
-                        sizes.
+                        {description1}
                     </Typography>
                     <br />
                     <Typography variant="body2" color="text.secondary">
-                        The biggest bubble rises to the top, while smaller ones
-                        sink. Repeat until they're all in order. It's slow, but
-                        it gets the job done!
+                        {description2}
                     </Typography>
                 </CardContent>
             </CardActionArea>
@@ -40,4 +47,5 @@ export default function MultiActionAreaCard() {
             </CardActions>
         </Card>
     );
-}
+};
+export default FactCard;

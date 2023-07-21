@@ -40,7 +40,7 @@ import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import { fetchData } from '../api/factApi';
 import StickyNote2Icon from '@mui/icons-material/StickyNote2';
-import MultiActionAreaCard from '../component/Facts';
+import FactCard from '../component/Facts';
 
 // Define the MUI theme
 const theme = createTheme({
@@ -499,7 +499,11 @@ export default function Dashboard(): JSX.Element {
                             width: '20%'
                         }}
                     >
-                        <MultiActionAreaCard />
+                        <FactCard
+                            title={`Bubble sort`}
+                            description1={`Bubble sort is like lining up bubbles of different sizes.`}
+                            description2={`The biggest bubble rises to the top, while smaller ones sink. Repeat until they're all in order. It's slow, but it gets the job done!`}
+                        />
                     </Box>
                 </Container>
 
