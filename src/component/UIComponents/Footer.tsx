@@ -9,7 +9,6 @@ const Footer = () => {
     return (
         <Box
             sx={{
-                //backgroundColor: colours.secondary,
                 padding: '1rem',
                 textAlign: 'center',
                 color: colours.primary
@@ -36,6 +35,9 @@ const Footer = () => {
                     &copy; {new Date().getFullYear()} Asad Rahat. All rights
                     reserved.
                 </Link>
+            </Typography>
+            <Typography variant="body2" color="grey">
+                v1.3
             </Typography>
         </Box>
     );
