@@ -1,13 +1,23 @@
 {
-    "AlgoViz": "AlgoViz",
-    "Stop": "Stop",
-    "Start": "Start",
-    "Update Numbers": "Update Numbers",
-    "Bubble Sort": "Bubble sort",
-    "Insertion Sort": "Insertion sort",
-    "Iterations": "Iterations",
-    "Generate Number": "Generate Number",
-    "Merge sort": "Merge sort",
+    "title": {
+        "mainPage": "AlgoViz"
+    },
+    "buttons": {
+        "bubble": "Bubble",
+        "insertion": "Insertion",
+        "stop": "Stop",
+        "start": "Start",
+        "updateNumbers": "Update Numbers",
+        "iterations": "Iterations",
+        "merge": "Merge sort"
+    },
+    "dropDown": { "pickAlgo": "pick algo" },
     "Numbers": "Numbers",
-    "Random Facts": "Random Facts"
+    "cards": {
+        "bubbleSort": "Bubble Sort",
+        "insertionSort": "Insertion Sort"
+    },
+    "otherTexts": {
+        "Random Facts": "Random Facts"
+    }
 }

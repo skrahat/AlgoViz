@@ -40,7 +40,7 @@ import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import { fetchData } from '../api/factApi';
 import StickyNote2Icon from '@mui/icons-material/StickyNote2';
-import MultiActionAreaCard from '../component/Facts';
+import FactCard from '../component/Facts';
 
 // Define the MUI theme
 const theme = createTheme({
@@ -93,7 +93,7 @@ export default function Dashboard(): JSX.Element {
             }
         }
     };
-    const algorithmList = ['Bubble', 'Insertion'];
+    const algorithmList = ['bubble', 'insertion'];
     const algorithmHandleChange = (
         event: SelectChangeEvent<typeof selectedAlgorithm>
     ) => {
@@ -153,16 +153,16 @@ export default function Dashboard(): JSX.Element {
         stopControllerRef.current = new AbortController();
         try {
             if (
-                selectedAlgorithm.includes('Bubble') &&
-                selectedAlgorithm.includes('Insertion')
+                selectedAlgorithm.includes('bubble') &&
+                selectedAlgorithm.includes('insertion')
             ) {
                 Promise.all([
                     bubbleSort(stopControllerRef.current, 0),
                     insertionSort(stopControllerRef.current, 1)
                 ]);
-            } else if (selectedAlgorithm.includes('Bubble')) {
+            } else if (selectedAlgorithm.includes('bubble')) {
                 bubbleSort(stopControllerRef.current, 0);
-            } else if (selectedAlgorithm.includes('Insertion')) {
+            } else if (selectedAlgorithm.includes('insertion')) {
                 insertionSort(stopControllerRef.current, 0);
             }
         } catch (err) {
@@ -249,7 +249,7 @@ export default function Dashboard(): JSX.Element {
                                         padding: '0 0 0 1.6rem'
                                     }}
                                 >
-                                    {t(`AlgoViz`)}
+                                    {t(`title.mainPage`)}
                                 </Typography>
 
                                 {/* Array Size Slider */}
@@ -287,14 +287,14 @@ export default function Dashboard(): JSX.Element {
                                         onClick={stopSortingHandler}
                                         width="5rem"
                                     >
-                                        {t('Stop')}
+                                        {t('buttons.stop')}
                                     </CustomButton>
                                     <CustomButton
                                         id="clear-numbers-button"
                                         disabled={sortingInProgressState}
                                         onClick={RemoveNumberFunction}
                                     >
-                                        {t('Update Numbers')}
+                                        {t(`buttons.updateNumbers`)}
                                     </CustomButton>
 
                                     <FormControl
@@ -311,7 +311,13 @@ export default function Dashboard(): JSX.Element {
                                             input={<OutlinedInput />}
                                             renderValue={(selected) => {
                                                 if (selected.length === 0) {
-                                                    return <em>pick algo</em>;
+                                                    return (
+                                                        <em>
+                                                            {t(
+                                                                `dropDown.pickAlgo`
+                                                            )}
+                                                        </em>
+                                                    );
                                                 }
 
                                                 return selected.join(', ');
@@ -335,18 +341,21 @@ export default function Dashboard(): JSX.Element {
                                                         color: colours.primary
                                                     }}
                                                 >
-                                                    {name}
+                                                    {t(`buttons.${name}`)}
                                                 </MenuItem>
                                             ))}
                                         </Select>
                                     </FormControl>
                                     <CustomButton
                                         id="start-button"
-                                        disabled={sortingInProgressState}
+                                        disabled={
+                                            sortingInProgressState ||
+                                            selectedAlgorithm.length === 0
+                                        }
                                         width="5rem"
                                         onClick={startSorting}
                                     >
-                                        {t('Start')}
+                                        {t('buttons.start')}
                                     </CustomButton>
                                     {/* Iterations Counter */}
                                     <div
@@ -358,7 +367,7 @@ export default function Dashboard(): JSX.Element {
                                             borderRadius: '4px'
                                         }}
                                     >
-                                        {t(`Iterations`)}:
+                                        {t(`buttons.iterations`)}:
                                         <Paper
                                             elevation={3}
                                             sx={{
@@ -369,12 +378,12 @@ export default function Dashboard(): JSX.Element {
                                             }}
                                         >
                                             {selectedAlgorithm.length === 1 &&
-                                            selectedAlgorithm.includes('Bubble')
+                                            selectedAlgorithm.includes(`bubble`)
                                                 ? iterationsCompletedState[0]
                                                 : selectedAlgorithm.length ===
                                                       1 &&
                                                   selectedAlgorithm.includes(
-                                                      'Insertion'
+                                                      `insertion`
                                                   )
                                                 ? iterationsCompletedState[1]
                                                 : `${iterationsCompletedState[0]}/ ${iterationsCompletedState[1]}`}
@@ -448,10 +457,14 @@ export default function Dashboard(): JSX.Element {
                         {selectedAlgorithm.length === 0 ? (
                             ''
                         ) : selectedAlgorithm.length === 1 &&
-                          selectedAlgorithm.includes('Insertion') ? (
-                            <Typography variant="h6">Insertion Sort</Typography>
+                          selectedAlgorithm.includes(`insertion`) ? (
+                            <Typography variant="h6">
+                                {t(`cards.insertionSort`)}
+                            </Typography>
                         ) : (
-                            <Typography variant="h6">Bubble Sort</Typography>
+                            <Typography variant="h6">
+                                {t(`cards.bubbleSort`)}
+                            </Typography>
                         )}
                         <BarGraph
                             result={resultOne}
@@ -459,8 +472,10 @@ export default function Dashboard(): JSX.Element {
                             sorted={sorted}
                         />
                         {selectedAlgorithm.length === 2 &&
-                        selectedAlgorithm.includes('Insertion') ? (
-                            <Typography variant="h6">Insertion Sort</Typography>
+                        selectedAlgorithm.includes(`insertion`) ? (
+                            <Typography variant="h6">
+                                {t(`cards.insertionSort`)}
+                            </Typography>
                         ) : (
                             ''
                         )}
@@ -484,7 +499,11 @@ export default function Dashboard(): JSX.Element {
                             width: '20%'
                         }}
                     >
-                        <MultiActionAreaCard />
+                        <FactCard
+                            title={`Bubble sort`}
+                            description1={`Bubble sort is like lining up bubbles of different sizes.`}
+                            description2={`The biggest bubble rises to the top, while smaller ones sink. Repeat until they're all in order. It's slow, but it gets the job done!`}
+                        />
                     </Box>
                 </Container>
 

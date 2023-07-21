@@ -49,7 +49,7 @@ export const BubbleSort = async (
 
                 dispatch(sortNumbersBubbleAction(sortedArray, graphNumber));
                 dispatch(iterationsCompletedAction(false, 0));
-                await timer(1000 / len);
+                await timer(len);
             }
         }
     }
@@ -104,7 +104,7 @@ export const InsertionSort = async (
             });
             dispatch(sortNumbersInsertionAction(sortedArray, graphNumber));
             dispatch(iterationsCompletedAction(false, 1));
-            await timer(1000 / len);
+            await timer(len);
             j--;
         }
 
@@ -136,5 +136,9 @@ export const InsertionSort = async (
 
 // delay timer function
 async function timer(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    if (ms < 20)
+        return new Promise((resolve) => setTimeout(resolve, 1000 / ms));
+    return new Promise((resolve) =>
+        setTimeout(resolve, 1000 / Math.pow(ms + 1, 1.5))
+    );
 }

@@ -1,13 +1,23 @@
 {
-    "Bubble Sort": "Tri à bulles",
-    "Generate Numbers": "Générer des nombres",
-    "AlgoViz": "AlgoViz",
-    "Merge sort": "Tri par fusion",
+    "title": {
+        "mainPage": "AlgoViz"
+    },
+    "buttons": {
+        "bubble": "Tri à bulles",
+        "insertion": "tri par insertion",
+        "stop": "Arrêt",
+        "start": "Commencer",
+        "updateNumbers": "mettre à jour les numéros",
+        "iterations": "Itérations",
+        "merge": "Tri par fusion"
+    },
+    "dropDown": { "pickAlgo": "choisir un algorithme" },
     "Numbers": "Nombres",
-    "Update Numbers": "mettre à jour les numéros",
-    "Insertion Sort": "tri par insertion",
-    "Iterations": "Itérations",
-    "Stop": "Stop",
-    "Start": "Start",
-    "Random Facts": "Random Facts"
+    "cards": {
+        "bubbleSort": "Tri à bulles",
+        "insertionSort": "Tri par insertion"
+    },
+    "otherTexts": {
+        "Random Facts": "Faits aléatoires"
+    }
 }
