@@ -14,6 +14,16 @@
     "dropDown": { "pickAlgo": "pick algo" },
     "Numbers": "Numbers",
     "cards": {
+        "bubble": {
+            "title": "Bubble Sort",
+            "description1": "desc1",
+            "description2": "desc2"
+        },
+        "insertion": {
+            "title": "Insertion Sort",
+            "description1": "desc1",
+            "description2": "desc2"
+        },
         "bubbleSort": "Bubble Sort",
         "insertionSort": "Insertion Sort"
     },

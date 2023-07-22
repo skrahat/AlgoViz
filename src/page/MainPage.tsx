@@ -40,7 +40,7 @@ import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import { fetchData } from '../api/factApi';
 import StickyNote2Icon from '@mui/icons-material/StickyNote2';
-import FactCard from '../component/Facts';
+import FactCard from '../component/UIComponents/FactCard';
 
 // Define the MUI theme
 const theme = createTheme({
@@ -434,23 +434,25 @@ export default function Dashboard(): JSX.Element {
                         </Container>
                     </AppBar>
                 </ThemeProvider>
-
+                {/*++++++++++++ Bar components start here -------------*/}
                 <Container
                     maxWidth="xl"
                     style={{
                         marginTop: '2rem',
-                        display: 'flex',
+                        display: 'grid',
+                        gridTemplateRows: '1fr 1fr',
                         justifyContent: 'center',
                         minHeight: '20rem'
                     }}
                 >
                     <Box
+                        className="row"
                         style={{
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
                             marginRight: '2rem',
-                            width: '80%'
+                            width: '100%'
                         }}
                     >
                         {/* Bar Graph */}
@@ -466,45 +468,79 @@ export default function Dashboard(): JSX.Element {
                                 {t(`cards.bubbleSort`)}
                             </Typography>
                         )}
-                        <BarGraph
-                            result={resultOne}
-                            sortingInProgressState={sortingInProgressState}
-                            sorted={sorted}
-                        />
-                        {selectedAlgorithm.length === 2 &&
-                        selectedAlgorithm.includes(`insertion`) ? (
-                            <Typography variant="h6">
-                                {t(`cards.insertionSort`)}
-                            </Typography>
-                        ) : (
-                            ''
-                        )}
-                        {selectedAlgorithm.length === 2 ? (
+                        <div
+                            style={{
+                                display: 'flex',
+                                width: '100%',
+                                alignItems: 'center',
+                                justifyContent: 'space-between'
+                            }}
+                        >
                             <BarGraph
-                                result={resultTwo}
+                                style={{ width: '80%' }}
+                                result={resultOne}
                                 sortingInProgressState={sortingInProgressState}
                                 sorted={sorted}
                             />
-                        ) : (
-                            ''
-                        )}
+                            <FactCard
+                                style={{ width: '20%' }}
+                                title={t(`cards.bubble.title`)}
+                                description1={t(`cards.bubble.description1`)}
+                                description2={t(`cards.bubble.description2`)}
+                            />
+                        </div>
                     </Box>
+                    {selectedAlgorithm.length === 2 ? (
+                        <Box
+                            className="row"
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                marginRight: '2rem',
+                                width: '100%'
+                            }}
+                        >
+                            {selectedAlgorithm.length === 2 &&
+                            selectedAlgorithm.includes(`insertion`) ? (
+                                <Typography variant="h6">
+                                    {t(`cards.insertionSort`)}
+                                </Typography>
+                            ) : (
+                                ''
+                            )}
 
-                    {/* MultiActionAreaCards */}
-                    <Box
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            width: '20%'
-                        }}
-                    >
-                        <FactCard
-                            title={`Bubble sort`}
-                            description1={`Bubble sort is like lining up bubbles of different sizes.`}
-                            description2={`The biggest bubble rises to the top, while smaller ones sink. Repeat until they're all in order. It's slow, but it gets the job done!`}
-                        />
-                    </Box>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    width: '100%',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between'
+                                }}
+                            >
+                                <BarGraph
+                                    style={{ width: '80%' }}
+                                    result={resultTwo}
+                                    sortingInProgressState={
+                                        sortingInProgressState
+                                    }
+                                    sorted={sorted}
+                                />
+                                <FactCard
+                                    style={{ width: '20%' }}
+                                    title={t(`cards.bubble.title`)}
+                                    description1={t(
+                                        `cards.bubble.description1`
+                                    )}
+                                    description2={t(
+                                        `cards.bubble.description2`
+                                    )}
+                                />
+                            </div>
+                        </Box>
+                    ) : (
+                        ''
+                    )}
                 </Container>
 
                 {/* Footer */}
