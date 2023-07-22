@@ -41,6 +41,7 @@ import { colours } from '../styling/colours';
 import { fetchData } from '../api/factApi';
 import StickyNote2Icon from '@mui/icons-material/StickyNote2';
 import FactCard from '../component/UIComponents/FactCard';
+import GraphComponent from '../component/graphComponent';
 
 // Define the MUI theme
 const theme = createTheme({
@@ -210,7 +211,7 @@ export default function Dashboard(): JSX.Element {
 
     useEffect(() => {
         dispatch(generateNumbersAction(arraySize));
-    }, []);
+    }, [arraySize, dispatch]);
 
     useEffect(() => {
         GenerateDataGraph(resultOne, resultOne.length);
@@ -445,52 +446,10 @@ export default function Dashboard(): JSX.Element {
                         minHeight: '20rem'
                     }}
                 >
-                    <Box
-                        className="row"
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            marginRight: '2rem',
-                            width: '100%'
-                        }}
-                    >
-                        {/* Bar Graph */}
-                        {selectedAlgorithm.length === 0 ? (
-                            ''
-                        ) : selectedAlgorithm.length === 1 &&
-                          selectedAlgorithm.includes(`insertion`) ? (
-                            <Typography variant="h6">
-                                {t(`cards.insertionSort`)}
-                            </Typography>
-                        ) : (
-                            <Typography variant="h6">
-                                {t(`cards.bubbleSort`)}
-                            </Typography>
-                        )}
-                        <div
-                            style={{
-                                display: 'flex',
-                                width: '100%',
-                                alignItems: 'center',
-                                justifyContent: 'space-between'
-                            }}
-                        >
-                            <BarGraph
-                                style={{ width: '80%' }}
-                                result={resultOne}
-                                sortingInProgressState={sortingInProgressState}
-                                sorted={sorted}
-                            />
-                            <FactCard
-                                style={{ width: '20%' }}
-                                title={t(`cards.bubble.title`)}
-                                description1={t(`cards.bubble.description1`)}
-                                description2={t(`cards.bubble.description2`)}
-                            />
-                        </div>
-                    </Box>
-                    {selectedAlgorithm.length === 2 ? (
+                    {/* Bar Graph */}
+                    {selectedAlgorithm.length === 0 ? (
+                        ''
+                    ) : (
                         <Box
                             className="row"
                             style={{
@@ -501,14 +460,9 @@ export default function Dashboard(): JSX.Element {
                                 width: '100%'
                             }}
                         >
-                            {selectedAlgorithm.length === 2 &&
-                            selectedAlgorithm.includes(`insertion`) ? (
-                                <Typography variant="h6">
-                                    {t(`cards.insertionSort`)}
-                                </Typography>
-                            ) : (
-                                ''
-                            )}
+                            <Typography variant="h6">
+                                {t(`cards.${selectedAlgorithm[0]}.title`)}
+                            </Typography>
 
                             <div
                                 style={{
@@ -520,7 +474,11 @@ export default function Dashboard(): JSX.Element {
                             >
                                 <BarGraph
                                     style={{ width: '80%' }}
-                                    result={resultTwo}
+                                    result={
+                                        selectedAlgorithm[0] === `insertion`
+                                            ? resultTwo
+                                            : resultOne
+                                    }
                                     sortingInProgressState={
                                         sortingInProgressState
                                     }
@@ -528,12 +486,70 @@ export default function Dashboard(): JSX.Element {
                                 />
                                 <FactCard
                                     style={{ width: '20%' }}
-                                    title={t(`cards.bubble.title`)}
+                                    title={t(
+                                        `cards.${selectedAlgorithm[0]}.title`
+                                    )}
                                     description1={t(
-                                        `cards.bubble.description1`
+                                        `cards.${selectedAlgorithm[0]}.description1`
                                     )}
                                     description2={t(
-                                        `cards.bubble.description2`
+                                        `cards.${selectedAlgorithm[0]}.description2`
+                                    )}
+                                />
+                            </div>
+                        </Box>
+                    )}
+                    {/* <GraphComponent
+                        sortingInProgressState={sortingInProgressState}
+                        resultTwo={resultTwo}
+                        selectedAlgorithm={selectedAlgorithm}
+                        sorted={sorted}
+                    /> */}
+                    {selectedAlgorithm.length === 2 ? (
+                        <Box
+                            className="row"
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                marginRight: '2rem',
+                                width: '100%'
+                            }}
+                        >
+                            <Typography variant="h6">
+                                {t(`cards.${selectedAlgorithm[1]}.title`)}
+                            </Typography>
+
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    width: '100%',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between'
+                                }}
+                            >
+                                <BarGraph
+                                    style={{ width: '80%' }}
+                                    result={
+                                        selectedAlgorithm[1] === `insertion`
+                                            ? resultTwo
+                                            : resultOne
+                                    }
+                                    sortingInProgressState={
+                                        sortingInProgressState
+                                    }
+                                    sorted={sorted}
+                                />
+                                <FactCard
+                                    style={{ width: '20%' }}
+                                    title={t(
+                                        `cards.${selectedAlgorithm[1]}.title`
+                                    )}
+                                    description1={t(
+                                        `cards.${selectedAlgorithm[1]}.description1`
+                                    )}
+                                    description2={t(
+                                        `cards.${selectedAlgorithm[1]}.description2`
                                     )}
                                 />
                             </div>
