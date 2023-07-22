@@ -9,7 +9,7 @@ import {
     Title,
     Tooltip
 } from 'chart.js';
-import { colours } from '../styling/colours';
+import { colours } from '../../styling/colours';
 
 Chart.register(
     BarController,
@@ -24,12 +24,14 @@ interface BarGraphProps {
     result: { color: string; value: number }[];
     sortingInProgressState: boolean;
     sorted: boolean;
+    style?: React.CSSProperties;
 }
 
 const BarGraph: React.FC<BarGraphProps> = ({
     result,
     sortingInProgressState,
-    sorted
+    sorted,
+    style
 }) => {
     Chart.register(
         BarController,
@@ -112,7 +114,11 @@ const BarGraph: React.FC<BarGraphProps> = ({
         }
     };
 
-    return <Bar options={options} data={data} />;
+    return (
+        <div style={style}>
+            <Bar options={options} data={data} />
+        </div>
+    );
 };
 
 export default BarGraph;

@@ -9,16 +9,18 @@ interface cardType {
     title: string;
     description1: string;
     description2: string;
+    style?: React.CSSProperties;
 }
 
 const FactCard: React.FC<cardType> = ({
     title,
     description1,
     description2,
+    style,
     ...props
 }) => {
     return (
-        <Card sx={{ maxWidth: '15rem', maxHeight: '15rem' }}>
+        <Card sx={{ minWidth: '15rem', maxHeight: '15rem', ...style }}>
             <CardActionArea>
                 {/* <CardMedia
                     component="img"
@@ -41,9 +43,9 @@ const FactCard: React.FC<cardType> = ({
                 </CardContent>
             </CardActionArea>
             <CardActions>
-                <Button size="small" color="primary">
+                {/* <Button size="small" color="primary">
                     ...Read More
-                </Button>
+                </Button> */}
             </CardActions>
         </Card>
     );

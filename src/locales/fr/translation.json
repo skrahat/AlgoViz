@@ -14,10 +14,24 @@
     "dropDown": { "pickAlgo": "choisir un algorithme" },
     "Numbers": "Nombres",
     "cards": {
-        "bubbleSort": "Tri à bulles",
-        "insertionSort": "Tri par insertion"
+        "bubble": {
+            "title": "Tri à bulles",
+            "description1": "desc1",
+            "description2": "desc2"
+        },
+        "insertion": {
+            "title": "Tri par insertion",
+            "description1": "desc1",
+            "description2": "desc2"
+        },
+        "bubbleSort": "Bubble Sort",
+        "insertionSort": "Insertion Sort"
     },
     "otherTexts": {
         "Random Facts": "Faits aléatoires"
+    },
+    "instructions": {
+        "description1": "Start by selecting atleast one algorithm",
+        "description2": "adjust the the data value and Press START"
     }
 }

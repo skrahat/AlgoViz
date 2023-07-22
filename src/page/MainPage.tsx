@@ -35,12 +35,13 @@ import {
 import { BubbleSort, InsertionSort } from '../component/Algorithms';
 import LinearProgress from '@mui/material/LinearProgress';
 import Footer from '../component/UIComponents/Footer';
-import BarGraph from '../component/BarGraph';
+import BarGraph from '../component/graphComponent/BarGraph';
 import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import { fetchData } from '../api/factApi';
 import StickyNote2Icon from '@mui/icons-material/StickyNote2';
-import FactCard from '../component/Facts';
+import FactCard from '../component/UIComponents/FactCard';
+import GraphComponent from '../component/graphComponent';
 
 // Define the MUI theme
 const theme = createTheme({
@@ -210,7 +211,7 @@ export default function Dashboard(): JSX.Element {
 
     useEffect(() => {
         dispatch(generateNumbersAction(arraySize));
-    }, []);
+    }, [arraySize, dispatch]);
 
     useEffect(() => {
         GenerateDataGraph(resultOne, resultOne.length);
@@ -434,77 +435,133 @@ export default function Dashboard(): JSX.Element {
                         </Container>
                     </AppBar>
                 </ThemeProvider>
-
+                {/*++++++++++++ Bar components start here -------------*/}
                 <Container
                     maxWidth="xl"
                     style={{
                         marginTop: '2rem',
-                        display: 'flex',
+                        display: 'grid',
+                        gridTemplateRows: '1fr 1fr',
                         justifyContent: 'center',
                         minHeight: '20rem'
                     }}
                 >
-                    <Box
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            marginRight: '2rem',
-                            width: '80%'
-                        }}
-                    >
-                        {/* Bar Graph */}
-                        {selectedAlgorithm.length === 0 ? (
-                            ''
-                        ) : selectedAlgorithm.length === 1 &&
-                          selectedAlgorithm.includes(`insertion`) ? (
-                            <Typography variant="h6">
-                                {t(`cards.insertionSort`)}
-                            </Typography>
-                        ) : (
-                            <Typography variant="h6">
-                                {t(`cards.bubbleSort`)}
-                            </Typography>
-                        )}
-                        <BarGraph
-                            result={resultOne}
-                            sortingInProgressState={sortingInProgressState}
-                            sorted={sorted}
-                        />
-                        {selectedAlgorithm.length === 2 &&
-                        selectedAlgorithm.includes(`insertion`) ? (
-                            <Typography variant="h6">
-                                {t(`cards.insertionSort`)}
-                            </Typography>
-                        ) : (
-                            ''
-                        )}
-                        {selectedAlgorithm.length === 2 ? (
-                            <BarGraph
-                                result={resultTwo}
-                                sortingInProgressState={sortingInProgressState}
-                                sorted={sorted}
-                            />
-                        ) : (
-                            ''
-                        )}
-                    </Box>
-
-                    {/* MultiActionAreaCards */}
-                    <Box
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            width: '20%'
-                        }}
-                    >
+                    {/* Bar Graph */}
+                    {selectedAlgorithm.length === 0 ? (
                         <FactCard
-                            title={`Bubble sort`}
-                            description1={`Bubble sort is like lining up bubbles of different sizes.`}
-                            description2={`The biggest bubble rises to the top, while smaller ones sink. Repeat until they're all in order. It's slow, but it gets the job done!`}
+                            style={{ width: '20%' }}
+                            title={t(`instructions.title`)}
+                            description1={t(`instructions.description1`)}
+                            description2={t(`instructions.description2`)}
                         />
-                    </Box>
+                    ) : (
+                        <Box
+                            className="row"
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                marginRight: '2rem',
+                                width: '100%'
+                            }}
+                        >
+                            <Typography variant="h6">
+                                {t(`cards.${selectedAlgorithm[0]}.title`)}
+                            </Typography>
+
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    width: '100%',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between'
+                                }}
+                            >
+                                <BarGraph
+                                    style={{ width: '80%' }}
+                                    result={
+                                        selectedAlgorithm[0] === `insertion`
+                                            ? resultTwo
+                                            : resultOne
+                                    }
+                                    sortingInProgressState={
+                                        sortingInProgressState
+                                    }
+                                    sorted={sorted}
+                                />
+                                <FactCard
+                                    style={{ width: '20%' }}
+                                    title={t(
+                                        `cards.${selectedAlgorithm[0]}.title`
+                                    )}
+                                    description1={t(
+                                        `cards.${selectedAlgorithm[0]}.description1`
+                                    )}
+                                    description2={t(
+                                        `cards.${selectedAlgorithm[0]}.description2`
+                                    )}
+                                />
+                            </div>
+                        </Box>
+                    )}
+                    {/* <GraphComponent
+                        sortingInProgressState={sortingInProgressState}
+                        resultTwo={resultTwo}
+                        selectedAlgorithm={selectedAlgorithm}
+                        sorted={sorted}
+                    /> */}
+                    {selectedAlgorithm.length === 2 ? (
+                        <Box
+                            className="row"
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                marginRight: '2rem',
+                                width: '100%'
+                            }}
+                        >
+                            <Typography variant="h6">
+                                {t(`cards.${selectedAlgorithm[1]}.title`)}
+                            </Typography>
+
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    width: '100%',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between'
+                                }}
+                            >
+                                <BarGraph
+                                    style={{ width: '80%' }}
+                                    result={
+                                        selectedAlgorithm[1] === `insertion`
+                                            ? resultTwo
+                                            : resultOne
+                                    }
+                                    sortingInProgressState={
+                                        sortingInProgressState
+                                    }
+                                    sorted={sorted}
+                                />
+                                <FactCard
+                                    style={{ width: '20%' }}
+                                    title={t(
+                                        `cards.${selectedAlgorithm[1]}.title`
+                                    )}
+                                    description1={t(
+                                        `cards.${selectedAlgorithm[1]}.description1`
+                                    )}
+                                    description2={t(
+                                        `cards.${selectedAlgorithm[1]}.description2`
+                                    )}
+                                />
+                            </div>
+                        </Box>
+                    ) : (
+                        ''
+                    )}
                 </Container>
 
                 {/* Footer */}

@@ -12,12 +12,27 @@
         "merge": "Merge sort"
     },
     "dropDown": { "pickAlgo": "pick algo" },
-    "Numbers": "Numbers",
+    "numbers": "Numbers",
     "cards": {
+        "bubble": {
+            "title": "Bubble Sort",
+            "description1": "Bubble sort is like lining up bubbles of different sizes.",
+            "description2": "The biggest bubble rises to the top, while smaller ones sink. Repeat until they're all in order. It's slow, but it gets the job done!"
+        },
+        "insertion": {
+            "title": "Insertion Sort",
+            "description1": "desc1",
+            "description2": "desc2"
+        },
         "bubbleSort": "Bubble Sort",
         "insertionSort": "Insertion Sort"
     },
     "otherTexts": {
         "Random Facts": "Random Facts"
+    },
+    "instructions": {
+        "title": "Instructions",
+        "description1": "Start by selecting atleast one algorithm",
+        "description2": "adjust the the data value and Press START"
     }
 }
