@@ -35,7 +35,7 @@ import {
 import { BubbleSort, InsertionSort } from '../component/Algorithms';
 import LinearProgress from '@mui/material/LinearProgress';
 import Footer from '../component/UIComponents/Footer';
-import BarGraph from '../component/BarGraph';
+import BarGraph from '../component/graphComponent/BarGraph';
 import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import { fetchData } from '../api/factApi';

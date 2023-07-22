@@ -16,8 +16,8 @@
     "cards": {
         "bubble": {
             "title": "Bubble Sort",
-            "description1": "desc1",
-            "description2": "desc2"
+            "description1": "Bubble sort is like lining up bubbles of different sizes.",
+            "description2": "The biggest bubble rises to the top, while smaller ones sink. Repeat until they're all in order. It's slow, but it gets the job done!"
         },
         "insertion": {
             "title": "Insertion Sort",
