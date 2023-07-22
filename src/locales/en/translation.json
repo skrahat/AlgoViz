@@ -12,7 +12,7 @@
         "merge": "Merge sort"
     },
     "dropDown": { "pickAlgo": "pick algo" },
-    "Numbers": "Numbers",
+    "numbers": "Numbers",
     "cards": {
         "bubble": {
             "title": "Bubble Sort",
@@ -29,5 +29,10 @@
     },
     "otherTexts": {
         "Random Facts": "Random Facts"
+    },
+    "instructions": {
+        "title": "Instructions",
+        "description1": "Start by selecting atleast one algorithm",
+        "description2": "adjust the the data value and Press START"
     }
 }

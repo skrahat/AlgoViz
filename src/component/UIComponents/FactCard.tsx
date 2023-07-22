@@ -43,9 +43,9 @@ const FactCard: React.FC<cardType> = ({
                 </CardContent>
             </CardActionArea>
             <CardActions>
-                <Button size="small" color="primary">
+                {/* <Button size="small" color="primary">
                     ...Read More
-                </Button>
+                </Button> */}
             </CardActions>
         </Card>
     );

@@ -29,5 +29,9 @@
     },
     "otherTexts": {
         "Random Facts": "Faits aléatoires"
+    },
+    "instructions": {
+        "description1": "Start by selecting atleast one algorithm",
+        "description2": "adjust the the data value and Press START"
     }
 }

@@ -448,7 +448,12 @@ export default function Dashboard(): JSX.Element {
                 >
                     {/* Bar Graph */}
                     {selectedAlgorithm.length === 0 ? (
-                        ''
+                        <FactCard
+                            style={{ width: '20%' }}
+                            title={t(`instructions.title`)}
+                            description1={t(`instructions.description1`)}
+                            description2={t(`instructions.description2`)}
+                        />
                     ) : (
                         <Box
                             className="row"
