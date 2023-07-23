@@ -9,11 +9,6 @@ import {
     Slider,
     Paper,
     FormControlLabel,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableRow,
     SelectChangeEvent,
     OutlinedInput,
     FormControl,
@@ -67,7 +62,7 @@ interface Fact {
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
-    const { resultOne, sorted, resultTwo } = useSelector((state: any) => state);
+    const { results, sorted } = useSelector((state: any) => state);
     const [running, setRunning] = useState(false);
     const [languageValue, setLanguageValue] = useState(true);
     const [displayFact, setDisplayFact] = useState(false);
@@ -127,7 +122,7 @@ export default function Dashboard(): JSX.Element {
         setRunning(true);
         dispatch(sortInProgressAction(true));
         await BubbleSort(
-            resultOne,
+            results[graphNumber],
             stopControllerRef.signal,
             dispatch,
             graphNumber
@@ -142,7 +137,7 @@ export default function Dashboard(): JSX.Element {
         setRunning(true);
         dispatch(sortInProgressAction(true));
         await InsertionSort(
-            resultTwo,
+            results[graphNumber],
             stopControllerRef.signal,
             dispatch,
             graphNumber
@@ -164,10 +159,10 @@ export default function Dashboard(): JSX.Element {
             } else if (selectedAlgorithm.includes('bubble')) {
                 bubbleSort(stopControllerRef.current, 0);
             } else if (selectedAlgorithm.includes('insertion')) {
-                insertionSort(stopControllerRef.current, 0);
+                insertionSort(stopControllerRef.current, 1);
             }
         } catch (err) {
-            console.log(`error caught while calling sorting algo: ${err}`);
+            console.error(`error caught while calling sorting algo: ${err}`);
         }
     };
 
@@ -214,8 +209,8 @@ export default function Dashboard(): JSX.Element {
     }, [arraySize, dispatch]);
 
     useEffect(() => {
-        GenerateDataGraph(resultOne, resultOne.length);
-    }, [resultOne, resultTwo, arraySize, sortingInProgressState, factData]);
+        GenerateDataGraph(results, results[0].length);
+    }, [results, arraySize, sortingInProgressState, factData]);
 
     return (
         <div style={{ background: colours.background }}>
@@ -450,9 +445,18 @@ export default function Dashboard(): JSX.Element {
                     {selectedAlgorithm.length === 0 ? (
                         <FactCard
                             style={{ width: '20%' }}
-                            title={t(`instructions.title`)}
-                            description1={t(`instructions.description1`)}
-                            description2={t(`instructions.description2`)}
+                            title={{
+                                text: t(`instructions.title`),
+                                animation: false
+                            }}
+                            description1={{
+                                text: t(`instructions.description1`),
+                                animation: true
+                            }}
+                            description2={{
+                                text: t(`instructions.description2`),
+                                animation: true
+                            }}
                         />
                     ) : (
                         <Box
@@ -481,8 +485,8 @@ export default function Dashboard(): JSX.Element {
                                     style={{ width: '80%' }}
                                     result={
                                         selectedAlgorithm[0] === `insertion`
-                                            ? resultTwo
-                                            : resultOne
+                                            ? results[1]
+                                            : results[0]
                                     }
                                     sortingInProgressState={
                                         sortingInProgressState
@@ -491,25 +495,28 @@ export default function Dashboard(): JSX.Element {
                                 />
                                 <FactCard
                                     style={{ width: '20%' }}
-                                    title={t(
-                                        `cards.${selectedAlgorithm[0]}.title`
-                                    )}
-                                    description1={t(
-                                        `cards.${selectedAlgorithm[0]}.description1`
-                                    )}
-                                    description2={t(
-                                        `cards.${selectedAlgorithm[0]}.description2`
-                                    )}
+                                    title={{
+                                        text: t(
+                                            `cards.${selectedAlgorithm[0]}.title`
+                                        ),
+                                        animation: false
+                                    }}
+                                    description1={{
+                                        text: t(
+                                            `cards.${selectedAlgorithm[0]}.description1`
+                                        ),
+                                        animation: false
+                                    }}
+                                    description2={{
+                                        text: t(
+                                            `cards.${selectedAlgorithm[0]}.description2`
+                                        ),
+                                        animation: false
+                                    }}
                                 />
                             </div>
                         </Box>
                     )}
-                    {/* <GraphComponent
-                        sortingInProgressState={sortingInProgressState}
-                        resultTwo={resultTwo}
-                        selectedAlgorithm={selectedAlgorithm}
-                        sorted={sorted}
-                    /> */}
                     {selectedAlgorithm.length === 2 ? (
                         <Box
                             className="row"
@@ -537,8 +544,8 @@ export default function Dashboard(): JSX.Element {
                                     style={{ width: '80%' }}
                                     result={
                                         selectedAlgorithm[1] === `insertion`
-                                            ? resultTwo
-                                            : resultOne
+                                            ? results[1]
+                                            : results[0]
                                     }
                                     sortingInProgressState={
                                         sortingInProgressState
@@ -547,15 +554,24 @@ export default function Dashboard(): JSX.Element {
                                 />
                                 <FactCard
                                     style={{ width: '20%' }}
-                                    title={t(
-                                        `cards.${selectedAlgorithm[1]}.title`
-                                    )}
-                                    description1={t(
-                                        `cards.${selectedAlgorithm[1]}.description1`
-                                    )}
-                                    description2={t(
-                                        `cards.${selectedAlgorithm[1]}.description2`
-                                    )}
+                                    title={{
+                                        text: t(
+                                            `cards.${selectedAlgorithm[1]}.title`
+                                        ),
+                                        animation: false
+                                    }}
+                                    description1={{
+                                        text: t(
+                                            `cards.${selectedAlgorithm[1]}.description1`
+                                        ),
+                                        animation: false
+                                    }}
+                                    description2={{
+                                        text: t(
+                                            `cards.${selectedAlgorithm[1]}.description2`
+                                        ),
+                                        animation: false
+                                    }}
                                 />
                             </div>
                         </Box>

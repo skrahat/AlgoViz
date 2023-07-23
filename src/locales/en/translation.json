@@ -21,8 +21,8 @@
         },
         "insertion": {
             "title": "Insertion Sort",
-            "description1": "desc1",
-            "description2": "desc2"
+            "description1": "Insertion sort is like sorting a deck of cards.",
+            "description2": "You pick up each card one by one and insert it into its correct position among the sorted cards. It's efficient for small datasets and is similar to how people arrange cards in their hands!"
         },
         "bubbleSort": "Bubble Sort",
         "insertionSort": "Insertion Sort"
@@ -32,7 +32,7 @@
     },
     "instructions": {
         "title": "Instructions",
-        "description1": "Start by selecting atleast one algorithm",
-        "description2": "adjust the the data value and Press START"
+        "description1": "1) Start by selecting atleast one algorithm",
+        "description2": "2) Adjust the the data value and Press START"
     }
 }

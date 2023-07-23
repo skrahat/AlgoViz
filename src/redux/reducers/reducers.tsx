@@ -1,10 +1,8 @@
-//import { bubbleSort } from '../../component/Algorithms';
+// import { bubbleSort } from '../../component/Algorithms';
 import { colours } from '../../styling/colours';
 
 interface State {
-    resultOne: { color: string; value: number }[];
-    resultTwo: { color: string; value: number }[];
-
+    results: { color: string; value: number }[][];
     displayComplete: boolean;
     sortInProgress: boolean;
     sorted: boolean;
@@ -14,8 +12,7 @@ interface State {
 }
 
 const initialState: State = {
-    resultOne: [],
-    resultTwo: [],
+    results: [[], []],
     displayComplete: true,
     sortInProgress: false,
     sorted: false,
@@ -35,21 +32,17 @@ const rootReducer = (state = initialState, action: any) => {
                 );
                 result.push({ color: colours.accent, value: randomNumber });
             }
-            const resultOne = result;
-            const resultTwo = result;
-
             return {
                 ...state,
-                resultOne,
-                resultTwo,
+                results: [result, result],
                 displayComplete: true,
                 generatedNumbers: result
             };
+
         case 'ITERATIONS_COMPLETED':
             if (action.payload.clean === true) {
                 return { ...state, iterationsCompleted: [0, 0] };
             }
-
             const { choice } = action.payload;
             const iterationsCompleted = [...state.iterationsCompleted];
 
@@ -63,42 +56,31 @@ const rootReducer = (state = initialState, action: any) => {
 
         case 'SORT_IN_PROGRESS':
             const status = action.payload;
-
             return { ...state, sortInProgress: status };
+
         case 'SORTED':
             const sorted = action.payload;
             return { ...state, sorted: sorted };
+
         case 'START_BUBBLE_SORT':
             return { ...state, sortInProgress: true, algoStop: false };
 
         case 'STOP_BUBBLE_SORT':
             return { ...state, algoStop: true };
+
         case 'SORT_NUMBERS_BUBBLE':
-            const arrayBubble = action.payload.newArray;
-            const graphNumberBubble = action.payload.graphNumber;
-            if (graphNumberBubble === 0)
-                return {
-                    ...state,
-                    resultOne: arrayBubble,
-                    displayComplete: true
-                };
-            return {
-                ...state,
-                resultTwo: arrayBubble,
-                displayComplete: true
-            };
         case 'SORT_NUMBERS_INSERTION':
-            const arrayInsertion = action.payload.newArray;
-            const graphNumberInsertion = action.payload.graphNumber;
-            if (graphNumberInsertion === 0)
-                return {
-                    ...state,
-                    resultOne: arrayInsertion,
-                    displayComplete: true
-                };
+            const newArray = action.payload.newArray;
+            const graphNumber = action.payload.graphNumber;
+
+            // This will replace the result at the specific index (graphNumber)
+            const results = state.results.map((result, index) =>
+                index === graphNumber ? newArray : result
+            );
+
             return {
                 ...state,
-                resultTwo: arrayInsertion,
+                results,
                 displayComplete: true
             };
         default:
