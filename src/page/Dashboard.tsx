@@ -366,7 +366,7 @@ export default function Dashboard(): JSX.Element {
                         </Container>
                     </AppBar>
                 </ThemeProvider>
-                {/*++++++++++++ Bar components start here -------------*/}
+                {/*++++++++++++++++++++++++++++++++++ Bar components start here --------------------------------*/}
                 <Container
                     maxWidth="xl"
                     style={{
