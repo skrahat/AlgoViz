@@ -34,6 +34,7 @@
     "react-router-dom": "^6.1.1",
     "react-scripts": "4.0.3",
     "react-toastify": "^8.1.0",
+    "react-type-animation": "^3.1.0",
     "redux": "^4.2.1",
     "redux-saga": "^1.2.3",
     "redux-thunk": "^2.4.2",

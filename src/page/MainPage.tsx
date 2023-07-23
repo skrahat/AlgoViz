@@ -449,9 +449,18 @@ export default function Dashboard(): JSX.Element {
                     {selectedAlgorithm.length === 0 ? (
                         <FactCard
                             style={{ width: '20%' }}
-                            title={t(`instructions.title`)}
-                            description1={t(`instructions.description1`)}
-                            description2={t(`instructions.description2`)}
+                            title={{
+                                text: t(`instructions.title`),
+                                animation: false
+                            }}
+                            description1={{
+                                text: t(`instructions.description1`),
+                                animation: true
+                            }}
+                            description2={{
+                                text: t(`instructions.description2`),
+                                animation: true
+                            }}
                         />
                     ) : (
                         <Box
@@ -490,15 +499,24 @@ export default function Dashboard(): JSX.Element {
                                 />
                                 <FactCard
                                     style={{ width: '20%' }}
-                                    title={t(
-                                        `cards.${selectedAlgorithm[0]}.title`
-                                    )}
-                                    description1={t(
-                                        `cards.${selectedAlgorithm[0]}.description1`
-                                    )}
-                                    description2={t(
-                                        `cards.${selectedAlgorithm[0]}.description2`
-                                    )}
+                                    title={{
+                                        text: t(
+                                            `cards.${selectedAlgorithm[0]}.title`
+                                        ),
+                                        animation: false
+                                    }}
+                                    description1={{
+                                        text: t(
+                                            `cards.${selectedAlgorithm[0]}.description1`
+                                        ),
+                                        animation: false
+                                    }}
+                                    description2={{
+                                        text: t(
+                                            `cards.${selectedAlgorithm[0]}.description2`
+                                        ),
+                                        animation: false
+                                    }}
                                 />
                             </div>
                         </Box>
@@ -540,15 +558,24 @@ export default function Dashboard(): JSX.Element {
                                 />
                                 <FactCard
                                     style={{ width: '20%' }}
-                                    title={t(
-                                        `cards.${selectedAlgorithm[1]}.title`
-                                    )}
-                                    description1={t(
-                                        `cards.${selectedAlgorithm[1]}.description1`
-                                    )}
-                                    description2={t(
-                                        `cards.${selectedAlgorithm[1]}.description2`
-                                    )}
+                                    title={{
+                                        text: t(
+                                            `cards.${selectedAlgorithm[1]}.title`
+                                        ),
+                                        animation: false
+                                    }}
+                                    description1={{
+                                        text: t(
+                                            `cards.${selectedAlgorithm[1]}.description1`
+                                        ),
+                                        animation: false
+                                    }}
+                                    description2={{
+                                        text: t(
+                                            `cards.${selectedAlgorithm[1]}.description2`
+                                        ),
+                                        animation: false
+                                    }}
                                 />
                             </div>
                         </Box>

@@ -1,14 +1,19 @@
-import image from '../styling/factsImage.jpeg';
+import image from '../../styling/factsImage.jpeg';
 import * as React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
+import { TypeAnimation } from 'react-type-animation';
+interface textType {
+    text: string;
+    animation: boolean;
+}
 interface cardType {
-    title: string;
-    description1: string;
-    description2: string;
+    title: textType;
+    description1: textType;
+    description2: textType;
     style?: React.CSSProperties;
 }
 
@@ -29,16 +34,41 @@ const FactCard: React.FC<cardType> = ({
                     alt="green iguana"
                     sx={{ maxHeight: '5rem' }}
                 /> */}
+
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
-                        {title}
+                        {title.animation ? (
+                            <TypeAnimation
+                                sequence={[title.text]}
+                                speed={50}
+                                cursor={false}
+                            />
+                        ) : (
+                            title.text
+                        )}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        {description1}
+                        {description1.animation ? (
+                            <TypeAnimation
+                                sequence={[2000, description1.text]}
+                                speed={40}
+                                cursor={false}
+                            />
+                        ) : (
+                            description1.text
+                        )}
                     </Typography>
                     <br />
                     <Typography variant="body2" color="text.secondary">
-                        {description2}
+                        {description2.animation ? (
+                            <TypeAnimation
+                                sequence={[6000, description2.text]}
+                                speed={40}
+                                cursor={false}
+                            />
+                        ) : (
+                            description2.text
+                        )}
                     </Typography>
                 </CardContent>
             </CardActionArea>
