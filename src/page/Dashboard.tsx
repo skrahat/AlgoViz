@@ -488,51 +488,28 @@ export default function Dashboard(): JSX.Element {
                                     }
                                     sorted={sorted}
                                 />
-                                {sortingInProgressState ? (
-                                    <FactCard
-                                        style={{ width: '20%' }}
-                                        title={{
-                                            text: t(
-                                                `sudo.${selectedAlgorithm[1]}.title`
-                                            ),
-                                            animation: false
-                                        }}
-                                        description1={{
-                                            text: t(
-                                                `sudo.${selectedAlgorithm[1]}.description1`
-                                            ),
-                                            animation: false
-                                        }}
-                                        description2={{
-                                            text: t(
-                                                `sudo.${selectedAlgorithm[1]}.description2`
-                                            ),
-                                            animation: false
-                                        }}
-                                    />
-                                ) : (
-                                    <FactCard
-                                        style={{ width: '20%' }}
-                                        title={{
-                                            text: t(
-                                                `cards.${selectedAlgorithm[1]}.title`
-                                            ),
-                                            animation: false
-                                        }}
-                                        description1={{
-                                            text: t(
-                                                `cards.${selectedAlgorithm[1]}.description1`
-                                            ),
-                                            animation: false
-                                        }}
-                                        description2={{
-                                            text: t(
-                                                `cards.${selectedAlgorithm[1]}.description2`
-                                            ),
-                                            animation: false
-                                        }}
-                                    />
-                                )}
+
+                                <FactCard
+                                    style={{ width: '20%' }}
+                                    title={{
+                                        text: t(
+                                            `cards.${selectedAlgorithm[1]}.title`
+                                        ),
+                                        animation: false
+                                    }}
+                                    description1={{
+                                        text: t(
+                                            `cards.${selectedAlgorithm[1]}.description1`
+                                        ),
+                                        animation: false
+                                    }}
+                                    description2={{
+                                        text: t(
+                                            `cards.${selectedAlgorithm[1]}.description2`
+                                        ),
+                                        animation: false
+                                    }}
+                                />
                             </div>
                         </Box>
                     ) : (
