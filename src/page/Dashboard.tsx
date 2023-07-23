@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import 'react-toastify/dist/ReactToastify.css';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import CustomButton from '../component/UIComponents/CustomButton';
 import {
     generateNumbersAction,
@@ -31,22 +31,7 @@ import BarGraph from '../component/graphComponent/BarGraph';
 import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import FactCard from '../component/UIComponents/FactCard';
-
-// Define the MUI theme
-const theme = createTheme({
-    palette: {
-        primary: {
-            main: colours.primary
-        },
-        secondary: {
-            main: colours.secondary
-        },
-        text: {
-            primary: colours.accent,
-            secondary: colours.primary
-        }
-    }
-});
+import { MenuProps, algorithmList, theme } from '../component/constants';
 
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
@@ -66,17 +51,6 @@ export default function Dashboard(): JSX.Element {
         []
     );
 
-    const ITEM_HEIGHT = 48;
-    const ITEM_PADDING_TOP = 8;
-    const MenuProps = {
-        PaperProps: {
-            style: {
-                maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-                width: '4rem'
-            }
-        }
-    };
-    const algorithmList = ['bubble', 'insertion'];
     const algorithmHandleChange = (
         event: SelectChangeEvent<typeof selectedAlgorithm>
     ) => {
@@ -130,24 +104,36 @@ export default function Dashboard(): JSX.Element {
             graphNumber
         );
     };
-
+    const sortingFunctions: SortingFunctions = {
+        bubble: bubbleSort,
+        insertion: insertionSort
+    };
     const startSorting = () => {
         dispatch(iterationsCompletedAction(true));
         stopControllerRef.current = new AbortController();
+
         try {
-            if (
-                selectedAlgorithm.includes('bubble') &&
-                selectedAlgorithm.includes('insertion')
-            ) {
-                Promise.all([
-                    bubbleSort(stopControllerRef.current, 0),
-                    insertionSort(stopControllerRef.current, 1)
-                ]);
-            } else if (selectedAlgorithm.includes('bubble')) {
-                bubbleSort(stopControllerRef.current, 0);
-            } else if (selectedAlgorithm.includes('insertion')) {
-                insertionSort(stopControllerRef.current, 1);
+            // Get all the selected algorithms
+            const selectedAlgorithms = Object.keys(sortingFunctions).filter(
+                (key) => selectedAlgorithm.includes(key)
+            );
+
+            // If there's no selected algorithm, do nothing
+            if (!selectedAlgorithms.length) {
+                return;
             }
+
+            // Map through the selected algorithms and start them
+            const promises = selectedAlgorithms.map((algorithm, index) => {
+                const sortingFunction = sortingFunctions[algorithm];
+                return sortingFunction(
+                    stopControllerRef.current as AbortController,
+                    index
+                );
+            });
+
+            // Wait for all the sorting algorithms to finish
+            Promise.all(promises);
         } catch (err) {
             console.error(`error caught while calling sorting algo: ${err}`);
         }
@@ -502,27 +488,51 @@ export default function Dashboard(): JSX.Element {
                                     }
                                     sorted={sorted}
                                 />
-                                <FactCard
-                                    style={{ width: '20%' }}
-                                    title={{
-                                        text: t(
-                                            `cards.${selectedAlgorithm[1]}.title`
-                                        ),
-                                        animation: false
-                                    }}
-                                    description1={{
-                                        text: t(
-                                            `cards.${selectedAlgorithm[1]}.description1`
-                                        ),
-                                        animation: false
-                                    }}
-                                    description2={{
-                                        text: t(
-                                            `cards.${selectedAlgorithm[1]}.description2`
-                                        ),
-                                        animation: false
-                                    }}
-                                />
+                                {sortingInProgressState ? (
+                                    <FactCard
+                                        style={{ width: '20%' }}
+                                        title={{
+                                            text: t(
+                                                `sudo.${selectedAlgorithm[1]}.title`
+                                            ),
+                                            animation: false
+                                        }}
+                                        description1={{
+                                            text: t(
+                                                `sudo.${selectedAlgorithm[1]}.description1`
+                                            ),
+                                            animation: false
+                                        }}
+                                        description2={{
+                                            text: t(
+                                                `sudo.${selectedAlgorithm[1]}.description2`
+                                            ),
+                                            animation: false
+                                        }}
+                                    />
+                                ) : (
+                                    <FactCard
+                                        style={{ width: '20%' }}
+                                        title={{
+                                            text: t(
+                                                `cards.${selectedAlgorithm[1]}.title`
+                                            ),
+                                            animation: false
+                                        }}
+                                        description1={{
+                                            text: t(
+                                                `cards.${selectedAlgorithm[1]}.description1`
+                                            ),
+                                            animation: false
+                                        }}
+                                        description2={{
+                                            text: t(
+                                                `cards.${selectedAlgorithm[1]}.description2`
+                                            ),
+                                            animation: false
+                                        }}
+                                    />
+                                )}
                             </div>
                         </Box>
                     ) : (

@@ -13,6 +13,18 @@
     },
     "dropDown": { "pickAlgo": "pick algo" },
     "numbers": "Numbers",
+    "sudo": {
+        "bubble": {
+            "title": "Bubble Algorithm",
+            "description1": "sudo",
+            "description2": "sudo"
+        },
+        "insertion": {
+            "title": "Insertion Sort",
+            "description1": "sudo",
+            "description2": "sudo"
+        }
+    },
     "cards": {
         "bubble": {
             "title": "Bubble Sort",
@@ -23,9 +35,7 @@
             "title": "Insertion Sort",
             "description1": "Insertion sort is like sorting a deck of cards.",
             "description2": "You pick up each card one by one and insert it into its correct position among the sorted cards. It's efficient for small datasets and is similar to how people arrange cards in their hands!"
-        },
-        "bubbleSort": "Bubble Sort",
-        "insertionSort": "Insertion Sort"
+        }
     },
     "otherTexts": {
         "Random Facts": "Random Facts"
