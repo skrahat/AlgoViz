@@ -1,10 +1,8 @@
-import image from '../../styling/factsImage.jpeg';
 import * as React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { Button, CardActionArea, CardActions } from '@mui/material';
+import { CardActionArea, CardActions } from '@mui/material';
 import { TypeAnimation } from 'react-type-animation';
 interface textType {
     text: string;
@@ -27,14 +25,6 @@ const FactCard: React.FC<cardType> = ({
     return (
         <Card sx={{ minWidth: '15rem', maxHeight: '15rem', ...style }}>
             <CardActionArea>
-                {/* <CardMedia
-                    component="img"
-                    height="140"
-                    image={image}
-                    alt="green iguana"
-                    sx={{ maxHeight: '5rem' }}
-                /> */}
-
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
                         {title.animation ? (

@@ -13,13 +13,11 @@ import {
     OutlinedInput,
     FormControl,
     Select,
-    MenuItem,
-    Checkbox
+    MenuItem
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import CustomButton from '../component/UIComponents/CustomButton';
 import {
     generateNumbersAction,
@@ -28,36 +26,12 @@ import {
     sortedAction
 } from '../redux/reducers/actions';
 import { BubbleSort, InsertionSort } from '../component/Algorithms';
-import LinearProgress from '@mui/material/LinearProgress';
 import Footer from '../component/UIComponents/Footer';
 import BarGraph from '../component/graphComponent/BarGraph';
 import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
-import { fetchData } from '../api/factApi';
-import StickyNote2Icon from '@mui/icons-material/StickyNote2';
 import FactCard from '../component/UIComponents/FactCard';
-import GraphComponent from '../component/graphComponent';
-
-// Define the MUI theme
-const theme = createTheme({
-    palette: {
-        primary: {
-            main: colours.primary
-        },
-        secondary: {
-            main: colours.secondary
-        },
-        text: {
-            primary: colours.accent,
-            secondary: colours.primary
-        }
-    }
-});
-
-// Define the fact data structure
-interface Fact {
-    fact: string;
-}
+import { MenuProps, algorithmList, theme } from '../component/constants';
 
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
@@ -65,8 +39,6 @@ export default function Dashboard(): JSX.Element {
     const { results, sorted } = useSelector((state: any) => state);
     const [running, setRunning] = useState(false);
     const [languageValue, setLanguageValue] = useState(true);
-    const [displayFact, setDisplayFact] = useState(false);
-    const [factData, setFactData] = useState<Fact[]>([]);
     const [arraySize, setArraySize] = useState<number>(10);
     const sortingInProgressState = useSelector(
         (state: any) => state.sortInProgress
@@ -79,17 +51,6 @@ export default function Dashboard(): JSX.Element {
         []
     );
 
-    const ITEM_HEIGHT = 48;
-    const ITEM_PADDING_TOP = 8;
-    const MenuProps = {
-        PaperProps: {
-            style: {
-                maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-                width: '4rem'
-            }
-        }
-    };
-    const algorithmList = ['bubble', 'insertion'];
     const algorithmHandleChange = (
         event: SelectChangeEvent<typeof selectedAlgorithm>
     ) => {
@@ -143,24 +104,36 @@ export default function Dashboard(): JSX.Element {
             graphNumber
         );
     };
-
+    const sortingFunctions: SortingFunctions = {
+        bubble: bubbleSort,
+        insertion: insertionSort
+    };
     const startSorting = () => {
         dispatch(iterationsCompletedAction(true));
         stopControllerRef.current = new AbortController();
+
         try {
-            if (
-                selectedAlgorithm.includes('bubble') &&
-                selectedAlgorithm.includes('insertion')
-            ) {
-                Promise.all([
-                    bubbleSort(stopControllerRef.current, 0),
-                    insertionSort(stopControllerRef.current, 1)
-                ]);
-            } else if (selectedAlgorithm.includes('bubble')) {
-                bubbleSort(stopControllerRef.current, 0);
-            } else if (selectedAlgorithm.includes('insertion')) {
-                insertionSort(stopControllerRef.current, 1);
+            // Get all the selected algorithms
+            const selectedAlgorithms = Object.keys(sortingFunctions).filter(
+                (key) => selectedAlgorithm.includes(key)
+            );
+
+            // If there's no selected algorithm, do nothing
+            if (!selectedAlgorithms.length) {
+                return;
             }
+
+            // Map through the selected algorithms and start them
+            const promises = selectedAlgorithms.map((algorithm, index) => {
+                const sortingFunction = sortingFunctions[algorithm];
+                return sortingFunction(
+                    stopControllerRef.current as AbortController,
+                    index
+                );
+            });
+
+            // Wait for all the sorting algorithms to finish
+            Promise.all(promises);
         } catch (err) {
             console.error(`error caught while calling sorting algo: ${err}`);
         }
@@ -192,25 +165,13 @@ export default function Dashboard(): JSX.Element {
         });
     };
 
-    // Fetch facts data
-    const limit = 3;
-    const callFacts = async () => {
-        const data = await fetchData(limit);
-        setFactData(data);
-    };
-
-    const handleCheckboxClick = () => {
-        setDisplayFact((prevValue) => !prevValue);
-        callFacts();
-    };
-
     useEffect(() => {
         dispatch(generateNumbersAction(arraySize));
     }, [arraySize, dispatch]);
 
     useEffect(() => {
         GenerateDataGraph(results, results[0].length);
-    }, [results, arraySize, sortingInProgressState, factData]);
+    }, [results, arraySize, sortingInProgressState]);
 
     return (
         <div style={{ background: colours.background }}>
@@ -385,18 +346,6 @@ export default function Dashboard(): JSX.Element {
                                                 : `${iterationsCompletedState[0]}/ ${iterationsCompletedState[1]}`}
                                         </Paper>
                                     </div>
-                                    <Checkbox
-                                        onClick={handleCheckboxClick}
-                                        sx={{ color: colours.error }}
-                                        icon={<StickyNote2Icon />}
-                                        checkedIcon={
-                                            <StickyNote2Icon
-                                                sx={{
-                                                    color: colours.success
-                                                }}
-                                            />
-                                        }
-                                    />
 
                                     {/* Language Switch */}
                                     <FormControlLabel
@@ -411,19 +360,6 @@ export default function Dashboard(): JSX.Element {
                                         }
                                         label={languageValue ? 'En' : 'Fr'}
                                         labelPlacement="start"
-                                    />
-
-                                    {/* Toast Container */}
-                                    <ToastContainer
-                                        position="top-center"
-                                        autoClose={2000}
-                                        hideProgressBar
-                                        newestOnTop={false}
-                                        closeOnClick
-                                        rtl={false}
-                                        pauseOnFocusLoss
-                                        draggable
-                                        pauseOnHover
                                     />
                                 </Box>
                             </Toolbar>
@@ -552,27 +488,51 @@ export default function Dashboard(): JSX.Element {
                                     }
                                     sorted={sorted}
                                 />
-                                <FactCard
-                                    style={{ width: '20%' }}
-                                    title={{
-                                        text: t(
-                                            `cards.${selectedAlgorithm[1]}.title`
-                                        ),
-                                        animation: false
-                                    }}
-                                    description1={{
-                                        text: t(
-                                            `cards.${selectedAlgorithm[1]}.description1`
-                                        ),
-                                        animation: false
-                                    }}
-                                    description2={{
-                                        text: t(
-                                            `cards.${selectedAlgorithm[1]}.description2`
-                                        ),
-                                        animation: false
-                                    }}
-                                />
+                                {sortingInProgressState ? (
+                                    <FactCard
+                                        style={{ width: '20%' }}
+                                        title={{
+                                            text: t(
+                                                `sudo.${selectedAlgorithm[1]}.title`
+                                            ),
+                                            animation: false
+                                        }}
+                                        description1={{
+                                            text: t(
+                                                `sudo.${selectedAlgorithm[1]}.description1`
+                                            ),
+                                            animation: false
+                                        }}
+                                        description2={{
+                                            text: t(
+                                                `sudo.${selectedAlgorithm[1]}.description2`
+                                            ),
+                                            animation: false
+                                        }}
+                                    />
+                                ) : (
+                                    <FactCard
+                                        style={{ width: '20%' }}
+                                        title={{
+                                            text: t(
+                                                `cards.${selectedAlgorithm[1]}.title`
+                                            ),
+                                            animation: false
+                                        }}
+                                        description1={{
+                                            text: t(
+                                                `cards.${selectedAlgorithm[1]}.description1`
+                                            ),
+                                            animation: false
+                                        }}
+                                        description2={{
+                                            text: t(
+                                                `cards.${selectedAlgorithm[1]}.description2`
+                                            ),
+                                            animation: false
+                                        }}
+                                    />
+                                )}
                             </div>
                         </Box>
                     ) : (
