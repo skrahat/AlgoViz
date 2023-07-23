@@ -13,11 +13,9 @@ import {
     OutlinedInput,
     FormControl,
     Select,
-    MenuItem,
-    Checkbox
+    MenuItem
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CustomButton from '../component/UIComponents/CustomButton';
@@ -28,15 +26,11 @@ import {
     sortedAction
 } from '../redux/reducers/actions';
 import { BubbleSort, InsertionSort } from '../component/Algorithms';
-import LinearProgress from '@mui/material/LinearProgress';
 import Footer from '../component/UIComponents/Footer';
 import BarGraph from '../component/graphComponent/BarGraph';
 import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
-import { fetchData } from '../api/factApi';
-import StickyNote2Icon from '@mui/icons-material/StickyNote2';
 import FactCard from '../component/UIComponents/FactCard';
-import GraphComponent from '../component/graphComponent';
 
 // Define the MUI theme
 const theme = createTheme({
@@ -54,19 +48,12 @@ const theme = createTheme({
     }
 });
 
-// Define the fact data structure
-interface Fact {
-    fact: string;
-}
-
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
     const { results, sorted } = useSelector((state: any) => state);
     const [running, setRunning] = useState(false);
     const [languageValue, setLanguageValue] = useState(true);
-    const [displayFact, setDisplayFact] = useState(false);
-    const [factData, setFactData] = useState<Fact[]>([]);
     const [arraySize, setArraySize] = useState<number>(10);
     const sortingInProgressState = useSelector(
         (state: any) => state.sortInProgress
@@ -192,25 +179,13 @@ export default function Dashboard(): JSX.Element {
         });
     };
 
-    // Fetch facts data
-    const limit = 3;
-    const callFacts = async () => {
-        const data = await fetchData(limit);
-        setFactData(data);
-    };
-
-    const handleCheckboxClick = () => {
-        setDisplayFact((prevValue) => !prevValue);
-        callFacts();
-    };
-
     useEffect(() => {
         dispatch(generateNumbersAction(arraySize));
     }, [arraySize, dispatch]);
 
     useEffect(() => {
         GenerateDataGraph(results, results[0].length);
-    }, [results, arraySize, sortingInProgressState, factData]);
+    }, [results, arraySize, sortingInProgressState]);
 
     return (
         <div style={{ background: colours.background }}>
@@ -385,18 +360,6 @@ export default function Dashboard(): JSX.Element {
                                                 : `${iterationsCompletedState[0]}/ ${iterationsCompletedState[1]}`}
                                         </Paper>
                                     </div>
-                                    <Checkbox
-                                        onClick={handleCheckboxClick}
-                                        sx={{ color: colours.error }}
-                                        icon={<StickyNote2Icon />}
-                                        checkedIcon={
-                                            <StickyNote2Icon
-                                                sx={{
-                                                    color: colours.success
-                                                }}
-                                            />
-                                        }
-                                    />
 
                                     {/* Language Switch */}
                                     <FormControlLabel
@@ -411,19 +374,6 @@ export default function Dashboard(): JSX.Element {
                                         }
                                         label={languageValue ? 'En' : 'Fr'}
                                         labelPlacement="start"
-                                    />
-
-                                    {/* Toast Container */}
-                                    <ToastContainer
-                                        position="top-center"
-                                        autoClose={2000}
-                                        hideProgressBar
-                                        newestOnTop={false}
-                                        closeOnClick
-                                        rtl={false}
-                                        pauseOnFocusLoss
-                                        draggable
-                                        pauseOnHover
                                     />
                                 </Box>
                             </Toolbar>
