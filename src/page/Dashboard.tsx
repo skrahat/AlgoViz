@@ -121,14 +121,12 @@ export default function Dashboard(): JSX.Element {
     const bubbleSort = async (stopControllerRef: any, graphNumber: number) => {
         setRunning(true);
         dispatch(sortInProgressAction(true));
-        console.log('resultOne start:', results[graphNumber]);
         await BubbleSort(
             results[graphNumber],
             stopControllerRef.signal,
             dispatch,
             graphNumber
         );
-        console.log('resultOne start:', results[graphNumber]);
     };
 
     // Perform insertion sort
@@ -138,14 +136,12 @@ export default function Dashboard(): JSX.Element {
     ) => {
         setRunning(true);
         dispatch(sortInProgressAction(true));
-        console.log('resultTwo start:', results[graphNumber]);
         await InsertionSort(
             results[graphNumber],
             stopControllerRef.signal,
             dispatch,
             graphNumber
         );
-        console.log('resultTwo end:', results[graphNumber]);
     };
 
     const startSorting = () => {
@@ -166,7 +162,7 @@ export default function Dashboard(): JSX.Element {
                 insertionSort(stopControllerRef.current, 1);
             }
         } catch (err) {
-            console.log(`error caught while calling sorting algo: ${err}`);
+            console.error(`error caught while calling sorting algo: ${err}`);
         }
     };
 
