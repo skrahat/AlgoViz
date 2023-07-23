@@ -62,7 +62,7 @@ interface Fact {
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
-    const { resultOne, sorted, resultTwo } = useSelector((state: any) => state);
+    const { results, sorted } = useSelector((state: any) => state);
     const [running, setRunning] = useState(false);
     const [languageValue, setLanguageValue] = useState(true);
     const [displayFact, setDisplayFact] = useState(false);
@@ -121,12 +121,14 @@ export default function Dashboard(): JSX.Element {
     const bubbleSort = async (stopControllerRef: any, graphNumber: number) => {
         setRunning(true);
         dispatch(sortInProgressAction(true));
+        console.log('resultOne start:', results[graphNumber]);
         await BubbleSort(
-            resultOne,
+            results[graphNumber],
             stopControllerRef.signal,
             dispatch,
             graphNumber
         );
+        console.log('resultOne start:', results[graphNumber]);
     };
 
     // Perform insertion sort
@@ -136,12 +138,14 @@ export default function Dashboard(): JSX.Element {
     ) => {
         setRunning(true);
         dispatch(sortInProgressAction(true));
+        console.log('resultTwo start:', results[graphNumber]);
         await InsertionSort(
-            resultTwo,
+            results[graphNumber],
             stopControllerRef.signal,
             dispatch,
             graphNumber
         );
+        console.log('resultTwo end:', results[graphNumber]);
     };
 
     const startSorting = () => {
@@ -159,7 +163,7 @@ export default function Dashboard(): JSX.Element {
             } else if (selectedAlgorithm.includes('bubble')) {
                 bubbleSort(stopControllerRef.current, 0);
             } else if (selectedAlgorithm.includes('insertion')) {
-                insertionSort(stopControllerRef.current, 0);
+                insertionSort(stopControllerRef.current, 1);
             }
         } catch (err) {
             console.log(`error caught while calling sorting algo: ${err}`);
@@ -209,8 +213,8 @@ export default function Dashboard(): JSX.Element {
     }, [arraySize, dispatch]);
 
     useEffect(() => {
-        GenerateDataGraph(resultOne, resultOne.length);
-    }, [resultOne, resultTwo, arraySize, sortingInProgressState, factData]);
+        GenerateDataGraph(results, results[0].length);
+    }, [results, arraySize, sortingInProgressState, factData]);
 
     return (
         <div style={{ background: colours.background }}>
@@ -476,8 +480,8 @@ export default function Dashboard(): JSX.Element {
                                     style={{ width: '80%' }}
                                     result={
                                         selectedAlgorithm[0] === `insertion`
-                                            ? resultTwo
-                                            : resultOne
+                                            ? results[1]
+                                            : results[0]
                                     }
                                     sortingInProgressState={
                                         sortingInProgressState
@@ -499,12 +503,6 @@ export default function Dashboard(): JSX.Element {
                             </div>
                         </Box>
                     )}
-                    {/* <GraphComponent
-                        sortingInProgressState={sortingInProgressState}
-                        resultTwo={resultTwo}
-                        selectedAlgorithm={selectedAlgorithm}
-                        sorted={sorted}
-                    /> */}
                     {selectedAlgorithm.length === 2 ? (
                         <Box
                             className="row"
@@ -532,8 +530,8 @@ export default function Dashboard(): JSX.Element {
                                     style={{ width: '80%' }}
                                     result={
                                         selectedAlgorithm[1] === `insertion`
-                                            ? resultTwo
-                                            : resultOne
+                                            ? results[1]
+                                            : results[0]
                                     }
                                     sortingInProgressState={
                                         sortingInProgressState

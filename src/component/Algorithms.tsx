@@ -13,7 +13,6 @@ export const BubbleSort = async (
     dispatch: any,
     graphNumber: number
 ) => {
-    //console.log('started bubble sort');
     const newArray = [...result];
     const len = newArray.length;
 
@@ -21,7 +20,6 @@ export const BubbleSort = async (
         for (let j = 0; j < len - 1; j++) {
             // Check if the abort signal is triggered
             if (signal.aborted) {
-                //console.log('Bubble sort aborted');
                 const unsortedArray = newArray.map((item) => {
                     return { ...item, color: colours.accent };
                 });
@@ -37,7 +35,6 @@ export const BubbleSort = async (
                 // Create a new sorted array with modified colors
                 const sortedArray = newArray.map((item, index) => {
                     if (index === j || index === j + 1) {
-                        //console.log('item coloring test:' + item.color);
                         if (item.color === '#f45050') {
                             return { ...item, color: colours.accent };
                         } else {
@@ -62,7 +59,6 @@ export const BubbleSort = async (
 
     dispatch(sortInProgressAction(false));
     dispatch(sortedAction(true));
-    //console.log('ended bubble sort');
 };
 
 export const InsertionSort = async (
@@ -119,8 +115,6 @@ export const InsertionSort = async (
         });
 
         dispatch(sortNumbersInsertionAction(sortedArray, graphNumber));
-        //dispatch(iterationsCompletedAction(false));
-        //await timer(100);
     }
 
     // Set the color of all elements to green to indicate the sorting is complete
@@ -131,7 +125,6 @@ export const InsertionSort = async (
     dispatch(sortNumbersInsertionAction(sortedArray, graphNumber));
     dispatch(sortInProgressAction(false));
     dispatch(sortedAction(true));
-    //console.log('ended insertion sort');
 };
 
 // delay timer function
