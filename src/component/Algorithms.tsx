@@ -20,9 +20,11 @@ export const BubbleSort = async (
         for (let j = 0; j < len - 1; j++) {
             // Check if the abort signal is triggered
             if (signal.aborted) {
-                const unsortedArray = newArray.map((item) => {
-                    return { ...item, color: colours.accent };
-                });
+                const unsortedArray = newArray;
+
+                // const unsortedArray = newArray.map((item) => {
+                //     return { ...item, color: colours.accent };
+                // });
                 dispatch(sortNumbersBubbleAction(unsortedArray, graphNumber));
                 return;
             }
@@ -77,9 +79,10 @@ export const InsertionSort = async (
         while (j >= 0 && newArray[j].value > current.value) {
             if (signal.aborted) {
                 //console.log('Insertion sort aborted');
-                const unsortedArray = newArray.map((item) => {
-                    return { ...item, color: colours.accent };
-                });
+                // const unsortedArray = newArray.map((item) => {
+                //     return { ...item, color: colours.accent };
+                // });
+                const unsortedArray = newArray;
                 dispatch(
                     sortNumbersInsertionAction(unsortedArray, graphNumber)
                 );
