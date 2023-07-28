@@ -53,8 +53,6 @@ export const sortNumbersInsertionAction = (
     newArray: number[],
     graphNumber: number
 ) => {
-    //console.log('SORT_NUMBERS_INSERTION action reached');
-
     return {
         type: 'SORT_NUMBERS_INSERTION',
         payload: { newArray: newArray, graphNumber: graphNumber }
