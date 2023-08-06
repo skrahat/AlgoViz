@@ -3,6 +3,7 @@ import {
     sortInProgressAction,
     sortNumbersBubbleAction,
     sortNumbersInsertionAction,
+    sortNumbersMergeAction,
     sortedAction
 } from '../redux/reducers/actions';
 import { colours } from '../styling/colours';
