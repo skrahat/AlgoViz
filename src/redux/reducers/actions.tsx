@@ -42,8 +42,6 @@ export const sortNumbersBubbleAction = (
     newArray: number[],
     graphNumber: number
 ) => {
-    //console.log('SORT_NUMBERS_BUBBLE action reached');
-
     return {
         type: 'SORT_NUMBERS_BUBBLE',
         payload: { newArray: newArray, graphNumber: graphNumber }
