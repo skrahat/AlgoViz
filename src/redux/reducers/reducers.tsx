@@ -83,6 +83,20 @@ const rootReducer = (state = initialState, action: any) => {
                 results,
                 displayComplete: true
             };
+        case 'SORT_NUMBERS_MERGE':
+            const newArrayMerge = action.payload.newArray;
+            const graphNumberMerge = action.payload.graphNumber;
+
+            // This will replace the result at the specific index (graphNumber)
+            const resultsMerge = state.results.map((result, index) =>
+                index === graphNumberMerge ? newArrayMerge : result
+            );
+
+            return {
+                ...state,
+                resultsMerge,
+                displayComplete: true
+            };
         default:
             return state;
     }

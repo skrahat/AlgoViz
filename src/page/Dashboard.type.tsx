@@ -3,6 +3,6 @@ type SortingFunction = (
     graphNumber: number
 ) => Promise<void>;
 
-interface SortingFunctions {
+export type SortingFunctions = {
     [key: string]: SortingFunction;
-}
+};

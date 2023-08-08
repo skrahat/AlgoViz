@@ -123,7 +123,7 @@ export const InsertionSort = async (
     dispatch(sortInProgressAction(false));
     dispatch(sortedAction(true));
 };
-export const mergeSort = async (
+export const MergeSort = async (
     result: any[],
     signal: AbortSignal,
     dispatch: any,
@@ -154,7 +154,7 @@ export const mergeSort = async (
             .concat(right.slice(rightIndex));
     };
 
-    const sort = async (array: any[]) => {
+    const sort = async (array: any[]): Promise<any[]> => {
         if (array.length === 1) {
             // return once we hit an array with a single item
             return array;

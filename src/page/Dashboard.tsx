@@ -25,13 +25,14 @@ import {
     iterationsCompletedAction,
     sortedAction
 } from '../redux/reducers/actions';
-import { BubbleSort, InsertionSort } from '../component/Algorithms';
+import { BubbleSort, InsertionSort, MergeSort } from '../component/Algorithms';
 import Footer from '../component/UIComponents/Footer';
 import BarGraph from '../component/graphComponent/BarGraph';
 import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import FactCard from '../component/UIComponents/FactCard';
 import { MenuProps, algorithmList, theme } from '../component/constants';
+import { SortingFunctions } from './Dashboard.type';
 
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
@@ -82,6 +83,8 @@ export default function Dashboard(): JSX.Element {
     const bubbleSort = async (stopControllerRef: any, graphNumber: number) => {
         setRunning(true);
         dispatch(sortInProgressAction(true));
+        console.log('graphNumber bubbleSort', graphNumber);
+
         await BubbleSort(
             results[graphNumber],
             stopControllerRef.signal,
@@ -104,9 +107,22 @@ export default function Dashboard(): JSX.Element {
             graphNumber
         );
     };
+    const mergeSort = async (stopControllerRef: any, graphNumber: number) => {
+        setRunning(true);
+        dispatch(sortInProgressAction(true));
+        console.log('graphNumber mergeSort', graphNumber);
+
+        await MergeSort(
+            results[graphNumber],
+            stopControllerRef.signal,
+            dispatch,
+            graphNumber
+        );
+    };
     const sortingFunctions: SortingFunctions = {
         bubble: bubbleSort,
-        insertion: insertionSort
+        insertion: insertionSort,
+        merge: mergeSort
     };
     const startSorting = () => {
         dispatch(iterationsCompletedAction(true));
@@ -126,6 +142,7 @@ export default function Dashboard(): JSX.Element {
             // Map through the selected algorithms and start them
             const promises = selectedAlgorithms.map((algorithm, index) => {
                 const sortingFunction = sortingFunctions[algorithm];
+                console.log('algorithm ', algorithm);
                 return sortingFunction(
                     stopControllerRef.current as AbortController,
                     index

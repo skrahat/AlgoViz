@@ -1,7 +1,7 @@
 import { createTheme } from '@mui/material';
 import { colours } from '../styling/colours';
 
-export const algorithmList = ['bubble', 'insertion'];
+export const algorithmList = ['bubble', 'insertion', 'merge'];
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 export const MenuProps = {
