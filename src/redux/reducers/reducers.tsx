@@ -1,4 +1,3 @@
-// import { bubbleSort } from '../../component/Algorithms';
 import { colours } from '../../styling/colours';
 
 interface State {
