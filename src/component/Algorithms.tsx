@@ -131,6 +131,101 @@ export const MergeSort = async (
 ) => {
     const newArray = [...result];
     const len = newArray.length;
+
+    // Helper function to merge two arrays
+    const merge = async (left: any[], right: any[], start: number) => {
+        let resultArray = [],
+            leftIndex = 0,
+            rightIndex = 0;
+
+        const updateAndDispatch = async (mergedIndex: number) => {
+            const updatedArray = newArray.map((item, index) => {
+                if (index === start + mergedIndex) {
+                    if (item.color === '#f45050') {
+                        return { ...item, color: colours.accent };
+                    } else {
+                        return { ...item, color: colours.error };
+                    }
+                }
+                return item;
+            });
+            dispatch(sortNumbersMergeAction(updatedArray, graphNumber));
+            await timer(len / 2);
+        };
+
+        while (leftIndex < left.length && rightIndex < right.length) {
+            if (left[leftIndex].value < right[rightIndex].value) {
+                resultArray.push(left[leftIndex]);
+                newArray[start + leftIndex + rightIndex] = left[leftIndex];
+                await updateAndDispatch(leftIndex + rightIndex);
+                leftIndex++;
+            } else {
+                resultArray.push(right[rightIndex]);
+                newArray[start + leftIndex + rightIndex] = right[rightIndex];
+                await updateAndDispatch(leftIndex + rightIndex);
+                rightIndex++;
+            }
+        }
+
+        while (leftIndex < left.length) {
+            resultArray.push(left[leftIndex]);
+            newArray[start + leftIndex + rightIndex] = left[leftIndex];
+            await updateAndDispatch(leftIndex + rightIndex);
+            leftIndex++;
+        }
+
+        while (rightIndex < right.length) {
+            resultArray.push(right[rightIndex]);
+            newArray[start + leftIndex + rightIndex] = right[rightIndex];
+            await updateAndDispatch(leftIndex + rightIndex);
+            rightIndex++;
+        }
+
+        return resultArray;
+    };
+
+    // Recursive function to divide and sort the array
+    const sort = async (array: any[], start = 0): Promise<any[]> => {
+        if (array.length === 1) {
+            return array;
+        }
+
+        const middle = Math.floor(array.length / 2);
+        const left = array.slice(0, middle);
+        const right = array.slice(middle);
+
+        // Check if the abort signal is triggered
+        if (signal.aborted) {
+            dispatch(sortNumbersMergeAction(array, graphNumber));
+            return array;
+        }
+
+        const sortedLeft = await sort(left, start);
+        const sortedRight = await sort(right, start + middle);
+        return merge(sortedLeft, sortedRight, start);
+    };
+
+    // Initiate the sorting
+    const sortedArray = await sort(newArray);
+
+    // Set the color of all elements to green to indicate the sorting is complete
+    const finalSortedArray = sortedArray.map((item) => {
+        return { ...item, color: colours.success };
+    });
+
+    dispatch(sortNumbersMergeAction(finalSortedArray, graphNumber));
+    dispatch(sortInProgressAction(false));
+    dispatch(sortedAction(true));
+};
+
+export const MergeSortx = async (
+    result: any[],
+    signal: AbortSignal,
+    dispatch: any,
+    graphNumber: number
+) => {
+    const newArray = [...result];
+    const len = newArray.length;
     // The helper function to merge two arrays
     const merge = async (left: any[], right: any[], start: number) => {
         let resultArray = [],
