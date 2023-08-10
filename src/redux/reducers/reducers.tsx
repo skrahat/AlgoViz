@@ -69,11 +69,11 @@ const rootReducer = (state = initialState, action: any) => {
 
         case 'SORT_NUMBERS_BUBBLE':
             const newArrayBubble = action.payload.newArray;
-            const graphNumberubble = action.payload.graphNumber;
+            const graphNumberbubble = action.payload.graphNumber;
 
             // This will replace the result at the specific index (graphNumber)
             const resultsubble = state.results.map((result, index) =>
-                index === graphNumberubble ? newArrayBubble : result
+                index === graphNumberbubble ? newArrayBubble : result
             );
 
             return {
