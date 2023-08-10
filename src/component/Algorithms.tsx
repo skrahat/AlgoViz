@@ -45,7 +45,7 @@ export const BubbleSort = async (
                 });
 
                 dispatch(sortNumbersBubbleAction(sortedArray, graphNumber));
-                dispatch(iterationsCompletedAction(false, 0));
+                dispatch(iterationsCompletedAction(false, graphNumber));
                 await timer(len);
             }
         }
@@ -96,7 +96,7 @@ export const InsertionSort = async (
                 return item;
             });
             dispatch(sortNumbersInsertionAction(sortedArray, graphNumber));
-            dispatch(iterationsCompletedAction(false, 1));
+            dispatch(iterationsCompletedAction(false, graphNumber));
             await timer(len);
             j--;
         }
@@ -145,6 +145,8 @@ export const MergeSort = async (
                 resultArray.push(right[rightIndex]);
                 rightIndex++;
             }
+            dispatch(iterationsCompletedAction(false, graphNumber));
+            await timer(len * 10);
         }
 
         const merged = resultArray
@@ -155,7 +157,6 @@ export const MergeSort = async (
         for (let i = 0; i < merged.length; i++) {
             newArray[start + i] = merged[i];
         }
-
         return merged;
     };
 
@@ -181,8 +182,7 @@ export const MergeSort = async (
         const mergedArray = await merge(sortedLeft, sortedRight, start);
 
         dispatch(sortNumbersMergeAction([...newArray], graphNumber)); // Dispatch the whole newArray for visualization
-        dispatch(iterationsCompletedAction(false, 0));
-        await timer(len * 100);
+        await timer(len);
 
         return mergedArray;
     };
