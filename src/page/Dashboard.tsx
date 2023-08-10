@@ -110,7 +110,7 @@ export default function Dashboard(): JSX.Element {
     const mergeSort = async (stopControllerRef: any, graphNumber: number) => {
         setRunning(true);
         dispatch(sortInProgressAction(true));
-        console.log('graphNumber mergeSort', graphNumber);
+        //console.log('graphNumber mergeSort', graphNumber);
 
         await MergeSort(
             results[graphNumber],
@@ -142,7 +142,7 @@ export default function Dashboard(): JSX.Element {
             // Map through the selected algorithms and start them
             const promises = selectedAlgorithms.map((algorithm, index) => {
                 const sortingFunction = sortingFunctions[algorithm];
-                console.log('algorithm ', algorithm);
+                //console.log('algorithm ', algorithm);
                 return sortingFunction(
                     stopControllerRef.current as AbortController,
                     index

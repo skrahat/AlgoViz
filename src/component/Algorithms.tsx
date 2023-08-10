@@ -14,6 +14,8 @@ export const BubbleSort = async (
     dispatch: any,
     graphNumber: number
 ) => {
+    console.log('BubbleSort graphNumber', graphNumber);
+
     const newArray = [...result];
     const len = newArray.length;
 
@@ -131,7 +133,7 @@ export const MergeSort = async (
 ) => {
     const newArray = [...result];
     const len = newArray.length;
-
+    console.log('merge graphNumber', graphNumber);
     // Helper function to merge two arrays
     const merge = async (left: any[], right: any[], start: number) => {
         let resultArray = [],

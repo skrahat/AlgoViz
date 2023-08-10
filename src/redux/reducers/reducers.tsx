@@ -68,18 +68,31 @@ const rootReducer = (state = initialState, action: any) => {
             return { ...state, algoStop: true };
 
         case 'SORT_NUMBERS_BUBBLE':
-        case 'SORT_NUMBERS_INSERTION':
-            const newArray = action.payload.newArray;
-            const graphNumber = action.payload.graphNumber;
+            const newArrayBubble = action.payload.newArray;
+            const graphNumberubble = action.payload.graphNumber;
 
             // This will replace the result at the specific index (graphNumber)
-            const results = state.results.map((result, index) =>
-                index === graphNumber ? newArray : result
+            const resultsubble = state.results.map((result, index) =>
+                index === graphNumberubble ? newArrayBubble : result
             );
 
             return {
                 ...state,
-                results,
+                results: resultsubble,
+                displayComplete: true
+            };
+        case 'SORT_NUMBERS_INSERTION':
+            const newArrayInsertion = action.payload.newArray;
+            const graphNumberInsertion = action.payload.graphNumber;
+
+            // This will replace the result at the specific index (graphNumber)
+            const resultsInsertion = state.results.map((result, index) =>
+                index === graphNumberInsertion ? newArrayInsertion : result
+            );
+
+            return {
+                ...state,
+                results: resultsInsertion,
                 displayComplete: true
             };
         case 'SORT_NUMBERS_MERGE':
