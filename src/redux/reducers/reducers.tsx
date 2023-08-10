@@ -72,13 +72,13 @@ const rootReducer = (state = initialState, action: any) => {
             const graphNumberbubble = action.payload.graphNumber;
 
             // This will replace the result at the specific index (graphNumber)
-            const resultsubble = state.results.map((result, index) =>
+            const resultsbubble = state.results.map((result, index) =>
                 index === graphNumberbubble ? newArrayBubble : result
             );
 
             return {
                 ...state,
-                results: resultsubble,
+                results: resultsbubble,
                 displayComplete: true
             };
         case 'SORT_NUMBERS_INSERTION':
