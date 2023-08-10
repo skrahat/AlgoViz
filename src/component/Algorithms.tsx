@@ -45,7 +45,7 @@ export const BubbleSort = async (
                 });
 
                 dispatch(sortNumbersBubbleAction(sortedArray, graphNumber));
-                dispatch(iterationsCompletedAction(false, 0));
+                dispatch(iterationsCompletedAction(false, graphNumber));
                 await timer(len);
             }
         }
@@ -96,7 +96,7 @@ export const InsertionSort = async (
                 return item;
             });
             dispatch(sortNumbersInsertionAction(sortedArray, graphNumber));
-            dispatch(iterationsCompletedAction(false, 1));
+            dispatch(iterationsCompletedAction(false, graphNumber));
             await timer(len);
             j--;
         }
@@ -131,72 +131,115 @@ export const MergeSort = async (
 ) => {
     const newArray = [...result];
     const len = newArray.length;
-    // The helper function to merge two arrays
+
+    const checkAbortSignal = () => {
+        if (signal.aborted) {
+            throw new Error('Aborted');
+        }
+    };
+    // Helper function to reset colors
+    const resetColors = (arr: any[]) => {
+        return arr.map((item) => {
+            if (item.color === colours.error) {
+                return { ...item, color: colours.accent };
+            }
+            return item;
+        });
+    };
     const merge = async (left: any[], right: any[], start: number) => {
         let resultArray = [],
             leftIndex = 0,
             rightIndex = 0;
 
+        const updateAndDispatch = async (mergedIndex: number) => {
+            checkAbortSignal();
+            const updatedArray = newArray.map((item, index) => {
+                if (index === start + mergedIndex) {
+                    if (item.color === '#f45050') {
+                        return { ...item, color: colours.accent };
+                    } else {
+                        return { ...item, color: colours.error };
+                    }
+                }
+                return item;
+            });
+            dispatch(sortNumbersMergeAction(updatedArray, graphNumber));
+            await timer(len / 2);
+        };
+
         while (leftIndex < left.length && rightIndex < right.length) {
+            checkAbortSignal();
+
             if (left[leftIndex].value < right[rightIndex].value) {
                 resultArray.push(left[leftIndex]);
+                newArray[start + leftIndex + rightIndex] = left[leftIndex];
+                await updateAndDispatch(leftIndex + rightIndex);
                 leftIndex++;
             } else {
                 resultArray.push(right[rightIndex]);
+                newArray[start + leftIndex + rightIndex] = right[rightIndex];
+                await updateAndDispatch(leftIndex + rightIndex);
                 rightIndex++;
             }
         }
 
-        const merged = resultArray
-            .concat(left.slice(leftIndex))
-            .concat(right.slice(rightIndex));
+        while (leftIndex < left.length) {
+            checkAbortSignal();
 
-        // Update the newArray with the merged data
-        for (let i = 0; i < merged.length; i++) {
-            newArray[start + i] = merged[i];
+            resultArray.push(left[leftIndex]);
+            newArray[start + leftIndex + rightIndex] = left[leftIndex];
+            await updateAndDispatch(leftIndex + rightIndex);
+            leftIndex++;
         }
 
-        return merged;
+        while (rightIndex < right.length) {
+            checkAbortSignal();
+
+            resultArray.push(right[rightIndex]);
+            newArray[start + leftIndex + rightIndex] = right[rightIndex];
+            await updateAndDispatch(leftIndex + rightIndex);
+            rightIndex++;
+        }
+
+        return resultArray;
     };
 
     const sort = async (array: any[], start = 0): Promise<any[]> => {
+        checkAbortSignal();
+
         if (array.length === 1) {
-            // return once we hit an array with a single item
             return array;
         }
 
-        const middle = Math.floor(array.length / 2); // get the middle item of the array
-        const left = array.slice(0, middle); // items on the left side
-        const right = array.slice(middle); // items on the right side
-
-        // Check if the abort signal is triggered
-        if (signal.aborted) {
-            dispatch(sortNumbersMergeAction(array, graphNumber));
-            return array;
-        }
+        const middle = Math.floor(array.length / 2);
+        const left = array.slice(0, middle);
+        const right = array.slice(middle);
 
         const sortedLeft = await sort(left, start);
         const sortedRight = await sort(right, start + middle);
-
-        const mergedArray = await merge(sortedLeft, sortedRight, start);
-
-        dispatch(sortNumbersMergeAction([...newArray], graphNumber)); // Dispatch the whole newArray for visualization
-        dispatch(iterationsCompletedAction(false, 0));
-        await timer(len * 100);
-
-        return mergedArray;
+        return merge(sortedLeft, sortedRight, start);
     };
-    const sortedArray = await sort(newArray);
 
-    // Set the color of all elements to green to indicate the sorting is complete
-    const finalSortedArray = sortedArray.map((item) => {
-        return { ...item, color: colours.success };
-    });
+    try {
+        const sortedArray = await sort(newArray);
 
-    dispatch(sortNumbersMergeAction(finalSortedArray, graphNumber));
+        // Set the color of all elements to green to indicate the sorting is complete
+        const finalSortedArray = sortedArray.map((item) => {
+            return { ...item, color: colours.success };
+        });
 
-    dispatch(sortInProgressAction(false));
-    dispatch(sortedAction(true));
+        dispatch(sortNumbersMergeAction(finalSortedArray, graphNumber));
+        dispatch(sortInProgressAction(false));
+        dispatch(sortedAction(true));
+    } catch (e) {
+        if ((e as Error).message === 'Aborted') {
+            console.log('Merge sort aborted');
+            const resetArray = resetColors(newArray);
+            dispatch(sortNumbersMergeAction(resetArray, graphNumber));
+        } else {
+            throw e; // rethrow the error if it's not an abort
+        }
+    }
 };
 
 // delay timer function

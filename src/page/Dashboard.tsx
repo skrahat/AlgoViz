@@ -110,7 +110,6 @@ export default function Dashboard(): JSX.Element {
     const mergeSort = async (stopControllerRef: any, graphNumber: number) => {
         setRunning(true);
         dispatch(sortInProgressAction(true));
-        console.log('graphNumber mergeSort', graphNumber);
 
         await MergeSort(
             results[graphNumber],
@@ -124,7 +123,7 @@ export default function Dashboard(): JSX.Element {
         insertion: insertionSort,
         merge: mergeSort
     };
-    const startSorting = () => {
+    const startSorting = async () => {
         dispatch(iterationsCompletedAction(true));
         stopControllerRef.current = new AbortController();
 
@@ -142,7 +141,7 @@ export default function Dashboard(): JSX.Element {
             // Map through the selected algorithms and start them
             const promises = selectedAlgorithms.map((algorithm, index) => {
                 const sortingFunction = sortingFunctions[algorithm];
-                console.log('algorithm ', algorithm);
+                //console.log('algorithm ', algorithm);
                 return sortingFunction(
                     stopControllerRef.current as AbortController,
                     index
@@ -150,7 +149,14 @@ export default function Dashboard(): JSX.Element {
             });
 
             // Wait for all the sorting algorithms to finish
-            Promise.all(promises);
+            try {
+                await Promise.all(promises);
+            } catch (err) {
+                console.error(
+                    'One of the sorting algorithms encountered an error:',
+                    err
+                );
+            }
         } catch (err) {
             console.error(`error caught while calling sorting algo: ${err}`);
         }
@@ -437,7 +443,12 @@ export default function Dashboard(): JSX.Element {
                                 <BarGraph
                                     style={{ width: '80%' }}
                                     result={
-                                        selectedAlgorithm[0] === `insertion`
+                                        selectedAlgorithm[0] === `bubble`
+                                            ? results[0]
+                                            : selectedAlgorithm[0] === `merge`
+                                            ? results[1]
+                                            : selectedAlgorithm[0] ===
+                                              `insertion`
                                             ? results[1]
                                             : results[0]
                                     }
@@ -496,7 +507,12 @@ export default function Dashboard(): JSX.Element {
                                 <BarGraph
                                     style={{ width: '80%' }}
                                     result={
-                                        selectedAlgorithm[1] === `insertion`
+                                        selectedAlgorithm[1] === `bubble`
+                                            ? results[0]
+                                            : selectedAlgorithm[1] === `merge`
+                                            ? results[1]
+                                            : selectedAlgorithm[1] ===
+                                              `insertion`
                                             ? results[1]
                                             : results[0]
                                     }

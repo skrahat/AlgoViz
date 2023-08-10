@@ -24,6 +24,11 @@
             "description1": "desc1",
             "description2": "desc2"
         },
+        "merge": {
+            "title": "merge Sort",
+            "description1": "sudo",
+            "description2": "sudo"
+        },
         "bubbleSort": "Bubble Sort",
         "insertionSort": "Insertion Sort"
     },
