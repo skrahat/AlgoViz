@@ -42,8 +42,6 @@ export const sortNumbersBubbleAction = (
     newArray: number[],
     graphNumber: number
 ) => {
-    //console.log('SORT_NUMBERS_BUBBLE action reached');
-
     return {
         type: 'SORT_NUMBERS_BUBBLE',
         payload: { newArray: newArray, graphNumber: graphNumber }
@@ -55,6 +53,15 @@ export const sortNumbersInsertionAction = (
 ) => {
     return {
         type: 'SORT_NUMBERS_INSERTION',
+        payload: { newArray: newArray, graphNumber: graphNumber }
+    };
+};
+export const sortNumbersMergeAction = (
+    newArray: number[],
+    graphNumber: number
+) => {
+    return {
+        type: 'SORT_NUMBERS_MERGE',
         payload: { newArray: newArray, graphNumber: graphNumber }
     };
 };
