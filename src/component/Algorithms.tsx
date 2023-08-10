@@ -132,29 +132,34 @@ export const MergeSort = async (
     const newArray = [...result];
     const len = newArray.length;
     // The helper function to merge two arrays
-    const merge = async (left: any[], right: any[]) => {
+    const merge = async (left: any[], right: any[], start: number) => {
         let resultArray = [],
             leftIndex = 0,
             rightIndex = 0;
 
-        // We will concatenate values into the resultArray in order
         while (leftIndex < left.length && rightIndex < right.length) {
             if (left[leftIndex].value < right[rightIndex].value) {
                 resultArray.push(left[leftIndex]);
-                leftIndex++; // move left array cursor
+                leftIndex++;
             } else {
                 resultArray.push(right[rightIndex]);
-                rightIndex++; // move right array cursor
+                rightIndex++;
             }
         }
 
-        // We need to concat to the resultArray because there will be one element remaining from either left OR the right
-        return resultArray
+        const merged = resultArray
             .concat(left.slice(leftIndex))
             .concat(right.slice(rightIndex));
+
+        // Update the newArray with the merged data
+        for (let i = 0; i < merged.length; i++) {
+            newArray[start + i] = merged[i];
+        }
+
+        return merged;
     };
 
-    const sort = async (array: any[]): Promise<any[]> => {
+    const sort = async (array: any[], start = 0): Promise<any[]> => {
         if (array.length === 1) {
             // return once we hit an array with a single item
             return array;
@@ -169,21 +174,18 @@ export const MergeSort = async (
             dispatch(sortNumbersMergeAction(array, graphNumber));
             return array;
         }
-        console.log('left', left);
-        console.log('right', right);
 
-        const sortedLeft = await sort(left);
-        const sortedRight = await sort(right);
-        const mergedArray = await merge(sortedLeft, sortedRight);
-        console.log('mergedArray', mergedArray);
+        const sortedLeft = await sort(left, start);
+        const sortedRight = await sort(right, start + middle);
 
-        dispatch(sortNumbersMergeAction(mergedArray, graphNumber));
+        const mergedArray = await merge(sortedLeft, sortedRight, start);
+
+        dispatch(sortNumbersMergeAction([...newArray], graphNumber)); // Dispatch the whole newArray for visualization
         dispatch(iterationsCompletedAction(false, 0));
-        await timer(len);
+        await timer(len * 100);
 
         return mergedArray;
     };
-    console.log('newarray', newArray);
     const sortedArray = await sort(newArray);
 
     // Set the color of all elements to green to indicate the sorting is complete
