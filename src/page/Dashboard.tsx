@@ -110,7 +110,6 @@ export default function Dashboard(): JSX.Element {
     const mergeSort = async (stopControllerRef: any, graphNumber: number) => {
         setRunning(true);
         dispatch(sortInProgressAction(true));
-        //console.log('graphNumber mergeSort', graphNumber);
 
         await MergeSort(
             results[graphNumber],
