@@ -14,8 +14,6 @@ export const BubbleSort = async (
     dispatch: any,
     graphNumber: number
 ) => {
-    console.log('BubbleSort graphNumber', graphNumber);
-
     const newArray = [...result];
     const len = newArray.length;
 
