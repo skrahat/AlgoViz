@@ -130,7 +130,7 @@ export const MergeSort = async (
     graphNumber: number
 ) => {
     const newArray = [...result];
-
+    const len = newArray.length;
     // The helper function to merge two arrays
     const merge = async (left: any[], right: any[]) => {
         let resultArray = [],
@@ -169,18 +169,21 @@ export const MergeSort = async (
             dispatch(sortNumbersMergeAction(array, graphNumber));
             return array;
         }
+        console.log('left', left);
+        console.log('right', right);
 
         const sortedLeft = await sort(left);
         const sortedRight = await sort(right);
         const mergedArray = await merge(sortedLeft, sortedRight);
+        console.log('mergedArray', mergedArray);
 
         dispatch(sortNumbersMergeAction(mergedArray, graphNumber));
         dispatch(iterationsCompletedAction(false, 0));
-        await timer(middle);
+        await timer(len);
 
         return mergedArray;
     };
-
+    console.log('newarray', newArray);
     const sortedArray = await sort(newArray);
 
     // Set the color of all elements to green to indicate the sorting is complete

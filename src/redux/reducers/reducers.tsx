@@ -93,7 +93,7 @@ const rootReducer = (state = initialState, action: any) => {
 
             return {
                 ...state,
-                resultsMerge,
+                results: resultsMerge,
                 displayComplete: true
             };
         default:
