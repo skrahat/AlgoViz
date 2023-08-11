@@ -33,6 +33,7 @@ import { colours } from '../styling/colours';
 import FactCard from '../component/UIComponents/FactCard';
 import { MenuProps, algorithmList, theme } from '../component/constants';
 import { SortingFunctions } from './Dashboard.type';
+import CustomAlert from '../component/UIComponents/Alert';
 
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
@@ -41,8 +42,11 @@ export default function Dashboard(): JSX.Element {
     const [running, setRunning] = useState(false);
     const [languageValue, setLanguageValue] = useState(true);
     const [arraySize, setArraySize] = useState<number>(10);
-    const sortingInProgressState = useSelector(
-        (state: any) => state.sortInProgress
+    // const sortingInProgressState = useSelector(
+    //     (state: any) => state.sortInProgress
+    // );
+    const sortInProgressArrayState = useSelector(
+        (state: any) => state.sortInProgressArray
     );
     const iterationsCompletedState = useSelector(
         (state: any) => state.iterationsCompleted
@@ -51,6 +55,7 @@ export default function Dashboard(): JSX.Element {
     const [selectedAlgorithm, setSelectedAlgorithm] = React.useState<string[]>(
         []
     );
+    const [showAlert, setShowAlert] = useState(false);
 
     const algorithmHandleChange = (
         event: SelectChangeEvent<typeof selectedAlgorithm>
@@ -58,10 +63,15 @@ export default function Dashboard(): JSX.Element {
         const {
             target: { value }
         } = event;
-        setSelectedAlgorithm(
-            // On autofill we get a stringified value.
-            typeof value === 'string' ? value.split(',') : value
-        );
+
+        const selectedValues =
+            typeof value === 'string' ? value.split(',') : value;
+
+        if (selectedValues.length <= 2) {
+            setSelectedAlgorithm(selectedValues);
+        } else {
+            setShowAlert(true);
+        }
     };
 
     // Generate the data array for the BarGraph component
@@ -82,7 +92,7 @@ export default function Dashboard(): JSX.Element {
     // Perform bubble sort
     const bubbleSort = async (stopControllerRef: any, graphNumber: number) => {
         setRunning(true);
-        dispatch(sortInProgressAction(true));
+        dispatch(sortInProgressAction(true, graphNumber));
 
         await BubbleSort(
             results[graphNumber],
@@ -98,7 +108,7 @@ export default function Dashboard(): JSX.Element {
         graphNumber: number
     ) => {
         setRunning(true);
-        dispatch(sortInProgressAction(true));
+        dispatch(sortInProgressAction(true, graphNumber));
         await InsertionSort(
             results[graphNumber],
             stopControllerRef.signal,
@@ -108,7 +118,7 @@ export default function Dashboard(): JSX.Element {
     };
     const mergeSort = async (stopControllerRef: any, graphNumber: number) => {
         setRunning(true);
-        dispatch(sortInProgressAction(true));
+        dispatch(sortInProgressAction(true, graphNumber));
 
         await MergeSort(
             results[graphNumber],
@@ -174,7 +184,7 @@ export default function Dashboard(): JSX.Element {
             stopControllerRef.current?.abort();
             setRunning(false);
         }
-        dispatch(sortInProgressAction(false));
+        dispatch(sortInProgressAction(false, 2));
     };
 
     // Change the app language
@@ -191,7 +201,7 @@ export default function Dashboard(): JSX.Element {
 
     useEffect(() => {
         GenerateDataGraph(results, results[0].length);
-    }, [results, arraySize, sortingInProgressState]);
+    }, [results, arraySize, sortInProgressArrayState]);
 
     return (
         <div style={{ background: colours.background }}>
@@ -244,7 +254,9 @@ export default function Dashboard(): JSX.Element {
                                         max={100}
                                         color="secondary"
                                         onChange={handleChange}
-                                        disabled={sortingInProgressState}
+                                        disabled={sortInProgressArrayState.every(
+                                            Boolean
+                                        )}
                                         valueLabelDisplay="auto"
                                         aria-labelledby="array-size-slider"
                                     />
@@ -260,7 +272,9 @@ export default function Dashboard(): JSX.Element {
                                 >
                                     <CustomButton
                                         id="stop-button"
-                                        disabled={!sortingInProgressState}
+                                        disabled={sortInProgressArrayState.every(
+                                            (state: boolean) => state === false
+                                        )}
                                         onClick={stopSortingHandler}
                                         width="5rem"
                                     >
@@ -268,12 +282,26 @@ export default function Dashboard(): JSX.Element {
                                     </CustomButton>
                                     <CustomButton
                                         id="clear-numbers-button"
-                                        disabled={sortingInProgressState}
+                                        disabled={
+                                            !sortInProgressArrayState.every(
+                                                (value: boolean) =>
+                                                    !Boolean(value)
+                                            )
+                                        }
                                         onClick={RemoveNumberFunction}
                                     >
                                         {t(`buttons.updateNumbers`)}
                                     </CustomButton>
-
+                                    {showAlert && (
+                                        <CustomAlert
+                                            message="You can't select more than 2 algorithms."
+                                            open={showAlert}
+                                            severity="warning"
+                                            handleClose={() =>
+                                                setShowAlert(false)
+                                            }
+                                        />
+                                    )}
                                     <FormControl
                                         sx={{
                                             width: 175,
@@ -283,6 +311,9 @@ export default function Dashboard(): JSX.Element {
                                         <Select
                                             multiple
                                             displayEmpty
+                                            disabled={sortInProgressArrayState.every(
+                                                Boolean
+                                            )}
                                             value={selectedAlgorithm}
                                             onChange={algorithmHandleChange}
                                             input={<OutlinedInput />}
@@ -326,8 +357,9 @@ export default function Dashboard(): JSX.Element {
                                     <CustomButton
                                         id="start-button"
                                         disabled={
-                                            sortingInProgressState ||
-                                            selectedAlgorithm.length === 0
+                                            sortInProgressArrayState.every(
+                                                Boolean
+                                            ) || selectedAlgorithm.length === 0
                                         }
                                         width="5rem"
                                         onClick={startSorting}
@@ -444,7 +476,7 @@ export default function Dashboard(): JSX.Element {
                                     //     selectedAlgorithm[0] as SortingAlgorithm
                                     // )}
                                     sortingInProgressState={
-                                        sortingInProgressState
+                                        sortInProgressArrayState[0]
                                     }
                                     sorted={sorted}
                                 />
@@ -502,7 +534,7 @@ export default function Dashboard(): JSX.Element {
                                     //     selectedAlgorithm[1] as SortingAlgorithm
                                     // )}
                                     sortingInProgressState={
-                                        sortingInProgressState
+                                        sortInProgressArrayState[1]
                                     }
                                     sorted={sorted}
                                 />

@@ -57,7 +57,7 @@ export const BubbleSort = async (
 
     dispatch(sortNumbersBubbleAction(sortedArray, graphNumber));
 
-    dispatch(sortInProgressAction(false));
+    dispatch(sortInProgressAction(false, graphNumber));
     dispatch(sortedAction(true));
 };
 
@@ -120,7 +120,7 @@ export const InsertionSort = async (
     });
 
     dispatch(sortNumbersInsertionAction(sortedArray, graphNumber));
-    dispatch(sortInProgressAction(false));
+    dispatch(sortInProgressAction(false, graphNumber));
     dispatch(sortedAction(true));
 };
 export const MergeSort = async (
@@ -229,14 +229,15 @@ export const MergeSort = async (
         });
 
         dispatch(sortNumbersMergeAction(finalSortedArray, graphNumber));
-        dispatch(sortInProgressAction(false));
+        dispatch(sortInProgressAction(false, graphNumber));
         dispatch(sortedAction(true));
     } catch (e) {
         if ((e as Error).message === 'Aborted') {
-            console.log('Merge sort aborted');
+            //console.log('Merge sort aborted');
             const resetArray = resetColors(newArray);
             dispatch(sortNumbersMergeAction(resetArray, graphNumber));
         } else {
+            console.error(e);
             throw e; // rethrow the error if it's not an abort
         }
     }
