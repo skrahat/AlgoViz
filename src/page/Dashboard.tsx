@@ -33,6 +33,7 @@ import { colours } from '../styling/colours';
 import FactCard from '../component/UIComponents/FactCard';
 import { MenuProps, algorithmList, theme } from '../component/constants';
 import { SortingFunctions } from './Dashboard.type';
+import CustomAlert from '../component/UIComponents/Alert';
 
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
@@ -54,6 +55,7 @@ export default function Dashboard(): JSX.Element {
     const [selectedAlgorithm, setSelectedAlgorithm] = React.useState<string[]>(
         []
     );
+    const [showAlert, setShowAlert] = useState(false);
 
     const algorithmHandleChange = (
         event: SelectChangeEvent<typeof selectedAlgorithm>
@@ -61,10 +63,15 @@ export default function Dashboard(): JSX.Element {
         const {
             target: { value }
         } = event;
-        setSelectedAlgorithm(
-            // On autofill we get a stringified value.
-            typeof value === 'string' ? value.split(',') : value
-        );
+
+        const selectedValues =
+            typeof value === 'string' ? value.split(',') : value;
+
+        if (selectedValues.length <= 2) {
+            setSelectedAlgorithm(selectedValues);
+        } else {
+            setShowAlert(true);
+        }
     };
 
     // Generate the data array for the BarGraph component
@@ -285,7 +292,16 @@ export default function Dashboard(): JSX.Element {
                                     >
                                         {t(`buttons.updateNumbers`)}
                                     </CustomButton>
-
+                                    {showAlert && (
+                                        <CustomAlert
+                                            message="You can't select more than 2 algorithms."
+                                            open={showAlert}
+                                            severity="warning"
+                                            handleClose={() =>
+                                                setShowAlert(false)
+                                            }
+                                        />
+                                    )}
                                     <FormControl
                                         sx={{
                                             width: 175,
