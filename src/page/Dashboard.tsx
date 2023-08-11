@@ -32,7 +32,7 @@ import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import FactCard from '../component/UIComponents/FactCard';
 import { MenuProps, algorithmList, theme } from '../component/constants';
-import { SortingFunctions } from './Dashboard.type';
+import { SortingAlgorithm, SortingFunctions } from './Dashboard.type';
 
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
@@ -52,6 +52,12 @@ export default function Dashboard(): JSX.Element {
         []
     );
 
+    const algorithmResultMap: Record<SortingAlgorithm, any[]> = {
+        bubble: results[0],
+        merge: results[1],
+        insertion: results[1] // seems insertion and merge share the same result, adjust if needed
+        // add more algorithms as needed...
+    };
     const algorithmHandleChange = (
         event: SelectChangeEvent<typeof selectedAlgorithm>
     ) => {
@@ -83,7 +89,7 @@ export default function Dashboard(): JSX.Element {
     const bubbleSort = async (stopControllerRef: any, graphNumber: number) => {
         setRunning(true);
         dispatch(sortInProgressAction(true));
-        console.log('graphNumber bubbleSort', graphNumber);
+        //console.log('graphNumber bubbleSort', graphNumber);
 
         await BubbleSort(
             results[graphNumber],
@@ -128,20 +134,22 @@ export default function Dashboard(): JSX.Element {
         stopControllerRef.current = new AbortController();
 
         try {
+            console.log('selectedAlgorithm', selectedAlgorithm);
+
             // Get all the selected algorithms
-            const selectedAlgorithms = Object.keys(sortingFunctions).filter(
-                (key) => selectedAlgorithm.includes(key)
+            const selectedAlgorithms = selectedAlgorithm.filter(
+                (algorithm) => sortingFunctions[algorithm]
             );
 
             // If there's no selected algorithm, do nothing
             if (!selectedAlgorithms.length) {
                 return;
             }
-
+            console.log('selectedAlgorithms', selectedAlgorithms);
             // Map through the selected algorithms and start them
             const promises = selectedAlgorithms.map((algorithm, index) => {
                 const sortingFunction = sortingFunctions[algorithm];
-                //console.log('algorithm ', algorithm);
+                console.log('algorithm ', algorithm, index);
                 return sortingFunction(
                     stopControllerRef.current as AbortController,
                     index
@@ -162,6 +170,10 @@ export default function Dashboard(): JSX.Element {
         }
     };
 
+    const getResultForAlgorithm = (algorithmName: SortingAlgorithm): any[] => {
+        console.log('algorithmName', algorithmName);
+        return algorithmResultMap[algorithmName] || [];
+    };
     // Handle the array size slider change
     const handleChange = (event: Event, value: number | number[]) => {
         if (typeof value === 'number') {
@@ -442,16 +454,10 @@ export default function Dashboard(): JSX.Element {
                             >
                                 <BarGraph
                                     style={{ width: '80%' }}
-                                    result={
-                                        selectedAlgorithm[0] === `bubble`
-                                            ? results[0]
-                                            : selectedAlgorithm[0] === `merge`
-                                            ? results[1]
-                                            : selectedAlgorithm[0] ===
-                                              `insertion`
-                                            ? results[1]
-                                            : results[0]
-                                    }
+                                    result={results[0]}
+                                    // {getResultForAlgorithm(
+                                    //     selectedAlgorithm[0] as SortingAlgorithm
+                                    // )}
                                     sortingInProgressState={
                                         sortingInProgressState
                                     }
@@ -506,16 +512,10 @@ export default function Dashboard(): JSX.Element {
                             >
                                 <BarGraph
                                     style={{ width: '80%' }}
-                                    result={
-                                        selectedAlgorithm[1] === `bubble`
-                                            ? results[0]
-                                            : selectedAlgorithm[1] === `merge`
-                                            ? results[1]
-                                            : selectedAlgorithm[1] ===
-                                              `insertion`
-                                            ? results[1]
-                                            : results[0]
-                                    }
+                                    result={results[1]}
+                                    // {getResultForAlgorithm(
+                                    //     selectedAlgorithm[1] as SortingAlgorithm
+                                    // )}
                                     sortingInProgressState={
                                         sortingInProgressState
                                     }
