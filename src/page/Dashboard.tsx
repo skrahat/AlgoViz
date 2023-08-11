@@ -311,6 +311,9 @@ export default function Dashboard(): JSX.Element {
                                         <Select
                                             multiple
                                             displayEmpty
+                                            disabled={sortInProgressArrayState.every(
+                                                Boolean
+                                            )}
                                             value={selectedAlgorithm}
                                             onChange={algorithmHandleChange}
                                             input={<OutlinedInput />}
