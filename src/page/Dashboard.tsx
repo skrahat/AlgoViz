@@ -32,7 +32,7 @@ import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import FactCard from '../component/UIComponents/FactCard';
 import { MenuProps, algorithmList, theme } from '../component/constants';
-import { SortingAlgorithm, SortingFunctions } from './Dashboard.type';
+import { SortingFunctions } from './Dashboard.type';
 
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
@@ -52,12 +52,6 @@ export default function Dashboard(): JSX.Element {
         []
     );
 
-    const algorithmResultMap: Record<SortingAlgorithm, any[]> = {
-        bubble: results[0],
-        merge: results[1],
-        insertion: results[1] // seems insertion and merge share the same result, adjust if needed
-        // add more algorithms as needed...
-    };
     const algorithmHandleChange = (
         event: SelectChangeEvent<typeof selectedAlgorithm>
     ) => {
@@ -165,9 +159,6 @@ export default function Dashboard(): JSX.Element {
         }
     };
 
-    const getResultForAlgorithm = (algorithmName: SortingAlgorithm): any[] => {
-        return algorithmResultMap[algorithmName] || [];
-    };
     // Handle the array size slider change
     const handleChange = (event: Event, value: number | number[]) => {
         if (typeof value === 'number') {
