@@ -2,6 +2,7 @@ import { colours } from '../../styling/colours';
 
 interface State {
     results: { color: string; value: number }[][];
+    sortInProgressArray: boolean[];
     displayComplete: boolean;
     sortInProgress: boolean;
     sorted: boolean;
@@ -12,6 +13,7 @@ interface State {
 
 const initialState: State = {
     results: [[], []],
+    sortInProgressArray: [],
     displayComplete: true,
     sortInProgress: false,
     sorted: false,
@@ -34,6 +36,7 @@ const rootReducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 results: [result, result],
+                sortInProgressArray: [false, false],
                 displayComplete: true,
                 generatedNumbers: result
             };
@@ -54,15 +57,34 @@ const rootReducer = (state = initialState, action: any) => {
             return { ...state, iterationsCompleted };
 
         case 'SORT_IN_PROGRESS':
-            const status = action.payload;
-            return { ...state, sortInProgress: status };
+            const status = action.payload.status;
+            const graphNumberProgress = action.payload.graphNumber;
+            if (graphNumberProgress === 0) {
+                return {
+                    ...state,
+                    sortInProgressArray: [status, state.sortInProgressArray[1]]
+                };
+            } else if (graphNumberProgress === 1) {
+                return {
+                    ...state,
+                    sortInProgressArray: [state.sortInProgressArray[0], status]
+                };
+            } else
+                return {
+                    ...state,
+                    sortInProgressArray: [status, status]
+                };
 
         case 'SORTED':
             const sorted = action.payload;
             return { ...state, sorted: sorted };
 
         case 'START_BUBBLE_SORT':
-            return { ...state, sortInProgress: true, algoStop: false };
+            return {
+                ...state,
+                sortInProgressArray: [true, true],
+                algoStop: false
+            };
 
         case 'STOP_BUBBLE_SORT':
             return { ...state, algoStop: true };

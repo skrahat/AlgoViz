@@ -5,11 +5,11 @@ export const generateNumbersAction = (arraySize: number) => {
         payload: arraySize
     };
 };
-export const sortInProgressAction = (status: boolean) => {
+export const sortInProgressAction = (status: boolean, graphNumber: number) => {
     //console.log('sortInProgess action reached');
     return {
         type: 'SORT_IN_PROGRESS',
-        payload: status
+        payload: { status: status, graphNumber: graphNumber }
     };
 };
 export const sortedAction = (sorted: boolean) => {
