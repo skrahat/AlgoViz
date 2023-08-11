@@ -37,7 +37,7 @@ const Footer = () => {
                 </Link>
             </Typography>
             <Typography variant="body2" color="grey">
-                v1.3
+                v1.4
             </Typography>
         </Box>
     );
