@@ -89,7 +89,6 @@ export default function Dashboard(): JSX.Element {
     const bubbleSort = async (stopControllerRef: any, graphNumber: number) => {
         setRunning(true);
         dispatch(sortInProgressAction(true));
-        //console.log('graphNumber bubbleSort', graphNumber);
 
         await BubbleSort(
             results[graphNumber],
@@ -134,8 +133,6 @@ export default function Dashboard(): JSX.Element {
         stopControllerRef.current = new AbortController();
 
         try {
-            console.log('selectedAlgorithm', selectedAlgorithm);
-
             // Get all the selected algorithms
             const selectedAlgorithms = selectedAlgorithm.filter(
                 (algorithm) => sortingFunctions[algorithm]
@@ -145,11 +142,9 @@ export default function Dashboard(): JSX.Element {
             if (!selectedAlgorithms.length) {
                 return;
             }
-            console.log('selectedAlgorithms', selectedAlgorithms);
             // Map through the selected algorithms and start them
             const promises = selectedAlgorithms.map((algorithm, index) => {
                 const sortingFunction = sortingFunctions[algorithm];
-                console.log('algorithm ', algorithm, index);
                 return sortingFunction(
                     stopControllerRef.current as AbortController,
                     index
@@ -171,7 +166,6 @@ export default function Dashboard(): JSX.Element {
     };
 
     const getResultForAlgorithm = (algorithmName: SortingAlgorithm): any[] => {
-        console.log('algorithmName', algorithmName);
         return algorithmResultMap[algorithmName] || [];
     };
     // Handle the array size slider change
