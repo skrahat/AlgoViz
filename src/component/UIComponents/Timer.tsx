@@ -11,19 +11,23 @@ const Timer: React.FC<TimerProps> = ({
     showMilliseconds = false
 }) => {
     const [timeElapsed, setTimeElapsed] = useState(0);
-    const [previousInProgress, setPreviousInProgress] = useState(false);
+    const [hasStarted, setHasStarted] = useState(false);
 
     useEffect(() => {
         let intervalId: NodeJS.Timeout | null = null;
 
         if (inProgress) {
-            if (!previousInProgress) {
-                setTimeElapsed(0); // Reset the timer when inProgress changes from false to true
+            if (!hasStarted) {
+                setHasStarted(true);
             }
 
             intervalId = setInterval(() => {
                 setTimeElapsed((prevTime) => prevTime + 100); // Increment by 100ms
             }, 100); // Update every 100ms
+        } else {
+            // Reset the timer when inProgress becomes false
+            setTimeElapsed(0);
+            setHasStarted(false);
         }
 
         return () => {
@@ -31,11 +35,7 @@ const Timer: React.FC<TimerProps> = ({
                 clearInterval(intervalId);
             }
         };
-    }, [inProgress, previousInProgress]);
-
-    useEffect(() => {
-        setPreviousInProgress(inProgress); // Update previousInProgress when inProgress changes
-    }, [inProgress]);
+    }, [inProgress, hasStarted]);
 
     const formatTime = (time: number) => {
         if (showMilliseconds) {
