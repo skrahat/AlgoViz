@@ -38,7 +38,7 @@ const Timer: React.FC<TimerProps> = ({
 
     return (
         <Typography variant="body2" color="inherit">
-            Time: {formatTime(timeElapsed)}
+            {formatTime(timeElapsed)}
         </Typography>
     );
 };

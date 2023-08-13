@@ -49,9 +49,9 @@ export default function Dashboard(): JSX.Element {
     const sortInProgressArrayState = useSelector(
         (state: any) => state.sortInProgressArray
     );
-    const iterationsCompletedState = useSelector(
-        (state: any) => state.iterationsCompleted
-    );
+    // const iterationsCompletedState = useSelector(
+    //     (state: any) => state.iterationsCompleted
+    // );
     const stopControllerRef = useRef<AbortController | null>(null);
     const [selectedAlgorithm, setSelectedAlgorithm] = React.useState<string[]>(
         []
@@ -279,7 +279,7 @@ export default function Dashboard(): JSX.Element {
                                         onClick={stopSortingHandler}
                                         width="5rem"
                                     >
-                                        {t('buttons.stop')}
+                                        {t('appbar.buttons.stop')}
                                     </CustomButton>
                                     <CustomButton
                                         id="clear-numbers-button"
@@ -291,7 +291,7 @@ export default function Dashboard(): JSX.Element {
                                         }
                                         onClick={RemoveNumberFunction}
                                     >
-                                        {t(`buttons.updateNumbers`)}
+                                        {t(`appbar.buttons.updateNumbers`)}
                                     </CustomButton>
                                     {showAlert && (
                                         <CustomAlert
@@ -323,7 +323,7 @@ export default function Dashboard(): JSX.Element {
                                                     return (
                                                         <em>
                                                             {t(
-                                                                `dropDown.pickAlgo`
+                                                                `appbar.dropDown.pickAlgo`
                                                             )}
                                                         </em>
                                                     );
@@ -350,7 +350,9 @@ export default function Dashboard(): JSX.Element {
                                                         color: colours.primary
                                                     }}
                                                 >
-                                                    {t(`buttons.${name}`)}
+                                                    {t(
+                                                        `appbar.buttons.${name}`
+                                                    )}
                                                 </MenuItem>
                                             ))}
                                         </Select>
@@ -365,7 +367,7 @@ export default function Dashboard(): JSX.Element {
                                         width="5rem"
                                         onClick={startSorting}
                                     >
-                                        {t('buttons.start')}
+                                        {t('appbar.buttons.start')}
                                     </CustomButton>
                                     {/* Iterations Counter */}
                                     <div
@@ -377,7 +379,7 @@ export default function Dashboard(): JSX.Element {
                                             borderRadius: '4px'
                                         }}
                                     >
-                                        {t(`buttons.iterations`)}:
+                                        {t(`appbar.time`)}:
                                         <Paper
                                             elevation={3}
                                             sx={{
@@ -403,12 +405,14 @@ export default function Dashboard(): JSX.Element {
                                                 }
                                                 showMilliseconds
                                             />
+                                            <Timer
+                                                inProgress={
+                                                    sortInProgressArrayState[1]
+                                                }
+                                                showMilliseconds
+                                            />
                                         </Paper>
                                     </div>
-                                    <Timer
-                                        inProgress={sortInProgressArrayState[0]}
-                                        showMilliseconds
-                                    />
                                     {/* Language Switch */}
                                     <FormControlLabel
                                         control={
@@ -482,9 +486,6 @@ export default function Dashboard(): JSX.Element {
                                 <BarGraph
                                     style={{ width: '80%' }}
                                     result={results[0]}
-                                    // {getResultForAlgorithm(
-                                    //     selectedAlgorithm[0] as SortingAlgorithm
-                                    // )}
                                     sortingInProgressState={
                                         sortInProgressArrayState[0]
                                     }
@@ -540,9 +541,6 @@ export default function Dashboard(): JSX.Element {
                                 <BarGraph
                                     style={{ width: '80%' }}
                                     result={results[1]}
-                                    // {getResultForAlgorithm(
-                                    //     selectedAlgorithm[1] as SortingAlgorithm
-                                    // )}
                                     sortingInProgressState={
                                         sortInProgressArrayState[1]
                                     }
