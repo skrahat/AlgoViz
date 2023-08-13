@@ -34,6 +34,7 @@ import FactCard from '../component/UIComponents/FactCard';
 import { MenuProps, algorithmList, theme } from '../component/constants';
 import { SortingFunctions } from './Dashboard.type';
 import CustomAlert from '../component/UIComponents/Alert';
+import Timer from '../component/UIComponents/Timer';
 
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
@@ -386,7 +387,7 @@ export default function Dashboard(): JSX.Element {
                                                 color: colours.primary
                                             }}
                                         >
-                                            {selectedAlgorithm.length === 1 &&
+                                            {/* {selectedAlgorithm.length === 1 &&
                                             selectedAlgorithm.includes(`bubble`)
                                                 ? iterationsCompletedState[0]
                                                 : selectedAlgorithm.length ===
@@ -395,10 +396,19 @@ export default function Dashboard(): JSX.Element {
                                                       `insertion`
                                                   )
                                                 ? iterationsCompletedState[1]
-                                                : `${iterationsCompletedState[0]}/ ${iterationsCompletedState[1]}`}
+                                                : `${iterationsCompletedState[0]}/ ${iterationsCompletedState[1]}`} */}
+                                            <Timer
+                                                inProgress={
+                                                    sortInProgressArrayState[0]
+                                                }
+                                                showMilliseconds
+                                            />
                                         </Paper>
                                     </div>
-
+                                    <Timer
+                                        inProgress={sortInProgressArrayState[0]}
+                                        showMilliseconds
+                                    />
                                     {/* Language Switch */}
                                     <FormControlLabel
                                         control={
