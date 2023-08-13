@@ -27,98 +27,88 @@ interface BarGraphProps {
     style?: React.CSSProperties;
 }
 
-const BarGraph: React.FC<BarGraphProps> = ({
-    result,
-    sortingInProgressState,
-    sorted,
-    style
-}) => {
-    Chart.register(
-        BarController,
-        BarElement,
-        CategoryScale,
-        LinearScale,
-        Title,
-        Tooltip
-    );
-
-    const GenerateDataGraph = (
-        arrayX: { color: string; value: number }[],
-        arrayY: number
-    ) => {
-        var result: { x: number; y: number }[] = [];
-        for (var i = 0; i < arrayY; i++) {
-            result.push({ x: i, y: arrayX[i].value });
-        }
-        return result;
-    };
-
-    const GenerateDataColourGraph = (
-        arrayX: { color: string; value: number }[],
-        arrayY: number
-    ) => {
-        var result: string[] = [];
-        for (var i = 0; i < arrayY; i++) {
-            result.push(arrayX[i].color);
-        }
-        return result;
-    };
-
-    const data = {
-        labels: GenerateDataGraph(result, result.length).map((item) => item.x),
-        datasets: [
-            {
-                label: 'Numbers',
-                data: GenerateDataGraph(result, result.length),
-                backgroundColor: sortingInProgressState
-                    ? GenerateDataColourGraph(result, result.length)
-                    : sorted
-                    ? GenerateDataColourGraph(result, result.length).map(
-                          (color) =>
-                              color === colours.error
-                                  ? colours.error
-                                  : colours.success
-                      )
-                    : Array(result.length).fill(colours.accent)
+const BarGraph: React.FC<BarGraphProps> = React.memo(
+    ({ result, sortingInProgressState, sorted, style }) => {
+        const GenerateDataGraph = (
+            arrayX: { color: string; value: number }[],
+            arrayY: number
+        ) => {
+            var result: { x: number; y: number }[] = [];
+            for (var i = 0; i < arrayY; i++) {
+                result.push({ x: i, y: arrayX[i].value });
             }
-        ]
-    };
+            return result;
+        };
 
-    const options = {
-        plugins: {
-            legend: {
-                display: false
+        const GenerateDataColourGraph = (
+            arrayX: { color: string; value: number }[],
+            arrayY: number
+        ) => {
+            var result: string[] = [];
+            for (var i = 0; i < arrayY; i++) {
+                result.push(arrayX[i].color);
             }
-        },
-        scales: {
-            x: {
-                title: {
+            return result;
+        };
+
+        const data = {
+            labels: GenerateDataGraph(result, result.length).map(
+                (item) => item.x
+            ),
+            datasets: [
+                {
+                    label: 'Numbers',
+                    data: GenerateDataGraph(result, result.length),
+                    backgroundColor: sortingInProgressState
+                        ? GenerateDataColourGraph(result, result.length)
+                        : sorted
+                        ? GenerateDataColourGraph(result, result.length).map(
+                              (color) =>
+                                  color === colours.error
+                                      ? colours.error
+                                      : colours.success
+                          )
+                        : Array(result.length).fill(colours.accent)
+                }
+            ]
+        };
+
+        const options = {
+            plugins: {
+                legend: {
                     display: false
-                },
-                grid: {
-                    display: false // Remove x-axis grid lines
                 }
             },
-            y: {
-                title: {
-                    display: true,
-                    text: 'Size'
+            scales: {
+                x: {
+                    title: {
+                        display: false
+                    },
+                    grid: {
+                        display: false // Remove x-axis grid lines
+                    }
                 },
-                grid: {
-                    display: false // Remove y-axis grid lines
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Size'
+                    },
+                    grid: {
+                        display: false // Remove y-axis grid lines
+                    }
                 }
+            },
+            animation: {
+                duration: 0
             }
-        },
-        animation: {
-            duration: 0
-        }
-    };
+        };
 
-    return (
-        <div style={style}>
-            <Bar options={options} data={data} />
-        </div>
-    );
-};
+        return (
+            <div style={style}>
+                <Bar options={options} data={data} />
+            </div>
+        );
+    }
+);
 
 export default BarGraph;

@@ -172,7 +172,7 @@ export const MergeSort = async (
                 return item;
             });
             dispatch(sortNumbersMergeAction(updatedArray, graphNumber));
-            await timer(len / 2);
+            await timer(len);
         };
 
         while (leftIndex < left.length && rightIndex < right.length) {

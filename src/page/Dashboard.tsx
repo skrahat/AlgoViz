@@ -405,12 +405,16 @@ export default function Dashboard(): JSX.Element {
                                                 }
                                                 showMilliseconds
                                             />
-                                            <Timer
-                                                inProgress={
-                                                    sortInProgressArrayState[1]
-                                                }
-                                                showMilliseconds
-                                            />
+                                            {selectedAlgorithm.length === 2 ? (
+                                                <Timer
+                                                    inProgress={
+                                                        sortInProgressArrayState[1]
+                                                    }
+                                                    showMilliseconds
+                                                />
+                                            ) : (
+                                                ''
+                                            )}
                                         </Paper>
                                     </div>
                                     {/* Language Switch */}
