@@ -6,5 +6,6 @@ export const colours = {
     error: '#FF785A',
     background: '#CCCCCC',
     footer: '#292929',
-    disable: '#525252'
+    disable: '#525252',
+    pink: 'd5aca9'
 };

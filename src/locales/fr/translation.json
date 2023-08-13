@@ -2,16 +2,19 @@
     "title": {
         "mainPage": "AlgoViz"
     },
-    "buttons": {
-        "bubble": "Tri à bulles",
-        "insertion": "tri par insertion",
-        "stop": "Arrêt",
-        "start": "Commencer",
-        "updateNumbers": "mettre à jour les numéros",
-        "iterations": "Itérations",
-        "merge": "Tri par fusion"
+    "appbar": {
+        "time": "time",
+        "buttons": {
+            "bubble": "Tri à bulles",
+            "insertion": "tri par insertion",
+            "stop": "Arrêt",
+            "start": "Commencer",
+            "updateNumbers": "mettre à jour les numéros",
+            "iterations": "Itérations",
+            "merge": "Tri par fusion"
+        },
+        "dropDown": { "pickAlgo": "choisir un algorithme" }
     },
-    "dropDown": { "pickAlgo": "choisir un algorithme" },
     "Numbers": "Nombres",
     "cards": {
         "bubble": {

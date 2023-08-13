@@ -18,11 +18,12 @@ export const BubbleSort = async (
     const len = newArray.length;
 
     for (let i = 0; i < len; i++) {
-        for (let j = 0; j < len - 1; j++) {
+        let swapped = false; // To keep track if any swapping happened in the inner loop
+
+        for (let j = 0; j < len - 1 - i; j++) {
             // Check if the abort signal is triggered
             if (signal.aborted) {
                 const unsortedArray = newArray;
-
                 dispatch(sortNumbersBubbleAction(unsortedArray, graphNumber));
                 return;
             }
@@ -31,31 +32,38 @@ export const BubbleSort = async (
                 let swap = newArray[j];
                 newArray[j] = newArray[j + 1];
                 newArray[j + 1] = swap;
+                swapped = true;
 
                 // Create a new sorted array with modified colors
                 const sortedArray = newArray.map((item, index) => {
                     if (index === j || index === j + 1) {
-                        if (item.color === '#f45050') {
-                            return { ...item, color: colours.accent };
-                        } else {
-                            return { ...item, color: colours.error };
+                        if (item.color !== colours.success) {
+                            // Ensure we don't change color of sorted items
+                            if (item.color === '#f45050') {
+                                return { ...item, color: colours.accent };
+                            } else {
+                                return { ...item, color: colours.error };
+                            }
                         }
                     }
                     return item;
                 });
 
                 dispatch(sortNumbersBubbleAction(sortedArray, graphNumber));
-                dispatch(iterationsCompletedAction(false, graphNumber));
                 await timer(len);
             }
         }
-    }
-    // Set the color of all elements to green to indicate the sorting is complete
-    const sortedArray = newArray.map((item) => {
-        return { ...item, color: colours.success };
-    });
 
-    dispatch(sortNumbersBubbleAction(sortedArray, graphNumber));
+        // If no two elements were swapped by the inner loop, then the array is sorted
+        if (!swapped) break;
+
+        // After the inner loop is done, the element at (len - 1 - i) is in its correct position
+        newArray[len - 1 - i] = {
+            ...newArray[len - 1 - i],
+            color: colours.success
+        };
+        dispatch(sortNumbersBubbleAction([...newArray], graphNumber));
+    }
 
     dispatch(sortInProgressAction(false, graphNumber));
     dispatch(sortedAction(true));

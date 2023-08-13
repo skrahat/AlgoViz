@@ -2,16 +2,19 @@
     "title": {
         "mainPage": "AlgoViz"
     },
-    "buttons": {
-        "bubble": "Bubble",
-        "insertion": "Insertion",
-        "stop": "Stop",
-        "start": "Start",
-        "updateNumbers": "Update Numbers",
-        "iterations": "Iterations",
-        "merge": "Merge sort"
+    "appbar": {
+        "time": "time",
+        "buttons": {
+            "bubble": "Bubble",
+            "insertion": "Insertion",
+            "stop": "Stop",
+            "start": "Start",
+            "updateNumbers": "Update Numbers",
+            "iterations": "Iterations",
+            "merge": "Merge sort"
+        },
+        "dropDown": { "pickAlgo": "pick algo" }
     },
-    "dropDown": { "pickAlgo": "pick algo" },
     "numbers": "Numbers",
     "sudo": {
         "bubble": {
