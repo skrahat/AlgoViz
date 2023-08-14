@@ -1,5 +1,4 @@
 import {
-    iterationsCompletedAction,
     sortInProgressAction,
     sortNumbersBubbleAction,
     sortNumbersInsertionAction,
@@ -105,7 +104,6 @@ export const InsertionSort = async (
                 return item;
             });
             dispatch(sortNumbersInsertionAction(sortedArray, graphNumber));
-            dispatch(iterationsCompletedAction(false, graphNumber));
             await timer(len);
             j--;
         }

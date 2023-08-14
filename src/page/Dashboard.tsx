@@ -22,7 +22,6 @@ import CustomButton from '../component/UIComponents/CustomButton';
 import {
     generateNumbersAction,
     sortInProgressAction,
-    iterationsCompletedAction,
     sortedAction
 } from '../redux/reducers/actions';
 import {
@@ -85,7 +84,6 @@ export default function Dashboard(): JSX.Element {
     // Clear the numbers and reset the sorting state
     const RemoveNumberFunction = () => {
         dispatch(sortedAction(false));
-        dispatch(iterationsCompletedAction(true));
         dispatch(generateNumbersAction(arraySize));
     };
 
@@ -133,7 +131,6 @@ export default function Dashboard(): JSX.Element {
         merge: mergeSort
     };
     const startSorting = async () => {
-        dispatch(iterationsCompletedAction(true));
         stopControllerRef.current = new AbortController();
 
         try {
