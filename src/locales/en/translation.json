@@ -45,9 +45,9 @@
             "description2": "You pick up each card one by one and insert it into its correct position among the sorted cards. It's efficient for small datasets and is similar to how people arrange cards in their hands!"
         },
         "merge": {
-            "title": "merge Sort",
-            "description1": "sudo",
-            "description2": "sudo"
+            "title": "Merge Sort",
+            "description1": "Imagine a group of number friends.",
+            "description2": "They like to divide and conquer: half goes left, half goes right. Then, they pair up and dance their way back in sorted order. It's like a sorting dance-off with a twist!"
         }
     },
     "otherTexts": {
