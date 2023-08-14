@@ -69,7 +69,7 @@ const BarGraph: React.FC<BarGraphProps> = React.memo(
                                       : colours.success
                           )
                         : Array(result.length).fill(colours.accent),
-                    barThickness: 2
+                    barThickness: 4
                 }
             ]
         };
@@ -90,6 +90,7 @@ const BarGraph: React.FC<BarGraphProps> = React.memo(
                     }
                 },
                 y: {
+                    display: false,
                     title: {
                         display: true,
                         text: 'Size'

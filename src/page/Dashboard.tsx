@@ -488,7 +488,7 @@ export default function Dashboard(): JSX.Element {
                                 }}
                             >
                                 <BarGraph
-                                    style={{ width: '80%' }}
+                                    style={{ width: '80%', maxWidth: '50rem' }}
                                     result={results[0]}
                                     sortingInProgressState={
                                         sortInProgressArrayState[0]
@@ -543,7 +543,7 @@ export default function Dashboard(): JSX.Element {
                                 }}
                             >
                                 <BarGraph
-                                    style={{ width: '80%' }}
+                                    style={{ width: '80%', maxWidth: '50rem' }}
                                     result={results[1]}
                                     sortingInProgressState={
                                         sortInProgressArrayState[1]
