@@ -25,7 +25,11 @@ import {
     iterationsCompletedAction,
     sortedAction
 } from '../redux/reducers/actions';
-import { BubbleSort, InsertionSort, MergeSort } from '../component/Algorithms';
+import {
+    BubbleSort,
+    InsertionSort,
+    MergeSort
+} from '../component/algorithms/Algorithms';
 import Footer from '../component/UIComponents/Footer';
 import BarGraph from '../component/graphComponent/BarGraph';
 import Switch from '@mui/material/Switch';
@@ -488,7 +492,7 @@ export default function Dashboard(): JSX.Element {
                                 }}
                             >
                                 <BarGraph
-                                    style={{ width: '80%' }}
+                                    style={{ width: '80%', maxWidth: '50rem' }}
                                     result={results[0]}
                                     sortingInProgressState={
                                         sortInProgressArrayState[0]
@@ -543,7 +547,7 @@ export default function Dashboard(): JSX.Element {
                                 }}
                             >
                                 <BarGraph
-                                    style={{ width: '80%' }}
+                                    style={{ width: '80%', maxWidth: '50rem' }}
                                     result={results[1]}
                                     sortingInProgressState={
                                         sortInProgressArrayState[1]

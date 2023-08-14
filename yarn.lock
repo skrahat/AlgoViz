@@ -10784,6 +10784,13 @@
   dependencies:
     "aproba" "^1.1.1"
 
+"rxjs@^7.8.1":
+  "integrity" "sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg=="
+  "resolved" "https://registry.npmjs.org/rxjs/-/rxjs-7.8.1.tgz"
+  "version" "7.8.1"
+  dependencies:
+    "tslib" "^2.1.0"
+
 "safe-array-concat@^1.0.0":
   "integrity" "sha512-9dVEFruWIsnie89yym+xWTAYASdpw3CJV7Li/6zBewGf9z2i1j31rP6jnY0pHEO4QZh6N0K11bFjWmdR8UGdPQ=="
   "resolved" "https://registry.npmjs.org/safe-array-concat/-/safe-array-concat-1.0.0.tgz"
@@ -11959,7 +11966,7 @@
   "resolved" "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   "version" "1.14.1"
 
-"tslib@^2.0.3":
+"tslib@^2.0.3", "tslib@^2.1.0":
   "integrity" "sha512-mSxlJJwl3BMEQCUNnxXBU9jP4JBktcEGhURcPR6VQVlnP0FdDEsIaz0C35dXNGLyRfrATNofF0F5p2KPxQgB+w=="
   "resolved" "https://registry.npmjs.org/tslib/-/tslib-2.5.3.tgz"
   "version" "2.5.3"
