@@ -5,8 +5,8 @@ import {
     sortNumbersInsertionAction,
     sortNumbersMergeAction,
     sortedAction
-} from '../redux/reducers/actions';
-import { colours } from '../styling/colours';
+} from '../../redux/reducers/actions';
+import { colours } from '../../styling/colours';
 
 export const BubbleSort = async (
     result: any[],

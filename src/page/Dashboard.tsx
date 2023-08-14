@@ -25,7 +25,11 @@ import {
     iterationsCompletedAction,
     sortedAction
 } from '../redux/reducers/actions';
-import { BubbleSort, InsertionSort, MergeSort } from '../component/Algorithms';
+import {
+    BubbleSort,
+    InsertionSort,
+    MergeSort
+} from '../component/algorithms/Algorithms';
 import Footer from '../component/UIComponents/Footer';
 import BarGraph from '../component/graphComponent/BarGraph';
 import Switch from '@mui/material/Switch';
