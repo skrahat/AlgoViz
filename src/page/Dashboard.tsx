@@ -47,15 +47,10 @@ export default function Dashboard(): JSX.Element {
     const [running, setRunning] = useState(false);
     const [languageValue, setLanguageValue] = useState(true);
     const [arraySize, setArraySize] = useState<number>(10);
-    // const sortingInProgressState = useSelector(
-    //     (state: any) => state.sortInProgress
-    // );
+
     const sortInProgressArrayState = useSelector(
         (state: any) => state.sortInProgressArray
     );
-    // const iterationsCompletedState = useSelector(
-    //     (state: any) => state.iterationsCompleted
-    // );
     const stopControllerRef = useRef<AbortController | null>(null);
     const [selectedAlgorithm, setSelectedAlgorithm] = React.useState<string[]>(
         []
@@ -393,16 +388,6 @@ export default function Dashboard(): JSX.Element {
                                                 color: colours.primary
                                             }}
                                         >
-                                            {/* {selectedAlgorithm.length === 1 &&
-                                            selectedAlgorithm.includes(`bubble`)
-                                                ? iterationsCompletedState[0]
-                                                : selectedAlgorithm.length ===
-                                                      1 &&
-                                                  selectedAlgorithm.includes(
-                                                      `insertion`
-                                                  )
-                                                ? iterationsCompletedState[1]
-                                                : `${iterationsCompletedState[0]}/ ${iterationsCompletedState[1]}`} */}
                                             <Timer
                                                 inProgress={
                                                     sortInProgressArrayState[0]
