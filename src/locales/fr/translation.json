@@ -28,9 +28,9 @@
             "description2": "desc2"
         },
         "merge": {
-            "title": "merge Sort",
-            "description1": "sudo",
-            "description2": "sudo"
+            "title": "Tri par fusion",
+            "description1": "Imaginez un groupe d'amis nombre.",
+            "description2": "Ils aiment diviser pour mieux régner: la moitié va à gauche, l'autre moitié à droite. Ensuite, ils s'associent et dansent pour revenir dans un ordre trié. C'est comme une danse de tri avec une touche!"
         },
         "bubbleSort": "Bubble Sort",
         "insertionSort": "Insertion Sort"
