@@ -1,5 +1,4 @@
 import {
-    iterationsCompletedAction,
     sortInProgressAction,
     sortNumbersBubbleAction,
     sortNumbersInsertionAction,
@@ -7,6 +6,7 @@ import {
     sortedAction
 } from '../../redux/reducers/actions';
 import { colours } from '../../styling/colours';
+import { timer } from './Timer';
 
 export const BubbleSort = async (
     result: any[],
@@ -104,7 +104,6 @@ export const InsertionSort = async (
                 return item;
             });
             dispatch(sortNumbersInsertionAction(sortedArray, graphNumber));
-            dispatch(iterationsCompletedAction(false, graphNumber));
             await timer(len);
             j--;
         }
@@ -250,12 +249,3 @@ export const MergeSort = async (
         }
     }
 };
-
-// delay timer function
-async function timer(ms: number) {
-    if (ms < 20)
-        return new Promise((resolve) => setTimeout(resolve, 1000 / ms));
-    return new Promise((resolve) =>
-        setTimeout(resolve, 1000 / Math.pow(ms + 1, 1.5))
-    );
-}

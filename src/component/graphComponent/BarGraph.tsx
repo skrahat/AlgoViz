@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart } from 'chart.js';
 import {
@@ -19,7 +19,6 @@ Chart.register(
     Title,
     Tooltip
 );
-
 interface BarGraphProps {
     result: { color: string; value: number }[];
     sortingInProgressState: boolean;
@@ -27,8 +26,14 @@ interface BarGraphProps {
     style?: React.CSSProperties;
 }
 
-const BarGraph: React.FC<BarGraphProps> = React.memo(
-    ({ result, sortingInProgressState, sorted, style }) => {
+const BarGraph: React.FC<BarGraphProps> = ({
+    result,
+    sortingInProgressState,
+    sorted,
+    style
+}) => {
+    // Generate and memoize the data for the Bar chart
+    const chartData = useMemo(() => {
         const GenerateDataGraph = (
             arrayX: { color: string; value: number }[],
             arrayY: number
@@ -51,7 +56,7 @@ const BarGraph: React.FC<BarGraphProps> = React.memo(
             return result;
         };
 
-        const data = {
+        return {
             labels: GenerateDataGraph(result, result.length).map(
                 (item) => item.x
             ),
@@ -63,7 +68,7 @@ const BarGraph: React.FC<BarGraphProps> = React.memo(
                         ? GenerateDataColourGraph(result, result.length)
                         : sorted
                         ? GenerateDataColourGraph(result, result.length).map(
-                              (color) =>
+                              (color: string) =>
                                   color === colours.error
                                       ? colours.error
                                       : colours.success
@@ -73,8 +78,11 @@ const BarGraph: React.FC<BarGraphProps> = React.memo(
                 }
             ]
         };
+    }, [result, sortingInProgressState, sorted]);
 
-        const options = {
+    // Memoize the options for the Bar chart
+    const chartOptions = useMemo(() => {
+        return {
             plugins: {
                 legend: {
                     display: false
@@ -86,7 +94,7 @@ const BarGraph: React.FC<BarGraphProps> = React.memo(
                         display: false
                     },
                     grid: {
-                        display: false // Remove x-axis grid lines
+                        display: false
                     }
                 },
                 y: {
@@ -96,7 +104,7 @@ const BarGraph: React.FC<BarGraphProps> = React.memo(
                         text: 'Size'
                     },
                     grid: {
-                        display: false // Remove y-axis grid lines
+                        display: false
                     }
                 }
             },
@@ -104,13 +112,13 @@ const BarGraph: React.FC<BarGraphProps> = React.memo(
                 duration: 0
             }
         };
+    }, []);
 
-        return (
-            <div style={style}>
-                <Bar options={options} data={data} />
-            </div>
-        );
-    }
-);
+    return (
+        <div style={style}>
+            <Bar options={chartOptions} data={chartData} />
+        </div>
+    );
+};
 
 export default BarGraph;

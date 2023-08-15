@@ -32,12 +32,6 @@ export const stopBubbleSortAction = () => {
     };
 };
 
-export const iterationsCompletedAction = (clean: boolean, choice?: number) => {
-    return {
-        type: 'ITERATIONS_COMPLETED',
-        payload: { clean: clean, choice: choice }
-    };
-};
 export const sortNumbersBubbleAction = (
     newArray: number[],
     graphNumber: number

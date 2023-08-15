@@ -7,7 +7,6 @@ interface State {
     sortInProgress: boolean;
     sorted: boolean;
     algoStop: boolean;
-    iterationsCompleted: number[];
     generatedNumbers: { color: string; value: number }[];
 }
 
@@ -18,7 +17,6 @@ const initialState: State = {
     sortInProgress: false,
     sorted: false,
     algoStop: false,
-    iterationsCompleted: [0, 0],
     generatedNumbers: []
 };
 
@@ -40,21 +38,6 @@ const rootReducer = (state = initialState, action: any) => {
                 displayComplete: true,
                 generatedNumbers: result
             };
-
-        case 'ITERATIONS_COMPLETED':
-            if (action.payload.clean === true) {
-                return { ...state, iterationsCompleted: [0, 0] };
-            }
-            const { choice } = action.payload;
-            const iterationsCompleted = [...state.iterationsCompleted];
-
-            if (choice === 0) {
-                iterationsCompleted[0] += 1;
-            } else if (choice === 1) {
-                iterationsCompleted[1] += 1;
-            }
-
-            return { ...state, iterationsCompleted };
 
         case 'SORT_IN_PROGRESS':
             const status = action.payload.status;
