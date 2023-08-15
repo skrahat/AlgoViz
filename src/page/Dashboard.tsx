@@ -1,9 +1,24 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Box, Typography, Container, SelectChangeEvent } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    AppBar,
+    Box,
+    Toolbar,
+    Typography,
+    Container,
+    Slider,
+    Paper,
+    FormControlLabel,
+    SelectChangeEvent,
+    OutlinedInput,
+    FormControl,
+    Select,
+    MenuItem
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import 'react-toastify/dist/ReactToastify.css';
 import { ThemeProvider } from '@mui/material/styles';
+import CustomButton from '../component/UIComponents/CustomButton';
 import {
     generateNumbersAction,
     sortInProgressAction,
@@ -16,22 +31,19 @@ import {
 } from '../component/algorithms/Algorithms';
 import Footer from '../component/UIComponents/Footer';
 import BarGraph from '../component/graphComponent/BarGraph';
+import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import FactCard from '../component/UIComponents/FactCard';
-import { theme } from '../component/constants';
+import { MenuProps, algorithmList, theme } from '../component/constants';
 import { SortingFunctions } from './Dashboard.type';
+import CustomAlert from '../component/UIComponents/Alert';
+import Timer from '../component/UIComponents/Timer';
 import AppBarSection from './AppBarSection';
 
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
-    const { results, sorted } = useSelector(
-        (state: any) => ({
-            results: state.results,
-            sorted: state.sorted
-        }),
-        shallowEqual
-    );
+    const { results, sorted } = useSelector((state: any) => state);
     const [running, setRunning] = useState(false);
     const [languageValue, setLanguageValue] = useState(true);
     const [arraySize, setArraySize] = useState<number>(10);
@@ -113,7 +125,11 @@ export default function Dashboard(): JSX.Element {
             graphNumber
         );
     };
-
+    const sortingFunctions: SortingFunctions = {
+        bubble: bubbleSort,
+        insertion: insertionSort,
+        merge: mergeSort
+    };
     const startSorting = useCallback(async () => {
         stopControllerRef.current = new AbortController();
         const sortingFunctions: SortingFunctions = {
@@ -152,7 +168,7 @@ export default function Dashboard(): JSX.Element {
         } catch (err) {
             console.error(`error caught while calling sorting algo: ${err}`);
         }
-    }, [selectedAlgorithm]);
+    }, [selectedAlgorithm, sortingFunctions]);
 
     // Handle the array size slider change
     const handleChange = useCallback(
