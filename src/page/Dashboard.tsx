@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import {
     AppBar,
     Box,
@@ -43,7 +43,13 @@ import AppBarSection from './AppBarSection';
 export default function Dashboard(): JSX.Element {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
-    const { results, sorted } = useSelector((state: any) => state);
+    const { results, sorted } = useSelector(
+        (state: any) => ({
+            results: state.results,
+            sorted: state.sorted
+        }),
+        shallowEqual
+    );
     const [running, setRunning] = useState(false);
     const [languageValue, setLanguageValue] = useState(true);
     const [arraySize, setArraySize] = useState<number>(10);
@@ -125,14 +131,14 @@ export default function Dashboard(): JSX.Element {
             graphNumber
         );
     };
-    const sortingFunctions: SortingFunctions = {
-        bubble: bubbleSort,
-        insertion: insertionSort,
-        merge: mergeSort
-    };
-    const startSorting = async () => {
-        stopControllerRef.current = new AbortController();
 
+    const startSorting = useCallback(async () => {
+        stopControllerRef.current = new AbortController();
+        const sortingFunctions: SortingFunctions = {
+            bubble: bubbleSort,
+            insertion: insertionSort,
+            merge: mergeSort
+        };
         try {
             // Get all the selected algorithms
             const selectedAlgorithms = selectedAlgorithm.filter(
@@ -164,16 +170,19 @@ export default function Dashboard(): JSX.Element {
         } catch (err) {
             console.error(`error caught while calling sorting algo: ${err}`);
         }
-    };
+    }, [selectedAlgorithm]);
 
     // Handle the array size slider change
-    const handleChange = (event: Event, value: number | number[]) => {
-        if (typeof value === 'number') {
-            setArraySize(value);
-            dispatch(generateNumbersAction(value)); // Update the array size in the Redux state
-        }
-        dispatch(sortedAction(false));
-    };
+    const handleChange = useCallback(
+        (event: Event, value: number | number[]) => {
+            if (typeof value === 'number') {
+                setArraySize(value);
+                dispatch(generateNumbersAction(value)); // Update the array size in the Redux state
+            }
+            dispatch(sortedAction(false));
+        },
+        []
+    );
 
     // Stop the sorting process
     const stopSortingHandler = () => {
