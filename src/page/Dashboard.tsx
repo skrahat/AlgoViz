@@ -22,7 +22,7 @@ import { theme } from '../component/constants';
 import { SortingFunctions } from './Dashboard.type';
 import AppBarSection from './AppBarSection';
 
-export default function Dashboard(): JSX.Element {
+export const Dashboard = (): React.ReactElement => {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
     const { results, sorted } = useSelector((state: any) => state);
@@ -376,4 +376,4 @@ export default function Dashboard(): JSX.Element {
             </Container>
         </div>
     );
-}
+};
