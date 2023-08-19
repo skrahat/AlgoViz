@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Typography, Container, SelectChangeEvent } from '@mui/material';
@@ -83,7 +82,7 @@ export const Dashboard = (): React.ReactElement => {
                 graphNumber
             );
         },
-        []
+        [dispatch, results]
     );
 
     // Perform insertion sort
@@ -98,7 +97,7 @@ export const Dashboard = (): React.ReactElement => {
                 graphNumber
             );
         },
-        []
+        [dispatch, results]
     );
     const mergeSort = useCallback(
         async (stopControllerRef: any, graphNumber: number) => {
@@ -112,7 +111,7 @@ export const Dashboard = (): React.ReactElement => {
                 graphNumber
             );
         },
-        []
+        [dispatch, results]
     );
 
     const startSorting = useCallback(async () => {
@@ -153,7 +152,7 @@ export const Dashboard = (): React.ReactElement => {
         } catch (err) {
             console.error(`error caught while calling sorting algo: ${err}`);
         }
-    }, []);
+    }, [bubbleSort, insertionSort, mergeSort, selectedAlgorithm]);
 
     // Handle the array size slider change
     const handleChange = useCallback(
@@ -164,7 +163,7 @@ export const Dashboard = (): React.ReactElement => {
             }
             dispatch(sortedAction(false));
         },
-        []
+        [dispatch]
     );
 
     // Stop the sorting process
@@ -174,7 +173,7 @@ export const Dashboard = (): React.ReactElement => {
             setRunning(false);
         }
         dispatch(sortInProgressAction(false, 2));
-    }, []);
+    }, [dispatch, running]);
 
     // Change the app language
     const changeLanguageHandler = useCallback(() => {
@@ -182,7 +181,7 @@ export const Dashboard = (): React.ReactElement => {
         i18n.changeLanguage(newLanguage).then(() => {
             setLanguageValue(!languageValue);
         });
-    }, []);
+    }, [i18n, languageValue]);
     const showAlertHandler = () => {
         setShowAlert(false);
     };
