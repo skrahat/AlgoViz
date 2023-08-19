@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Typography, Container, SelectChangeEvent } from '@mui/material';
@@ -70,48 +71,50 @@ export const Dashboard = (): React.ReactElement => {
     };
 
     // Perform bubble sort
-    const bubbleSort = async (stopControllerRef: any, graphNumber: number) => {
-        setRunning(true);
-        dispatch(sortInProgressAction(true, graphNumber));
+    const bubbleSort = useCallback(
+        async (stopControllerRef: any, graphNumber: number) => {
+            setRunning(true);
+            dispatch(sortInProgressAction(true, graphNumber));
 
-        await BubbleSort(
-            results[graphNumber],
-            stopControllerRef.signal,
-            dispatch,
-            graphNumber
-        );
-    };
+            await BubbleSort(
+                results[graphNumber],
+                stopControllerRef.signal,
+                dispatch,
+                graphNumber
+            );
+        },
+        []
+    );
 
     // Perform insertion sort
-    const insertionSort = async (
-        stopControllerRef: any,
-        graphNumber: number
-    ) => {
-        setRunning(true);
-        dispatch(sortInProgressAction(true, graphNumber));
-        await InsertionSort(
-            results[graphNumber],
-            stopControllerRef.signal,
-            dispatch,
-            graphNumber
-        );
-    };
-    const mergeSort = async (stopControllerRef: any, graphNumber: number) => {
-        setRunning(true);
-        dispatch(sortInProgressAction(true, graphNumber));
+    const insertionSort = useCallback(
+        async (stopControllerRef: any, graphNumber: number) => {
+            setRunning(true);
+            dispatch(sortInProgressAction(true, graphNumber));
+            await InsertionSort(
+                results[graphNumber],
+                stopControllerRef.signal,
+                dispatch,
+                graphNumber
+            );
+        },
+        []
+    );
+    const mergeSort = useCallback(
+        async (stopControllerRef: any, graphNumber: number) => {
+            setRunning(true);
+            dispatch(sortInProgressAction(true, graphNumber));
 
-        await MergeSort(
-            results[graphNumber],
-            stopControllerRef.signal,
-            dispatch,
-            graphNumber
-        );
-    };
-    const sortingFunctions: SortingFunctions = {
-        bubble: bubbleSort,
-        insertion: insertionSort,
-        merge: mergeSort
-    };
+            await MergeSort(
+                results[graphNumber],
+                stopControllerRef.signal,
+                dispatch,
+                graphNumber
+            );
+        },
+        []
+    );
+
     const startSorting = useCallback(async () => {
         stopControllerRef.current = new AbortController();
         const sortingFunctions: SortingFunctions = {
@@ -150,7 +153,7 @@ export const Dashboard = (): React.ReactElement => {
         } catch (err) {
             console.error(`error caught while calling sorting algo: ${err}`);
         }
-    }, [selectedAlgorithm, sortingFunctions]);
+    }, []);
 
     // Handle the array size slider change
     const handleChange = useCallback(
@@ -165,21 +168,21 @@ export const Dashboard = (): React.ReactElement => {
     );
 
     // Stop the sorting process
-    const stopSortingHandler = () => {
+    const stopSortingHandler = useCallback(() => {
         if (running) {
             stopControllerRef.current?.abort();
             setRunning(false);
         }
         dispatch(sortInProgressAction(false, 2));
-    };
+    }, []);
 
     // Change the app language
-    const changeLanguageHandler = () => {
+    const changeLanguageHandler = useCallback(() => {
         const newLanguage = languageValue ? 'fr' : 'en';
         i18n.changeLanguage(newLanguage).then(() => {
             setLanguageValue(!languageValue);
         });
-    };
+    }, []);
     const showAlertHandler = () => {
         setShowAlert(false);
     };
