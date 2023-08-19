@@ -1,24 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-    AppBar,
-    Box,
-    Toolbar,
-    Typography,
-    Container,
-    Slider,
-    Paper,
-    FormControlLabel,
-    SelectChangeEvent,
-    OutlinedInput,
-    FormControl,
-    Select,
-    MenuItem
-} from '@mui/material';
+import { Box, Typography, Container, SelectChangeEvent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import 'react-toastify/dist/ReactToastify.css';
 import { ThemeProvider } from '@mui/material/styles';
-import CustomButton from '../component/UIComponents/CustomButton';
 import {
     generateNumbersAction,
     sortInProgressAction,
@@ -31,16 +16,13 @@ import {
 } from '../component/algorithms/Algorithms';
 import Footer from '../component/UIComponents/Footer';
 import BarGraph from '../component/graphComponent/BarGraph';
-import Switch from '@mui/material/Switch';
 import { colours } from '../styling/colours';
 import FactCard from '../component/UIComponents/FactCard';
-import { MenuProps, algorithmList, theme } from '../component/constants';
+import { theme } from '../component/constants';
 import { SortingFunctions } from './Dashboard.type';
-import CustomAlert from '../component/UIComponents/Alert';
-import Timer from '../component/UIComponents/Timer';
 import AppBarSection from './AppBarSection';
 
-export default function Dashboard(): JSX.Element {
+export const Dashboard = (): React.ReactElement => {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
     const { results, sorted } = useSelector((state: any) => state);
@@ -88,48 +70,50 @@ export default function Dashboard(): JSX.Element {
     };
 
     // Perform bubble sort
-    const bubbleSort = async (stopControllerRef: any, graphNumber: number) => {
-        setRunning(true);
-        dispatch(sortInProgressAction(true, graphNumber));
+    const bubbleSort = useCallback(
+        async (stopControllerRef: any, graphNumber: number) => {
+            setRunning(true);
+            dispatch(sortInProgressAction(true, graphNumber));
 
-        await BubbleSort(
-            results[graphNumber],
-            stopControllerRef.signal,
-            dispatch,
-            graphNumber
-        );
-    };
+            await BubbleSort(
+                results[graphNumber],
+                stopControllerRef.signal,
+                dispatch,
+                graphNumber
+            );
+        },
+        [dispatch, results]
+    );
 
     // Perform insertion sort
-    const insertionSort = async (
-        stopControllerRef: any,
-        graphNumber: number
-    ) => {
-        setRunning(true);
-        dispatch(sortInProgressAction(true, graphNumber));
-        await InsertionSort(
-            results[graphNumber],
-            stopControllerRef.signal,
-            dispatch,
-            graphNumber
-        );
-    };
-    const mergeSort = async (stopControllerRef: any, graphNumber: number) => {
-        setRunning(true);
-        dispatch(sortInProgressAction(true, graphNumber));
+    const insertionSort = useCallback(
+        async (stopControllerRef: any, graphNumber: number) => {
+            setRunning(true);
+            dispatch(sortInProgressAction(true, graphNumber));
+            await InsertionSort(
+                results[graphNumber],
+                stopControllerRef.signal,
+                dispatch,
+                graphNumber
+            );
+        },
+        [dispatch, results]
+    );
+    const mergeSort = useCallback(
+        async (stopControllerRef: any, graphNumber: number) => {
+            setRunning(true);
+            dispatch(sortInProgressAction(true, graphNumber));
 
-        await MergeSort(
-            results[graphNumber],
-            stopControllerRef.signal,
-            dispatch,
-            graphNumber
-        );
-    };
-    const sortingFunctions: SortingFunctions = {
-        bubble: bubbleSort,
-        insertion: insertionSort,
-        merge: mergeSort
-    };
+            await MergeSort(
+                results[graphNumber],
+                stopControllerRef.signal,
+                dispatch,
+                graphNumber
+            );
+        },
+        [dispatch, results]
+    );
+
     const startSorting = useCallback(async () => {
         stopControllerRef.current = new AbortController();
         const sortingFunctions: SortingFunctions = {
@@ -168,7 +152,7 @@ export default function Dashboard(): JSX.Element {
         } catch (err) {
             console.error(`error caught while calling sorting algo: ${err}`);
         }
-    }, [selectedAlgorithm, sortingFunctions]);
+    }, [bubbleSort, insertionSort, mergeSort, selectedAlgorithm]);
 
     // Handle the array size slider change
     const handleChange = useCallback(
@@ -179,25 +163,25 @@ export default function Dashboard(): JSX.Element {
             }
             dispatch(sortedAction(false));
         },
-        []
+        [dispatch]
     );
 
     // Stop the sorting process
-    const stopSortingHandler = () => {
+    const stopSortingHandler = useCallback(() => {
         if (running) {
             stopControllerRef.current?.abort();
             setRunning(false);
         }
         dispatch(sortInProgressAction(false, 2));
-    };
+    }, [dispatch, running]);
 
     // Change the app language
-    const changeLanguageHandler = () => {
+    const changeLanguageHandler = useCallback(() => {
         const newLanguage = languageValue ? 'fr' : 'en';
         i18n.changeLanguage(newLanguage).then(() => {
             setLanguageValue(!languageValue);
         });
-    };
+    }, [i18n, languageValue]);
     const showAlertHandler = () => {
         setShowAlert(false);
     };
@@ -394,4 +378,4 @@ export default function Dashboard(): JSX.Element {
             </Container>
         </div>
     );
-}
+};
