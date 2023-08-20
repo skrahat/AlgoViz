@@ -17,11 +17,11 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ThemeProvider } from '@mui/material/styles';
-import CustomButton from '../component/UIComponents/CustomButton';
-import CustomAlert from '../component/UIComponents/Alert';
-import Timer from '../component/UIComponents/Timer';
-import { colours } from '../styling/colours';
-import { MenuProps, algorithmList, theme } from '../component/constants';
+import CustomButton from '../UIComponents/CustomButton';
+import CustomAlert from '../UIComponents/Alert';
+import Timer from '../UIComponents/Timer';
+import { colours } from '../../styling/colours';
+import { MenuProps, algorithmList, theme } from '../constants';
 
 // Props interface
 interface AppBarSectionProps {

@@ -20,7 +20,7 @@ import { colours } from '../styling/colours';
 import FactCard from '../component/UIComponents/FactCard';
 import { theme } from '../component/constants';
 import { SortingFunctions } from './Dashboard.type';
-import AppBarSection from './AppBarSection';
+import AppBarSection from '../component/appBar/AppBarSection';
 
 export const Dashboard = (): React.ReactElement => {
     const { t, i18n } = useTranslation();
