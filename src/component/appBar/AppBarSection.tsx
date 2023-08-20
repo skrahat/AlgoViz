@@ -15,7 +15,6 @@ import {
     Switch,
     Paper
 } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import { ThemeProvider } from '@mui/material/styles';
 import CustomButton from '../UIComponents/CustomButton';
 import CustomAlert from '../UIComponents/Alert';
