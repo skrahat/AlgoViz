@@ -22,7 +22,6 @@ const CustomButton: React.FC<CustomButtonProps> = ({
                 color: 'white',
                 display: 'block',
                 margin: '0rem 0.8rem',
-                //border: `1px solid ${colours.accent}`,
                 '&:hover': {
                     backgroundColor: colours.accent,
                     color: 'black'
