@@ -1,19 +1,16 @@
 export const generateNumbersAction = (arraySize: number) => {
-    //console.log('generateNumbers action reached');
     return {
         type: 'GENERATE_NUMBERS',
         payload: arraySize
     };
 };
 export const sortInProgressAction = (status: boolean, graphNumber: number) => {
-    //console.log('sortInProgess action reached');
     return {
         type: 'SORT_IN_PROGRESS',
         payload: { status: status, graphNumber: graphNumber }
     };
 };
 export const sortedAction = (sorted: boolean) => {
-    //console.log('sorted action reached');
     return {
         type: 'SORTED',
         payload: sorted
