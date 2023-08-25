@@ -240,7 +240,6 @@ export const MergeSort = async (
         dispatch(sortedAction(true));
     } catch (e) {
         if ((e as Error).message === 'Aborted') {
-            //console.log('Merge sort aborted');
             const resetArray = resetColors(newArray);
             dispatch(sortNumbersMergeAction(resetArray, graphNumber));
         } else {
