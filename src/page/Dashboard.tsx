@@ -16,7 +16,6 @@ import {
 } from '../component/algorithms/Algorithms';
 import Footer from '../component/UIComponents/Footer';
 import BarGraph from '../component/graphComponent/BarGraph';
-import { colours } from '../styling/colours';
 import FactCard from '../component/UIComponents/FactCard';
 import { theme } from '../component/constants';
 import { SortingFunctions } from './Dashboard.type';
