@@ -1,0 +1,83 @@
+// Define common styles
+$common-styles: (
+    display: flex,
+    flexDirection: column,
+    justifyContent: space-between,
+    alignItems: center,
+    width: 100%
+);
+
+.background {
+    background-color: $colours-background;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: $colours-background;
+}
+
+.row {
+    @extend #{$common-styles};
+    margin-right: 2rem;
+    width: 100%;
+
+    > h6 {
+        font-size: 1.5rem;
+    }
+
+    > div {
+        @extend #{$common-styles};
+        width: 100%;
+        > div {
+            width: 80%;
+            max-width: 50rem;
+        }
+    }
+}
+
+.row-two {
+    @extend #{$common-styles};
+    margin-right: 2rem;
+    width: 100%;
+
+    > h6 {
+        font-size: 1.5rem;
+    }
+
+    > div {
+        @extend #{$common-styles};
+        width: 100%;
+        > div {
+            width: 80%;
+            max-width: 50rem;
+        }
+    }
+}
+
+.footer-container {
+    margin-top: auto;
+    width: 100%;
+}
+
+// Apply the styles to the components
+.background {
+    @extend .background;
+}
+
+.container {
+    @extend .container;
+}
+
+.row {
+    @extend .row;
+}
+
+.row-two {
+    @extend .row-two;
+}
+
+.footer-container {
+    @extend .footer-container;
+}
