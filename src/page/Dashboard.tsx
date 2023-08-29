@@ -194,16 +194,8 @@ export const Dashboard = (): React.ReactElement => {
     }, [results, arraySize, sortInProgressArrayState]);
 
     return (
-        <div style={{ background: colours.background }}>
-            <Container
-                disableGutters={true}
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    minHeight: '100vh',
-                    background: colours.background
-                }}
-            >
+        <div className="background">
+            <Container className="container" disableGutters>
                 {/* App Bar */}
                 <ThemeProvider theme={theme}>
                     <AppBarSection
@@ -222,21 +214,16 @@ export const Dashboard = (): React.ReactElement => {
                         t={t}
                     />
                 </ThemeProvider>
-                {/*++++++++++++++++++++++++++++++++++ Bar components start here --------------------------------*/}
+                {/* Bar components start here */}
                 <Container
                     maxWidth="xl"
-                    style={{
-                        marginTop: '2rem',
-                        display: 'grid',
-                        gridTemplateRows: '1fr 1fr',
-                        justifyContent: 'center',
-                        minHeight: '20rem'
-                    }}
+                    className={
+                        selectedAlgorithm.length === 0 ? 'row' : 'row-two'
+                    }
                 >
                     {/* Bar Graph */}
                     {selectedAlgorithm.length === 0 ? (
                         <MemoizedFactCard
-                            style={{ width: '20%' }}
                             title={{
                                 text: t(`instructions.title`),
                                 animation: false
@@ -251,30 +238,13 @@ export const Dashboard = (): React.ReactElement => {
                             }}
                         />
                     ) : (
-                        <Box
-                            className="row"
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                marginRight: '2rem',
-                                width: '100%'
-                            }}
-                        >
+                        <Box>
                             <Typography variant="h6">
                                 {t(`cards.${selectedAlgorithm[0]}.title`)}
                             </Typography>
 
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    width: '100%',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between'
-                                }}
-                            >
+                            <div className="col">
                                 <BarGraph
-                                    style={{ width: '80%', maxWidth: '50rem' }}
                                     result={results[0]}
                                     sortingInProgressState={
                                         sortInProgressArrayState[0]
@@ -282,7 +252,6 @@ export const Dashboard = (): React.ReactElement => {
                                     sorted={sorted}
                                 />
                                 <MemoizedFactCard
-                                    style={{ width: '20%' }}
                                     title={{
                                         text: t(
                                             `cards.${selectedAlgorithm[0]}.title`
@@ -306,30 +275,13 @@ export const Dashboard = (): React.ReactElement => {
                         </Box>
                     )}
                     {selectedAlgorithm.length === 2 ? (
-                        <Box
-                            className="row"
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                marginRight: '2rem',
-                                width: '100%'
-                            }}
-                        >
+                        <Box>
                             <Typography variant="h6">
                                 {t(`cards.${selectedAlgorithm[1]}.title`)}
                             </Typography>
 
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    width: '100%',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between'
-                                }}
-                            >
+                            <div className="col">
                                 <BarGraph
-                                    style={{ width: '80%', maxWidth: '50rem' }}
                                     result={results[1]}
                                     sortingInProgressState={
                                         sortInProgressArrayState[1]
@@ -338,7 +290,6 @@ export const Dashboard = (): React.ReactElement => {
                                 />
 
                                 <MemoizedFactCard
-                                    style={{ width: '20%' }}
                                     title={{
                                         text: t(
                                             `cards.${selectedAlgorithm[1]}.title`
@@ -366,13 +317,7 @@ export const Dashboard = (): React.ReactElement => {
                 </Container>
 
                 {/* Footer */}
-                <Container
-                    disableGutters={true}
-                    style={{
-                        marginTop: 'auto',
-                        width: '100%'
-                    }}
-                >
+                <Container className="footer-container" disableGutters>
                     <Footer />
                 </Container>
             </Container>
