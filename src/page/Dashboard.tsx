@@ -14,7 +14,7 @@ import {
     InsertionSort,
     MergeSort
 } from '../component/algorithms/Algorithms';
-import Footer from '../component/UIComponents/Footer';
+import Footer from '../component/UIComponents/footer/Footer';
 import BarGraph from '../component/graphComponent/BarGraph';
 import FactCard from '../component/UIComponents/FactCard';
 import { theme } from '../component/constants';
