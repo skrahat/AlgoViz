@@ -10873,7 +10873,7 @@
     "schema-utils" "^3.0.0"
     "semver" "^7.3.2"
 
-"sass@^1.3.0", "sass@^1.66.1":
+"sass@^1.3.0":
   "integrity" "sha512-50c+zTsZOJVgFfTgwwEzkjA3/QACgdNsKueWPyAR0mRINIvLAStVQBbPg14iuqEQ74NPDbXzJARJ/O4SI1zftA=="
   "resolved" "https://registry.npmjs.org/sass/-/sass-1.66.1.tgz"
   "version" "1.66.1"
