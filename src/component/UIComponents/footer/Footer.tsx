@@ -1,19 +1,16 @@
 import React from 'react';
 import { Box, Typography, Link } from '@mui/material';
-import { colours } from '../../styling/colours';
+import { colours } from '../../../styling/colours';
+import './Footer.scss'; // Import the SCSS file
 
 const Footer = () => {
     const email = 'asaduzzaman.rahat@mail.mcgill.ca';
     const website = 'https://www.asadrahat.ca';
 
     return (
-        <Box
-            sx={{
-                padding: '1rem',
-                textAlign: 'center',
-                color: colours.primary
-            }}
-        >
+        <Box className="footer-container">
+            {' '}
+            {/* Use the class name */}
             <Typography variant="body2" color="inherit">
                 <Link
                     href={email}

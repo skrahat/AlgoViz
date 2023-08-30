@@ -2,7 +2,7 @@ import * as React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import { CardActionArea, CardActions } from '@mui/material';
+import { CardActionArea } from '@mui/material';
 import { TypeAnimation } from 'react-type-animation';
 interface textType {
     text: string;
@@ -58,11 +58,6 @@ const FactCard: React.FC<cardType> = React.memo(
                         </Typography>
                     </CardContent>
                 </CardActionArea>
-                <CardActions>
-                    {/* <Button size="small" color="primary">
-                    ...Read More
-                </Button> */}
-                </CardActions>
             </Card>
         );
     }
