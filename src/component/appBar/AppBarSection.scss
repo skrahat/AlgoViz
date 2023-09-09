@@ -1,0 +1,53 @@
+/* Override MUI classes and define custom styling for the AppBarSection component */
+
+// AppBar
+.AppBarSection-root {
+    min-height: 4rem;
+    max-height: 6rem;
+    background-color: $theme-palette-text-secondary; // Replace with the actual color value
+    padding: 0; // Customize padding as needed
+}
+
+// Typography styles
+.AppBarSection-title {
+    margin-right: 3rem;
+    display: flex;
+    color: $theme-palette-text-primary; // Replace with the actual color value
+    font-size: 1.5rem;
+    padding: 0 0 0 1.6rem;
+}
+
+// Slider styles
+.AppBarSection-slider {
+    max-width: 125px;
+    min-width: 75px;
+}
+
+// Button styles
+.AppBarSection-button {
+    width: 5rem;
+    // Add more button-specific styling as needed
+}
+
+// Select styles
+.AppBarSection-select {
+    width: 175px;
+    height: 3rem;
+    color: $colours-secondary; // Replace with the actual color value
+    // Customize other select-specific styling as needed
+}
+
+// Switch styles
+.AppBarSection-switch {
+    // Customize switch styling
+}
+
+// Paper styles
+.AppBarSection-paper {
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+    color: $colours-primary; // Replace with the actual color value
+}
+
+// Customize other elements as needed...
